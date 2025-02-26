@@ -5,32 +5,19 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 from .config import Config
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-app.config.from_object(Config)
+db = SQLAlchemy()
 
-db = SQLAlchemy(app)  # Initialize SQLAlchemy
+def create_app():
+    app = Flask(__name__)
+    CORS(app)  # Enable CORS for all routes
+    app.config.from_object(Config)
 
-@app.route('/')
-def home():
-    return "Hello, Flask is running!"
+    db.init_app(app)
 
-@app.route('/api/test', methods=['GET'])
-def api_test():
-    return jsonify({"message": "This is a test response from the backend!"})
+    with app.app_context():
+        from .routes import main  # Import inside function to prevent circular import
+        app.register_blueprint(main)  # Register the blueprint
 
-@app.route('/api/db-test', methods=['GET'])
-def db_test():
-    try:
-        # Perform a simple query to test the database connection
-        with app.app_context():
-            Session = sessionmaker(bind=db.engine)
-            session = Session()
-            result = session.execute(text("SELECT 1"))
-            session.close()
-        return jsonify({"message": "Database connection successful!"})
-    except Exception as e:
-        return jsonify({"message": f"Database connection failed: {str(e)}"}), 500
+        db.create_all()  # Create database tables for our data models
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    return app
