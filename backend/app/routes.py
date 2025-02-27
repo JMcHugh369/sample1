@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from .database import db
+from .models import User  # Import the User model
 
 main = Blueprint("main", __name__)  # Define the blueprint
 
@@ -18,3 +20,11 @@ def home():
 def get_data():
     sample_data = {"key": "value"}
     return jsonify(sample_data)
+
+@main.route("/add_user", methods=["POST"])
+def add_user():
+    data = request.get_json()
+    new_user = User(username=data['username'], email=data['email'], password=data['password'], discord=data['discord'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User added successfully!"}), 201
