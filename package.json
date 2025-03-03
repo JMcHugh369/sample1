@@ -1,0 +1,19 @@
+{
+  "name": "electron-flask",
+  "version": "1.0.0",
+  "main": "frontend/main.js",
+  "private": true,
+  "scripts": {
+    "start-react": "npm start --prefix frontend",
+    "start-electron": "wait-on http://localhost:3000 && electron frontend/main.js",
+    "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
+    "dev": "npm run start"
+  },
+  "dependencies": {
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^34.1.1",
+    "electron-flask": "file:",
+    "wait-on": "^6.0.0"
+  }
+}
