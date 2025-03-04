@@ -4,7 +4,7 @@
   "main": "frontend/main.js",
   "private": true,
   "scripts": {
-    "start-react": "npm start --prefix frontend",
+    "start-react": "set NODE_OPTIONS=--openssl-legacy-provider && npm start --prefix frontend",
     "start-electron": "wait-on http://localhost:3000 && electron frontend/main.js",
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "dev": "npm run start"
@@ -14,6 +14,6 @@
     "cross-env": "^7.0.3",
     "electron": "^34.1.1",
     "electron-flask": "file:",
-    "wait-on": "^6.0.0"
+    "wait-on": "^8.0.2"
   }
 }
