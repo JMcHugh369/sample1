@@ -7,6 +7,7 @@
         - Contains API endpoints for testing and 
             - User Management
             - Admin Management
+            - DM Management
 '''
 
 from flask import Blueprint, request, jsonify
@@ -214,3 +215,40 @@ def reset_admin_password():
     admin.password_hash = new_password
     db.session.commit()
     return jsonify({"message": "Password reset successfully!"}), 200
+
+'''
+    DM Management
+'''
+
+@main.route("/get_dm/<int:dm_id>", methods=["GET"])
+def get_dm(dm_id):
+    dm = DM.query.get(dm_id)
+    
+    if dm is None:
+        return jsonify({"message": "DM not found!"}), 404
+    
+    dm_data = {
+        "id": dm.id,
+        "user_id": dm.user_id
+    }
+    return jsonify(dm_data), 200
+
+@main.route("/add_dm", methods=["POST"])
+def add_dm():
+    data = request.get_json()
+    user = User.query.get(data['user_id'])
+    if user is None:
+        return jsonify({"message": "User not found!"}), 404
+    new_dm = DM(user_id=data['user_id'])
+    db.session.add(new_dm)
+    db.session.commit()
+    return jsonify({"message": "DM added successfully!"}), 201
+
+@main.route("/delete_dm/<int:dm_id>", methods=["DELETE"])
+def delete_dm(dm_id):
+    dm = DM.query.get(dm_id)
+    if dm is None:
+        return jsonify({"message": "DM not found!"}), 404
+    db.session.delete(dm)
+    db.session.commit()
+    return jsonify({"message": "DM deleted successfully!"}), 200

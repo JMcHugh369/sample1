@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './Login';
 import './App.css';
 
 function App() {
@@ -14,11 +15,18 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>React Application</h1>
-      <button onClick={fetchData}>Fetch Data</button>
-      <pre id="output"></pre>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={
+          <div>
+            <h1>React Application</h1>
+            <button onClick={fetchData}>Fetch Data</button>
+            <pre id="output"></pre>
+          </div>
+        } />
+      </Routes>
+    </Router>
   );
 }
 
