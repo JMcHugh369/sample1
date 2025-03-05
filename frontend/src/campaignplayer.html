@@ -11,31 +11,36 @@
 <body>
 
     <nav>
-        <div id="xout"><!--X out of campaign-->
-            <p>X</p>
-        </div>
-
-        <div id="save"><!--Save current character sheet and campaign status-->
-            <p>Save</p>
-        </div>
-        <div id="ai"><!--opens up mAIge AI companion minitab-->
-            <p>mAIge</p>
-        </div>
-
-        <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-            alt="user profile">
+        <ul id="nav_ul">
+            <li id="nav_li_x"><a id="navbtn" href="#">X</a></li>
+            <li id="nav_li_save"><a id="navbtn" href="#">Save</a></li>
+            <li id="nav_li_maige"><a id="navbtn" href="#">mAIge</a></li>
+            <li id="nav_li_prof"><a href="#"><img id="user_prof"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="user profile"></a></li>
+        </ul>
 
     </nav>
 
     <main>
         <div id="sheetside">
             <div id="sh_top">
+                <ul id="char_ul">
+                    <li id="sheet_top_pic"><a href="#"><img id="user_prof"
+                                src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                                alt="user profile"></a></li>
+                    <li id="char_li_name">Lugh</li>
+                    <li id="char_li_lvl">Level 1</li>
+                    <li id="char_li_species">Elf</li>
+                    <li id="char_li_class">Fighter</li>
+
+                    </nav>
 
             </div>
 
             <div id="sh_sidebar_left">
                 <div id="sh_main_stat"><!--Divider for main stats-->
-                    <div id="sh_stat_div">
+                    <div id="sh_str_div">
                         <p>Strength</p>
                         <div id="sh_str_mod"><!--Divider for stat modifiers-->
                             <p>- -</p>
@@ -44,7 +49,7 @@
                             <p>- -</p>
                         </div>
                     </div>
-                    <div id="sh_stat_div">
+                    <div id="sh_dex_div">
                         <p>Dexterity</p>
                         <div id="sh_dex_mod">
                             <p>- -</p>
@@ -54,7 +59,7 @@
                         </div>
                     </div>
 
-                    <div id="sh_stat_div">
+                    <div id="sh_con_div">
                         <p>Constitution</p>
                         <div id="sh_con_mod">
                             <p>- -</p>
@@ -64,7 +69,7 @@
                         </div>
                     </div>
 
-                    <div id="sh_stat_div">
+                    <div id="sh_int_div">
                         <p>Intelligence</p>
                         <div id="sh_int_mod">
                             <p>- -</p>
@@ -74,7 +79,7 @@
 
                         </div>
                     </div>
-                    <div id="sh_stat_div">
+                    <div id="sh_wis_div">
                         Wisdom
                         <div id="sh_wis_mod">
                             <p>- -</p>
@@ -84,7 +89,7 @@
 
                         </div>
                     </div>
-                    <div id="sh_stat_div">
+                    <div id="sh_cha_div">
                         Charisma
                         <div id="sh_cha_mod">
                             <p>- -</p>
@@ -405,8 +410,9 @@
                 </div>
                 <div id="sh_features_traits">
                     <h2>Class Features</h2>
-                    <h2><span id="sh_class_features">- -</span>Features</h2><!--Will Show the class name, will support multiclassing-->
-                    
+                    <h2><span id="sh_class_features">- -</span>Features</h2>
+                    <!--Will Show the class name, will support multiclassing-->
+
                     <h3>Proficiencies</h3>
                     <p>- -</p>
 
@@ -518,12 +524,12 @@
                         <h2>Attunement</h2>
                         <hr>
                         <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-                        alt="item_img"> <span>Choose an Item</span>
+                            alt="item_img"> <span>Choose an Item</span>
                         <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-                        alt="item_img"> <span>Choose an Item</span>
+                            alt="item_img"> <span>Choose an Item</span>
                         <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-                        alt="item_img"> <span>Choose an Item</span>
-                        
+                            alt="item_img"> <span>Choose an Item</span>
+
                     </div>
 
                     <div id="Other Possessions">
@@ -622,69 +628,84 @@
 
         </div>
 
-
+        <!------------------------------game side------------------------------>
 
         <div id="gameside">
 
             <div id="initiative_tracker">
                 <div id="initiative_char"><!--Divider for Character, Monster, NPC, etc. on the initiative tracker-->
-                    <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-                        alt="init_char_img"> <span>(ex)Lugh</span>
+                    <img id="init_char_img"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="character"> <span>Lugh</span>
                 </div>
+
+                <hr>
+
+                <div id="initiative_char">
+                    <img id="init_char_img"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="character"> <span>Maladin</span>
+
+                </div>
+
             </div>
 
             <div id="map_div">
                 <button id="map_expand">+</button>
-                <img id="map_active" src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
-                alt="map">
+                <img id="map_active"
+                    src="https://runefoundry.com/cdn/shop/files/ForestWaterfallIsometric_digital_grid_day.jpg?v=1688628972&width=1946"
+                    alt="map">
 
                 <button id="map_log">Maps Log</button>
 
-                <div id="chat_log"><!--Chat with a specific party member/the DM/Party GC-->
-                    <button id="minimize_chat">-</button>
+            </div>
+
+            <div id="chat_log"><!--Chat with a specific party member/the DM/Party GC-->
+                <button id="minimize_chat">-</button>
+
+            </div>
+
+            <div id="orb">
+                <button
+                    id="select_chat">ALL</button><!--Select who to chat with within the Orb.  This example is the GC.-->
+            </div>
+
+            <div id="dice_box"><!--holds the clickable dice-->
+                <button id="d4">d4</button>
+                <button id="d6">d6</button>
+                <button id="d8">d8</button>
+                <button id="d10">d10</button>
+                <button id="d12">d12</button>
+                <button id="d20">d20</button>
+                <button id="d100">d100</button>
+            </div>
+
+            <div id="notes_div">
+                <div id="notes_ai">
+
+                </div>
+                <div id="notes_private">
+
+                </div>
+                <div id="notes_public">
 
                 </div>
 
-                <div id="orb">
-                    <button id="select_chat">ALL</button><!--Select who to chat with within the Orb.  This example is the GC.-->
+                <div id="notes_up"><!--divider for the notes currently up on screen-->
+                    <p>- -</p>
                 </div>
 
-                <div id="dice_box"><!--holds the clickable dice-->
-                    <button id="d4">d4</button>
-                    <button id="d6">d6</button>
-                    <button id="d8">d8</button>
-                    <button id="d10">d10</button>
-                    <button id="d12">d12</button>
-                    <button id="d20">d20</button>
-                    <button id="d100">d100</button>
-                </div>
-
-                <div id="notes_div">
-                    <div id="notes_ai">
-
-                    </div>
-                    <div id="notes_private">
-
-                    </div>
-                    <div id="notes_public">
-
-                    </div>
-
-                    <div id="notes_up"><!--divider for the notes currently up on screen-->
-                        <p>- -</p>
-                    </div>
-
-                    <form>
-                        <input type="text" id="note_add" name="note_add">
-                        <input type="submit" value="&rarr;"/>
-                    </form>
-
-                </div>
+                <form>
+                    <input type="text" id="note_add" name="note_add">
+                    <input type="submit" value="&rarr;" />
+                </form>
 
             </div>
 
 
-        </div>
+
+
+
     </main>
 </body>
 
