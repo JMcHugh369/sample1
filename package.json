@@ -7,7 +7,10 @@
     "start-react": "set NODE_OPTIONS=--openssl-legacy-provider && npm start --prefix frontend",
     "start-electron": "wait-on http://localhost:3000 && electron frontend/main.js",
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
-    "dev": "npm run start"
+    "dev": "npm run start",
+    "start-server": "node backend/server.js",
+    "start-python": "python backend/run.py",
+    "start-all": "concurrently \"npm run start-server\" \"npm run start-python\" \"npm run start-react\" \"npm run start-electron\""
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -17,6 +20,7 @@
     "electron-flask": "file:",
     "electron-is-dev": "^3.0.1",
     "pg": "^8.13.3",
+    "react-router-dom": "^7.2.0",
     "scrypt-js": "^3.0.1",
     "wait-on": "^8.0.2"
   }

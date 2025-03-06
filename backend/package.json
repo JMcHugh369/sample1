@@ -2,21 +2,31 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "Server.js",
+  "main": "server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start-server": "node server.js",
+    "start-python": "python run.py",
+    "start-react": "cross-env BROWSER=none npm start --prefix frontend",
+    "start-electron": "wait-on http://localhost:3000 && electron frontend/main.js",
+    "start-all": "concurrently \"npm run start-server\" \"npm run start-python\" \"npm run start-react\" \"npm run start-electron\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "backend": "file:",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
+    "concurrently": "^7.0.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "cross-env": "^7.0.3",
+    "express": "^4.21.2",
+    "wait-on": "^6.0.1"
   }
 }

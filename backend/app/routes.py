@@ -1,4 +1,3 @@
-
 '''
     Note(s) for myself:
         - Test every endpoint before frontend integration
@@ -13,7 +12,6 @@
 from flask import Blueprint, request, jsonify
 from .database import db
 from .models import User, Admin  # Import the User model
-from werkzeug.security import generate_password_hash
 
 main = Blueprint("main", __name__)  # Define the blueprint
 
@@ -45,11 +43,20 @@ def get_data():
 @main.route("/add_user", methods=["POST"])
 def add_user():
     data = request.get_json()
-    new_user = User(username=data['username'], email=data['email'], discord=data['discord'])
-    new_user.set_password(data['password'])  # Hash the password
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "User added successfully!"}), 201
+    username = data.get('username')
+    email = data.get('email')
+    discord = data.get('discord')
+    password = data.get('password')
+    
+    new_user = User(username=username, email=email, discord=discord, password=password)
+    
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'success': True}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 @main.route("/delete_user/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
@@ -93,7 +100,7 @@ def update_user(user_id):
     user.email = data.get('email', user.email)
     user.discord = data.get('discord', user.discord)
     if 'password' in data:
-        user.set_password(data['password'])  # Hash the new password
+        user.set_password(data['password'])  # Set the new password
     
     db.session.commit()
     return jsonify({"message": "User updated successfully!"}), 200
@@ -111,13 +118,15 @@ def list_users():
     ]
     return jsonify(users_data), 200
 
-@main.route("/authenticate_user", methods=["POST"])
+@main.route('/authenticate_user', methods=['POST'])
 def authenticate_user():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
+
     if user and user.check_password(data['password']):
-        return jsonify({"message": "Authentication successful!"}), 200
-    return jsonify({"message": "Invalid credentials!"}), 401
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'message': 'Invalid credentials'}), 401
 
 @main.route("/reset_password", methods=["POST"])
 def reset_password():
@@ -126,8 +135,7 @@ def reset_password():
     if user is None:
         return jsonify({"message": "User not found with the given email!"}), 404
     
-    new_password = generate_password_hash(data['new_password'])
-    user.password_hash = new_password
+    user.password = data['new_password']
     db.session.commit()
     return jsonify({"message": "Password reset successfully!"}), 200
 
@@ -139,7 +147,7 @@ def reset_password():
 def create_admin():
     data = request.get_json()
     new_admin = Admin(username=data['username'], email=data['email'])
-    new_admin.set_password(data['password'])  # Hash the password
+    new_admin.set_password(data['password'])  # Set the password
     db.session.add(new_admin)
     db.session.commit()
     return jsonify({"message": "Admin created successfully!"}), 201
@@ -163,7 +171,7 @@ def get_admin(identifier):
             (Admin.email == identifier)
         ).first()
     
-    if user is None:
+    if admin is None:
         return jsonify({"message": "Admin not found!"}), 404
     
     admin_data = {
@@ -171,8 +179,9 @@ def get_admin(identifier):
         "username": admin.username,
         "email": admin.email
     }
-    
-@main.route("/update_admin/<int:user_id>", methods=["PUT"])
+    return jsonify(admin_data), 200
+
+@main.route("/update_admin/<int:admin_id>", methods=["PUT"])
 def update_admin(admin_id):
     data = request.get_json()
     admin = Admin.query.get(admin_id)
@@ -182,19 +191,22 @@ def update_admin(admin_id):
     admin.username = data.get('username', admin.username)
     admin.email = data.get('email', admin.email)
     if 'password' in data:
-        user.set_password(data['password'])  # Hash the new password
-        
+        admin.set_password(data['password'])  # Set the new password
+    
+    db.session.commit()
+    return jsonify({"message": "Admin updated successfully!"}), 200
+
 @main.route("/list_admins", methods=["GET"])
 def list_admins():
     admins = Admin.query.all()
-    admin_data = [
+    admins_data = [
         {
             "id": admin.id,
             "username": admin.username,
             "email": admin.email
         } for admin in admins
     ]
-    return jsonify(admin_data), 200
+    return jsonify(admins_data), 200
 
 @main.route("/authenticate_admin", methods=["POST"])
 def authenticate_admin():
@@ -211,8 +223,7 @@ def reset_admin_password():
     if admin is None:
         return jsonify({"message": "Admin not found with the given email!"}), 404
     
-    new_password = generate_password_hash(data['new_password'])
-    admin.password_hash = new_password
+    admin.password = data['new_password']
     db.session.commit()
     return jsonify({"message": "Password reset successfully!"}), 200
 
