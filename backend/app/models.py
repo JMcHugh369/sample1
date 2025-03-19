@@ -35,7 +35,7 @@ These (above) are listed respectively
 
 '''
 
-from .database import db
+from app.database import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -119,21 +119,17 @@ class Languages(db.Model):
 
 class Classes(db.Model):
     __tablename__ = 'classes'
-    
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    
+    class_index = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
     hit_die = db.Column(db.Integer, nullable=False)
-    primary_ability = db.Column(db.String(50), nullable=False) # e.g., "Strength, Intelligence"
-    
-    saving_throws_profs = db.Column(db.String(100), nullable=False) # e.g., "Strength, Constitution"
-    skills_profs = db.Column(db.String(100), nullable=False) # e.g., "Athletics, Arcana"
-    spellcasting_ability = db.Column(db.String(50), nullable=True) # e.g., "Intelligence"
-    
-    class_features = db.Column(db.String(200), nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    proficiencies = db.Column(db.JSON, nullable=True)
+    saving_throws = db.Column(db.JSON, nullable=True)
+    subclasses = db.Column(db.JSON, nullable=True)
+    spellcasting = db.Column(db.JSON, nullable=True)
+    url = db.Column(db.String(500), nullable=True)
     
     def __repr__(self):
         return f'<Class {self.name}>'
@@ -388,41 +384,41 @@ class NPC_items(db.Model):
     
 class Monster(db.Model):
     __tablename__ = 'monsters'
-    
+
     id = db.Column(db.Integer, primary_key=True)
+    monster_index = db.Column(db.String(100), nullable=False, unique=True)  # Renamed from 'index'
     name = db.Column(db.String(100), nullable=False)
-    monster_type = db.Column(db.String(50), nullable=False) 
     size = db.Column(db.String(10), nullable=False)
-    alignment = db.Column(db.String(50), nullable=True) # e.g., "Chaotic Evil"
-    armor_class = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    alignment = db.Column(db.String(50), nullable=True)
+    armor_class = db.Column(db.JSON, nullable=False)  # JSON to store armor class details
     hit_points = db.Column(db.Integer, nullable=False)
-    speed = db.Column(db.String(50), nullable=False) # e.g., "30 ft., fly 60 ft."
-    challenge_rating = db.Column(db.Float, nullable=False)
-    
-    senses = db.Column(db.String(100), nullable=True) # e.g., "Darkvision 60 ft."
-    languages = db.Column(db.String(100), nullable=True) # e.g., "Common, Goblin"
-    
+    hit_dice = db.Column(db.String(20), nullable=False)
+    hit_points_roll = db.Column(db.String(20), nullable=True)
+    speed = db.Column(db.JSON, nullable=False)  # JSON to store multiple speeds (e.g., walk, fly, swim)
     strength = db.Column(db.Integer, nullable=False)
     dexterity = db.Column(db.Integer, nullable=False)
     constitution = db.Column(db.Integer, nullable=False)
     intelligence = db.Column(db.Integer, nullable=False)
     wisdom = db.Column(db.Integer, nullable=False)
     charisma = db.Column(db.Integer, nullable=False)
-    
-    saving_throws = db.Column(db.String(100), nullable=True) # e.g., "Dexterity +3, Wisdom +2"
-    
-    actions = db.Column(db.String(100), nullable=True)
-    legendary_actions = db.Column(db.String(100), nullable=True)
-    
-    immunities = db.Column(db.String(100), nullable=True) # e.g., "Fire, Poison"
-    resistances = db.Column(db.String(100), nullable=True) # e.g., "Cold, Fire"
-    vulnerabilities = db.Column(db.String(100), nullable=True) # e.g., "Acid, Lightning"
-    
-    description = db.Column(db.String(200), nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    proficiencies = db.Column(db.JSON, nullable=True)  # JSON to store proficiency details
+    damage_vulnerabilities = db.Column(db.String(200), nullable=True)  # Comma-separated values
+    damage_resistances = db.Column(db.String(200), nullable=True)  # Comma-separated values
+    damage_immunities = db.Column(db.String(200), nullable=True)  # Comma-separated values
+    condition_immunities = db.Column(db.String(200), nullable=True)  # Comma-separated values
+    senses = db.Column(db.JSON, nullable=True)  # JSON to store senses like blindsight, darkvision
+    passive_perception = db.Column(db.Integer, nullable=True)
+    languages = db.Column(db.String(200), nullable=True)
+    challenge_rating = db.Column(db.Float, nullable=False)
+    proficiency_bonus = db.Column(db.Integer, nullable=False)
+    xp = db.Column(db.Integer, nullable=False)
+    special_abilities = db.Column(db.JSON, nullable=True)  # JSON to store special abilities
+    actions = db.Column(db.JSON, nullable=True)  # JSON to store actions
+    legendary_actions = db.Column(db.JSON, nullable=True)  # JSON to store legendary actions
+    image_url = db.Column(db.String(200), nullable=True)
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
+
     def __repr__(self):
         return f'<Monster {self.name}>'
     
@@ -515,31 +511,45 @@ class Weapons(db.Model):
         return f'<Weapon {self.name}>'
     
     
-class Spells(db.Model):
+class Spell(db.Model):
     __tablename__ = 'spells'
-    
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
+    spell_index = db.Column(db.String(100), nullable=False, unique=True)
     name = db.Column(db.String(100), nullable=False)
     level = db.Column(db.Integer, nullable=False)
     school = db.Column(db.String(50), nullable=False)
     casting_time = db.Column(db.String(50), nullable=False)
     range = db.Column(db.String(50), nullable=False)
-    components = db.Column(db.String(100), nullable=False)
+    components = db.Column(db.String(500), nullable=False)  # Increased length
     duration = db.Column(db.String(50), nullable=False)
     concentration = db.Column(db.Boolean, nullable=False, default=False)
-    description = db.Column(db.String(200), nullable=True)
-    higher_levels = db.Column(db.String(200), nullable=True)
-    classes = db.Column(db.String(100), nullable=True) # e.g., "Wizard, Sorcerer"
     ritual = db.Column(db.Boolean, nullable=False, default=False)
-    damage = db.Column(db.Integer, nullable=False)
-    damage_type = db.Column(db.String(50), nullable=True)
-    damage_dice = db.Column(db.String(10), nullable=True) # e.g., "2d6"
-    attack_type = db.Column(db.String(50), nullable=True) # e.g., "Melee, Ranged"
-    saving_throw = db.Column(db.String(50), nullable=True) # e.g., "Dexterity, Wisdom"
-    spell_attack_bonus = db.Column(db.Integer, nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
+    description = db.Column(db.Text, nullable=True)  # Changed to Text for long descriptions
+    higher_level = db.Column(db.Text, nullable=True)  # Changed to Text for long descriptions
+    damage = db.Column(db.JSON, nullable=True)
+    materials = db.Column(db.String(500), nullable=True)  # Increased length
+    classes = db.Column(db.JSON, nullable=True)
+    subclasses = db.Column(db.JSON, nullable=True)
+    url = db.Column(db.String(500), nullable=True)  # Increased length
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+
     def __repr__(self):
-        return f'<Spell {self.name}>'
+        return f"<Spell {self.name}>"
+
+class Feature(db.Model):
+    __tablename__ = 'features'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    feature_index = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(200), nullable=False)
+    level = db.Column(db.Integer, nullable=True)
+    class_name = db.Column(db.String(100), nullable=True)
+    subclass_name = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    url = db.Column(db.String(500), nullable=True)
+
+    def __repr__(self):
+        return f"<Feature {self.name}>"
