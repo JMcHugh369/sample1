@@ -1,0 +1,407 @@
+body {
+  margin: 0;
+  color:#341206;
+  background-image: url("woodgrain.png");
+}
+
+main {
+  display: flex;
+}
+
+nav {
+  background-color: rgb(45, 44, 44);
+  padding-bottom: 8px;
+  font-size: 20px;
+}
+
+#navbtn {
+  text-decoration: none;
+  color: #68301b;
+  background-color: #868686;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+#nav_ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+}
+
+#nav_li_x {
+  display: inline;
+  padding-right: 50px;
+}
+
+#nav_li_save {
+  display: inline;
+  padding-right: 100px;
+}
+
+#nav_li_maige {
+  display: inline;
+  padding-left: 1000px;
+}
+
+#nav_li_prof {
+  display: inline;
+  padding-left: 50px;
+}
+
+#user_prof {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+}
+
+#sheetside {
+  width: 50%;
+  background-color: #514f4d;
+}
+
+#sh_str_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+
+}
+#sh_dex_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+}
+
+#sh_con_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+}
+
+#sh_int_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+}
+#sh_wis_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+}
+
+#sh_cha_div {
+  background-color: #b3b1af;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 110px;
+  overflow: auto;
+  text-align: center;
+  color:#341206;
+}
+
+#sh_str_mod {
+  
+}
+
+#sh_str_num {
+  
+}
+
+#sh_dex_mod {
+  
+}
+
+#sh_dex_num {
+  
+}
+
+#sh_con_mod {
+ 
+}
+
+#sh_con_num {
+ 
+}
+
+#sh_int_mod {
+  
+}
+
+#sh_int_num {
+ 
+}
+
+#sh_wis_mod {
+ 
+}
+
+#sh_wis_num {
+
+}
+
+#sh_cha_mod {
+ 
+}
+
+#sh_cha_num {
+ 
+}
+
+#sh_sidebar_left {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+
+#sh_save_throws {
+  background-color: #b3b1af;
+  width: 100px;
+  height: auto;
+  text-align: center;
+  color:#341206;
+  font-size: 12px;
+  margin: 2px;
+  padding: 1px;
+  position: relative;
+}
+
+#sh_save_ {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#senses {
+  background-color: #b3b1af;
+  width: 100px;
+  height: auto;
+  text-align: center;
+  color:#341206;
+  font-size: 12px;
+  margin: 2px;
+  padding: 1px;
+}
+
+hr {
+  border-color: black;
+}
+
+#sh_addprof {
+  background-color: #b3b1af;
+  width: 100px;
+  height: auto;
+  text-align: center;
+  color:#341206;
+  font-size: 12px;
+  margin: 2px;
+  padding: 1px;
+}
+
+
+h1 {
+  font-size: 16px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 14px;
+  text-align: center;
+}
+
+#sh_skills {
+  position: relative;
+  margin-left: 1%;
+  background-color: #b3b1af;
+  padding: 2%;
+  width: 72%;
+}
+
+
+
+#prof_ul {
+  font-size: 14px;
+  margin: 0;
+  position: relative;
+  margin-left: -18%;
+  border-radius: 0;
+}
+
+#sh_ac {
+  text-align: center;
+  position: relative;
+  margin-left: -55%;
+}
+
+#init {
+  text-align: center;
+  position: relative;
+  margin-left: -55%;
+}
+
+#grey {
+  color:#b0b0b0;
+}
+
+#sh_spd {
+  text-align: center;
+  position: relative;
+  margin-left: -55%;
+}
+
+#char_ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+  background: #8c8886 url(img/banner.png);
+}
+
+#sh_act_all {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#banner {
+position: absolute;
+width: 750px;
+height: 80%;
+top: -16%;
+margin-left: -1.5%;
+padding: 0;
+}
+
+#shield {
+  position: absolute;
+  top: -65%;
+  margin-left: -46%;
+  height: 300%
+}
+
+#str_img {
+  position: absolute;
+  height: 23%;
+  top: 14%;
+  margin-left: -6.25%;
+}
+#dex_img {
+  position: absolute;
+  height: 23%;
+  top: 26%;
+  margin-left: -6.25%;
+}
+#con_img {
+  position: absolute;
+  height: 23%;
+  top: 38%;
+  margin-left: -6.25%;
+}
+#int_img {
+  position: absolute;
+  height: 23%;
+  top: 50%;
+  margin-left: -6.25%;
+}
+#wis_img {
+  position: absolute;
+  height: 23%;
+  top: 62%;
+  margin-left: -6.25%;
+}
+#cha_img {
+  position: absolute;
+  height: 23%;
+  top: 74%;
+  margin-left: -6.25%;
+}
+
+#sheet_top_pic {
+  display: inline;
+  padding-right: 50px;
+}
+#char_li_name {
+  display: inline;
+  padding-right: 80px;
+}
+#char_li_lvl {
+  display: inline;
+  padding-right: 80px;
+}
+#char_li_species {
+  display: inline;
+  padding-right: 80px;
+}
+#char_li_class {
+  display: inline;
+}
+
+
+main {}
+
+
+#gameside {
+  width: 50%;
+  background: #323232 url(img/Aria-Grain.jpeg);
+}
+
+li {
+  list-style-type: circle;
+}
+
+
+#initiative_tracker {
+background-color: #6b6b6b;
+width: 150px;
+}
+
+#initiative_char {
+  margin: 5px;
+}
+
+#init_char_img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+#map_div {
+  width: 410px;
+  height: auto;
+  background-color: #171717;
+  position: relative;
+  padding: 10px;
+  z-index: 2;
+  top: -1.2%;
+  left: 43%;
+  
+}
+
+#map_active {
+  height: 250px;
+  width: auto;
+}
+
