@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="campaignplayer.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <nav>
+        <ul id="nav_ul">
+            <li id="nav_li_x"><a id="navbtn" href="#">X</a></li>
+            <li id="nav_li_save"><a id="navbtn" href="#">Save</a></li>
+            <li id="nav_li_maige"><a id="navbtn" href="#">mAIge</a></li>
+            <li id="nav_li_prof"><a href="#"><img id="user_prof"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="user profile"></a></li>
+        </ul>
+
+    </nav>
+
+    <main>
+        <div id="sheetside">
+            <div id="sh_top">
+                <ul id="char_ul">
+                <!-- <img id="banner" src="img/banner.png" alt="banner"> -->
+                    <li id="sheet_top_pic"><a href="#"><img id="user_prof"
+                                src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                                alt="user profile"></a></li>
+                    <li id="char_li_name">Lugh</li>
+                    <li id="char_li_lvl">Level 1</li>
+                    <li id="char_li_species">Elf</li>
+                    <li id="char_li_class">Fighter</li>
+
+                </ul>
+
+            </div>
+
+            <div id="sh_sidebar_left">
+                <div id="sh_main_stat"><!--Divider for main stats-->
+                    <div id="sh_str_div">
+                        <img id="str_img" src="img/str.png" alt="">
+                        <div id="sh_str_mod"><!--Divider for stat modifiers-->
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_str_num"><!--Divider for stat numbers-->
+                            <p>- -</p>
+                        </div>
+                    </div>
+                    <div id="sh_dex_div">
+                        <img id="dex_img" src="img/dex.png" alt="">
+                        <div id="sh_dex_mod">
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_dex_num">
+                            <p>- -</p>
+                        </div>
+                    </div>
+
+                    <div id="sh_con_div">
+                        <img id="con_img" src="img/con.png" alt="">
+                        <div id="sh_con_mod">
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_con_num">
+                            <p>- -</p>
+                        </div>
+                    </div>
+
+                    <div id="sh_int_div">
+                        <img id="int_img" src="img/int.png" alt="">
+                        <div id="sh_int_mod">
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_int_num">
+                            <p>- -</p>
+
+                        </div>
+                    </div>
+                    <div id="sh_wis_div">
+                        <img id="wis_img" src="img/wis.png" alt="">
+                        <div id="sh_wis_mod">
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_wis_num">
+                            <p>- -</p>
+
+                        </div>
+                    </div>
+                    <div id="sh_cha_div">
+                        <img id="cha_img" src="img/cha.png" alt="">
+                        <div id="sh_cha_mod">
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_cha_num">
+                            <p>- -</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="sh_side_l2">
+                    <div id="sh_save_throws"><!--saving throws-->
+                        <h1>Saving Throws</h1>
+
+                        <ul id=sh_save_ul>
+                            <li>STR<span id="sh_save_str">- -</span></li>
+                            <li>DEX<span id=sh_save_dex>- -</span></li>
+                            <li>CON<span id=sh_save_con>- -</span></li>
+                            <li>INT<span id=sh_save_int>- -</span></li>
+                            <li>WIS<span id=sh_save_wis>- -</span></li>
+                            <li>CHA<span id=sh_save_cha>- -</span></li>
+                        </ul>
+
+                        <!--If the player character has advantages (ie advantage against being charmed for elves):-->
+                        <div id="sh_advantage">
+                            <p>Advantage against:</p>
+                            <div id="sh_advantage_details">
+                                - -
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="senses">
+                        <h1>Senses</h1>
+                        <div id="sh_psv_percep"><!--passive perception-->
+                            <p>Passive Perception</p>
+                            <div id="sh_passive_perception_num">
+                                <p>- -</p>
+                            </div>
+                        </div>
+
+
+                        <!--If the player character has Darkvision: -->
+                        <div id="sh_darkvision">Darkvision <span id="sh_darkvision_num">- - ft.</span></div>
+                    </div>
+
+                    <div id="sh_addprof_lang"><!--additional proficiencies and languages divider-->
+                        <div id="sh_addprof"><!--additional proficienies-->
+
+                            <h1>Proficiencies</h1>
+
+                            <h4>Armor</h4>
+                            <p>- -</p>
+                        
+                            <h4>Weapons</h4>
+                            <p>- -</p>
+                            
+                            <h4>Tools</h4>
+                            <p>- -</p>
+
+                    
+                        
+                        <div id="sh_lang"><!--languages-->
+                            <h4>Languages</h4>
+                            <p>- -</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+
+                <div id="sh_sidebar_left_second">
+                    <div id="sh_ac"><!--armor class-->
+                        <img id="shield" src="img/ac.png" alt="">
+                        <p>armor</p>
+                        <p>- -</p>
+                        <p>Class</p>
+
+                    </div>
+                    <div id="init"> <!--initiative-->
+
+                        <p>- -</p>
+                        <p>Initiative</p>
+
+                    </div>
+                    <div id="sh_spd"><!--speed-->
+                        <p>- - ft.</p>
+                        <p>Speed</p>
+
+                    </div>
+                    <div id="sh_skills">
+                        <h1>Skills</h1>
+                        <ul id="prof_ul">
+                            <li><span id="acrobatics_num">0</span> Acrobatics <span id="grey">(Dex)</span></li>
+                            <li><span id="animal_handling_num">0</span> Animal Handling <span id="grey">(Wis)</span>
+                            </li>
+                            <li><span id="arcana_num">0</span> Arcana <span id="grey">(Int)</span></li>
+                            <li><span id="athletics_num">0</span> Athletics <span id="grey">(Str)</span></li>
+                            <li><span id="deception_num">0</span> Deception <span id="grey">(Cha)</span></li>
+                            <li><span id="history_num">0</span> History <span id="grey">(Int)</span></li>
+                            <li><span id="insight_num">0</span> Insight <span id="grey">(Wis)</span></li>
+                            <li><span id="intimidation_num">0</span> Intimidation <span id="grey">(Cha)</span></li>
+                            <li><span id="investigation_num">0</span> Investigation <span id="grey">(Int)</span>
+                            </li>
+                            <li><span id="medicine_num">0</span> Medicine <span id="grey">(Wis)</span></li>
+                            <li><span id="nature_num">0</span> Nature <span id="grey">(Int)</span></li>
+                            <li><span id="perception_num">0</span> Perception <span id="grey">(Wis)</span></li>
+                            <li><span id="performance_num">0</span> Performance <span id="grey">(Cha)</span></li>
+                            <li><span id="persuasion_num">0</span> Persuasion <span id="grey">(Cha)</span></li>
+                            <li><span id="religion_num">0</span> Religion <span id="grey">(Int)</span></li>
+                            <li><span id="sleight_of_hand_num">0</span> Sleight of Hand <span id="grey">(Dex)</span>
+                            </li>
+                            <li><span id="stealth_num">0</span> Stealth <span id="grey">(Dex)</span></li>
+                            <li><span id="survival_num">0</span> Survival <span id="grey">(Wis)</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="sh_inspiration">
+                    <!--Image indicator visible if Inspiration (clicked), invisible if not-->
+                    <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="user profile"><span>Inspiration</span>
+
+                </div>
+
+
+                <div id="sh_hp">
+                    <div id="sh_hp_main">
+                        <h2>HP</h2>
+                        <div id="sh_hp_add_min_curr_tot_container"><!--divider for + - hp, current hp, total hp-->
+
+                            <div id="hp_add_min_curr_tot_item">
+                                <button id="sh_hp_plus">+</button>
+                                <br>
+                                <input type="number" value="0" id="input" />
+                                <br>
+                                <button id="sh_hp_minus">−</button>
+
+                            </div>
+
+                            <div id="hp_add_min_curr_tot_item">
+                                <span id="sh_hp_current">0 <span>/</span> </span id="sh_hp_total"><span>0</span>
+                            </div>
+
+                            <div id="sh_temp_hp">
+                                <p>- -</p>
+                            </div>
+                            <p>TEMP</p>
+                        </div>
+
+                    </div>
+
+                    <div id="sh_cond_def"><!--conditions and defenses-->
+                        <div id="sh_cond"><!--conditions-->
+                            <p>- -</p>
+                        </div>
+                        <div id="sh_def"><!--defenses-->
+                            <p>- -</p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+
+            <div id="sh_act_all"><!--Divider for Actions, Spells, Features, Traits-->
+                <div id="sh_act_all_nav">
+                    <button type="button">Actions</button>
+                    <button type="button">Spells</button>
+                    <button type="button">Features/Traits</button>
+                </div>
+                <div id="sh_actions">
+                    <h2>Actions</h2>
+                    <table>
+                        <tr>
+                            <th>Attack</th>
+                            <th>Range</th>
+                            <th>Hit/DC</th>
+                            <th>Damage</th>
+                            <th>Notes</th>
+                        </tr>
+                        <tr>
+                            <td>- -</td>
+                            <td>0</td>
+                            <td>+0</td>
+                            <td>0d0+0</td>
+                            <td>- -</td>
+                        </tr>
+                    </table>
+
+                    <h3>Actions in Combat</h3>
+                    <p>Attack, Dash, Disengage, Dodge, Grapple, Help, Hide, Improvise, Influence, Magic,
+                        Ready, Search, Shove, Study, Utilize
+                    </p>
+
+                    <!--Class-specific actions will be implemented here-->
+
+                    <h2>Bonus Actions</h2>
+                    <h3>Actions in Combat</h3>
+                    <p>- -</p>
+                    <h3>Spells</h3>
+                    <p>- -</p>
+
+                    <h2>Reactions</h2>
+                    <h3>Actions in Combat</h3>
+                    <p>- -</p>
+                    <p>Opportunity Attack</p>
+                    <h3>Spells</h3>
+                    <p>- -</p>
+
+                    <h2>Other</h2>
+                    <h3>Actions in Combat</h3>
+                    <p>Interact with an Object</p>
+                    <h3>Ritual Spells</h3>
+                    <p>- -</p>
+                    <!--Special Other will go here-->
+
+                </div>
+                <div id="sh_spells">
+                    <h2>Cantrips</h2>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Range</th>
+                            <th>Hit/DC</th>
+                            <th>Effect</th>
+                            <th>Notes</th><!--Incl. V/S/M and componenents-->
+                        </tr>
+                        <tr>
+                            <td>- -</td>
+                            <td>- -</td>
+                            <td>0 ft.</td>
+                            <td>+0</td>
+                            <td>0d0</td>
+                            <td>- -</td>
+                        </tr>
+                    </table>
+                    <p>- -</p>
+                    <h2>1st Level</h2>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Range</th>
+                            <th>Hit/DC</th>
+                            <th>Effect</th>
+                            <th>Notes</th><!--Incl. V/S/M and componenents-->
+                        </tr>
+                        <tr>
+                            <td>- -</td>
+                            <td>- -</td>
+                            <td>0 ft.</td>
+                            <td>+0</td>
+                            <td>0d0</td>
+                            <td>- -</td>
+                        </tr>
+                    </table>
+
+                    <h2>2nd Level <span id="sh_spellslots2nd">0 / 0 Slots Remaining</span></h2>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Range</th>
+                            <th>Hit/DC</th>
+                            <th>Effect</th>
+                            <th>Notes</th><!--Incl. V/S/M and componenents-->
+                        </tr>
+                        <tr>
+                            <td>- -</td>
+                            <td>- -</td>
+                            <td>0 ft.</td>
+                            <td>+0</td>
+                            <td>0d0</td>
+                            <td>- -</td>
+                        </tr>
+                    </table>
+                    <h2>3rd Level <span id="sh_spellslots3rd">0 / 0 Slots Remaining</span></h2>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Range</th>
+                            <th>Hit/DC</th>
+                            <th>Effect</th>
+                            <th>Notes</th><!--Incl. V/S/M and componenents-->
+                        </tr>
+                        <tr>
+                            <td>- -</td>
+                            <td>- -</td>
+                            <td>0 ft.</td>
+                            <td>+0</td>
+                            <td>0d0</td>
+                            <td>- -</td>
+                        </tr>
+                    </table>
+                    <!--The rest of spell levels will go here, higher level will be hidden until caster 
+                    is at proper caster level to access them-->
+
+                </div>
+                <div id="sh_features_traits">
+                    <h2>Class Features</h2>
+                    <h2><span id="sh_class_features">- -</span>Features</h2>
+                    <!--Will Show the class name, will support multiclassing-->
+
+                    <h3>Proficiencies</h3>
+                    <p>- -</p>
+
+                    <!--Class specific content will go here-->
+                    <!--Format example for Class Features: -->
+                    <h3>(ex)Fighting Style</h3>
+                    <h4>(ex)Archery</h4>
+                    <p>(ex)You gain a +2 to attack rolls you make with ranged weapons.</p>
+
+                    <h2>Species Traits</h2>
+                    <hr>
+                    <h3>Ability Score Increase</h3>
+                    <p>- -</p>
+
+                    <h3>Extra Language</h3>
+                    <p>You can speak, read, and write one extra language of your choice.</p>
+
+                    <!--Example Format: -->
+                    <h3>(ex)Darkvision</h3>
+                    <p>(ex)You can see in darkness (shades of gray) up to 60 ft.</p>
+
+                    <h2>Feats</h2>
+                    <hr>
+                    <!--Character's Feats will go here-->
+                    <!--Example Format: -->
+                    <h3>(ex)Sharpshooter</h3>
+                    <p>(ex)Attacking at long range doesn't impose disadvantage on your ranged weapon attack rolls...</p>
+
+                </div>
+            </div>
+
+            <div id="sh_sidebar_right">
+
+                <div id="sh_inventory">
+
+                    <h1>Inventory</h1>
+
+                    <!--Search bar will be implemented-->
+
+                    <div id="sh_currency">
+                        <ul>
+                            <li id="sh_platinum">
+                                0
+                            </li>
+                            <li id="sh_gold">
+                                0
+                            </li>
+                            <li id="sh_silver">
+                                0
+                            </li>
+                            <li id="sh_copper">
+                                0
+                            </li>
+
+                            <button id="sh_currency_add">+</button>
+                        </ul>
+                    </div>
+
+                    <div id="sh_equipment">
+                        <h2>Equipment</h2>
+                        <hr>
+
+                        <table>
+                            <tr>
+                                <th>Active</th>
+                                <th>Name</th>
+                                <th>Weight</th>
+                                <th>Qty</th>
+                                <th>Cost(GP)</th>
+                                <th>Notes</th>
+                            </tr>
+                            <tr>
+                                <button id="sh_toggle_active_item">_</button>
+                                <td>- -</td>
+                                <td>- lb.</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div id="sh_backpack">
+                        <h2>Backpack</h2>
+                        <hr>
+
+                        <table>
+                            <tr>
+                                <th>Active</th>
+                                <th>Name</th>
+                                <th>Weight</th>
+                                <th>Qty</th>
+                                <th>Cost(GP)</th>
+                                <th>Notes</th>
+                            </tr>
+                            <tr>
+                                <button id="sh_toggle_active_item">_</button>
+                                <td>- -</td>
+                                <td>- lb.</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="Attunement">
+                        <h2>Attunement</h2>
+                        <hr>
+                        <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                            alt="item_img"> <span>Choose an Item</span>
+                        <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                            alt="item_img"> <span>Choose an Item</span>
+                        <img src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                            alt="item_img"> <span>Choose an Item</span>
+
+                    </div>
+
+                    <div id="Other Possessions">
+                        <h2>Other Possessions</h2>
+                        <hr>
+                        <p>- -</p>
+                    </div>
+
+                </div>
+
+                <div id="sh_character_details"><!--Divider for Background, Extra-->
+                    <div id="sh_background">
+                        <h1>Background</h1>
+
+                        <h2>Background</h2>
+                        <hr>
+                        <!--Example Format: -->
+                        <h3>(ex)Soldier</h3>
+                        <h4>(ex)Feature: Military Rank</h4>
+                        <p>(ex)You have a military rank from your career as a soldier...</p>
+
+                        <hr>
+                        <h2>Characteristics</h2>
+                        <hr>
+                        <div id="sh_characteristics">
+                            <div id="sh_alignment">
+                                <h3>Alignment</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_gender">
+                                <h3>Gender</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_eyes">
+                                <h3>Eyes</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_size">
+                                <h3>Size</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_height">
+                                <h3>Height</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_faith">
+                                <h3>Faith</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_hair">
+                                <h3>Hair</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_skin">
+                                <h3>Skin</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_age">
+                                <h3>Age</h3>
+                                <p>- -</p>
+                            </div>
+                            <div id="sh_weight">
+                                <h3>Weight</h3>
+                                <p>- -</p>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <h3>Personality Traits</h3>
+                        <p>- -</p>
+                        <h3>Ideals</h3>
+                        <p>- -</p>
+                        <h3>Bonds</h3>
+                        <p>- -</p>
+                        <h3>Flaws</h3>
+                        <p>- -</p>
+
+                        <h2>Appearance</h2>
+                        <hr>
+                        <p>- -</p>
+
+                    </div>
+
+                    <div id="sh_char_notes">
+                        <h1>Character Notes</h1>
+                        <p>- -</p>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+
+        </div>
+
+        <!------------------------------game side------------------------------>
+
+        <div id="gameside">
+
+            <div id="initiative_tracker">
+                <div id="initiative_char"><!--Divider for Character, Monster, NPC, etc. on the initiative tracker-->
+                    <img id="init_char_img"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="character"> <span>Lugh</span>
+                </div>
+
+                <hr>
+
+                <div id="initiative_char">
+                    <img id="init_char_img"
+                        src="https://images.squarespace-cdn.com/content/v1/58a8c17bbebafb33787ef86c/1681424568877-CVJSHARQI1UXSM8VUSEI/image000000.png?format=500w"
+                        alt="character"> <span>Maladin</span>
+
+                </div>
+
+            </div>
+
+            <div id="map_div">
+                <button id="map_expand">+</button>
+                <img id="map_active"
+                    src="https://runefoundry.com/cdn/shop/files/ForestWaterfallIsometric_digital_grid_day.jpg?v=1688628972&width=1946"
+                    alt="map">
+
+                <button id="map_log">Maps Log</button>
+
+            </div>
+
+            <div id="chat_log"><!--Chat with a specific party member/the DM/Party GC-->
+                <button id="minimize_chat">-</button>
+
+            </div>
+
+            <div id="orb">
+                <button
+                    id="select_chat">ALL</button><!--Select who to chat with within the Orb.  This example is the GC.-->
+            </div>
+
+            <div id="dice_box"><!--holds the clickable dice-->
+                <button id="d4">d4</button>
+                <button id="d6">d6</button>
+                <button id="d8">d8</button>
+                <button id="d10">d10</button>
+                <button id="d12">d12</button>
+                <button id="d20">d20</button>
+                <button id="d100">d100</button>
+            </div>
+
+            <div id="notes_div">
+                <div id="notes_ai">
+
+                </div>
+                <div id="notes_private">
+
+                </div>
+                <div id="notes_public">
+
+                </div>
+
+                <div id="notes_up"><!--divider for the notes currently up on screen-->
+                    <p>- -</p>
+                </div>
+
+                <form>
+                    <input type="text" id="note_add" name="note_add">
+                    <input type="submit" value="&rarr;" />
+                </form>
+
+            </div>
+
+
+
+
+
+    </main>
+</body>
+
+</html>
