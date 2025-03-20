@@ -1,0 +1,23 @@
+body {
+    font-family: cursive;
+    text-align: center;
+    background-color: #bbb3a0;
+    color: rgb(55, 31, 13);
+}
+
+h1 {
+    font-size: 250%;
+}
+
+button {
+    padding: 10%;
+    margin: 3%;
+    background: rgb(212, 198, 165);
+    border-radius: 20px;
+    border: 2px rgb(34, 19, 7) solid;
+
+}
+
+button:active {
+    background: rgb(174, 161, 130);
+}
