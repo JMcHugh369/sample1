@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Tektur:wght@400..900&display=swap');
+
+body {
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 700;
+    font-style: normal;
+    text-align: center;
+    background: rgb(183, 170, 153);
+}
+
+a {
+    position: absolute;
+    z-index: -1;
+    background: rgb(220, 213, 204);
+    height: 10vh;
+    width: 5vw;
+    right: 2.5vw;
+    top: 20vh;
+
+    font-size: 15vh;
+    line-height: .7;
+    color: rgb(53, 28, 12);
+
+    border-radius: 1vh;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
+}
+
+input {
+
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 700;
+    font-style: normal;
+    text-align: center;
+
+    z-index: -1;
+
+    font-size: 3vh;
+
+    background: rgb(220, 213, 204);
+
+    border-radius: 1vh;
+
+    height: 5vh;
+    width: 25vw;
+
+    margin-top: 5vh;
+    padding: 5vh;
+
+    position: relative;
+
+    top: 15vh;
+
+    border: none;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+input:active {
+    background: rgb(193, 185, 174);
+    cursor: pointer;
+}
