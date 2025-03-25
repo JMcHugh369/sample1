@@ -92,7 +92,7 @@ const GameView = () => {
                         <button class="d4"
                             onclick={
                                 () => {
-                                    const rollD4 = () => dice(4);
+                                    const rollD4 = () => dice(4); //issue getting this to work and print to console on click of d4 button
                                     console.log(rollD4);
                                 }
                             }
