@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 1. Navigate to the `backend` directory:
     ```sh
-    cd sample1
+    cd dnd_game_db
     cd backend
     ```
 

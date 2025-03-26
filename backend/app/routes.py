@@ -124,9 +124,13 @@ def authenticate_user():
     user = User.query.filter_by(username=data['username']).first()
 
     if user and user.check_password(data['password']):
-        return jsonify({'message': 'Login successful'}), 200.id, 'username': user.username}}), 200  # Include user_id
+        return jsonify({
+            'message': 'Login successful',
+            'user_id': user.id,
+            'username': user.username
+        }), 200
     else:
-        return jsonify({'message': 'Invalid credentials'}), 401redentials'}), 401
+        return jsonify({'message': 'Invalid credentials'}), 401
 
 @main.route("/reset_password", methods=["POST"])
 def reset_password():
