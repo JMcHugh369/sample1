@@ -13,7 +13,7 @@ const CreateAccount = () => {
     e.preventDefault();
     console.log('Submitting account creation request:', { username, email, password, discord });
     try {
-      const response = await fetch('http://localhost:5000/add_user', {
+      const response = await fetch('http://localhost:5001/add_user', { // Update port to 5001
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

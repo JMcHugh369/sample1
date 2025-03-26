@@ -11,7 +11,7 @@
 
 from flask import Blueprint, request, jsonify
 from .database import db
-from .models import User, Admin  # Import the User model
+from .models import User, Admin, Character, Campaign  # Import the User, Admin, Character, and Campaign models
 
 main = Blueprint("main", __name__)  # Define the blueprint
 
@@ -124,9 +124,9 @@ def authenticate_user():
     user = User.query.filter_by(username=data['username']).first()
 
     if user and user.check_password(data['password']):
-        return jsonify({'message': 'Login successful'}), 200
+        return jsonify({'message': 'Login successful'}), 200.id, 'username': user.username}}), 200  # Include user_id
     else:
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({'message': 'Invalid credentials'}), 401redentials'}), 401
 
 @main.route("/reset_password", methods=["POST"])
 def reset_password():
@@ -138,6 +138,18 @@ def reset_password():
     user.password = data['new_password']
     db.session.commit()
     return jsonify({"message": "Password reset successfully!"}), 200
+
+@main.route('/get_user_id', methods=['GET'])
+def get_user_id():
+    username = request.args.get('username')
+    if not username:
+        return jsonify({'success': False, 'message': 'Username is required'}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify({'success': True, 'user_id': user.id}), 200
+    else:
+        return jsonify({'success': False, 'message': 'User not found'}), 404
 
 '''
     Admin management
@@ -263,3 +275,199 @@ def delete_dm(dm_id):
     db.session.delete(dm)
     db.session.commit()
     return jsonify({"message": "DM deleted successfully!"}), 200
+
+@main.route("/add_character", methods=["POST"])
+def add_character():
+    print("Received request to /add_character")  # Debug log
+    data = request.get_json()
+    print("Request data:", data)  # Debug log
+    try:
+        # Validate required fields
+        required_fields = ['name', 'race', 'character_class', 'username']
+        for field in required_fields:
+            if not data.get(field):
+                raise ValueError(f"Missing required field: {field}")
+
+        # Retrieve user_id based on the username
+        username = data.get('username')
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            raise ValueError(f"User with username '{username}' not found")
+
+        # Create a new character
+        new_character = Character(
+            name=data.get('name'),
+            race=data.get('race'),
+            character_class=data.get('character_class'),
+            level=data.get('level', 1),
+            background=data.get('background'),
+            alignment=data.get('alignment'),
+            strength=data.get('strength', 10),
+            dexterity=data.get('dexterity', 10),
+            constitution=data.get('constitution', 10),
+            intelligence=data.get('intelligence', 10),
+            wisdom=data.get('wisdom', 10),
+            charisma=data.get('charisma', 10),
+            armor_class=data.get('armor_class', 10),
+            hit_points=data.get('hit_points', 10),
+            speed=data.get('speed', 30),
+            proficiency_bonus=data.get('proficiency_bonus', 2),
+            skills=data.get('skills'),
+            saving_throws=data.get('saving_throws'),
+            equipment=data.get('equipment'),
+            features=data.get('features'),
+            spells=data.get('spells'),
+            languages=data.get('languages'),
+            notes=data.get('notes'),
+            copper_coins=data.get('copper_coins', 0),
+            silver_coins=data.get('silver_coins', 0),
+            gold_coins=data.get('gold_coins', 0),
+            platinum_coins=data.get('platinum_coins', 0),
+            inventory=data.get('inventory'),
+            total_weight=data.get('total_weight', 0.0),
+            user_id=user.id  # Use the retrieved user_id
+        )
+        db.session.add(new_character)
+        db.session.commit()
+        print("Character added successfully:", new_character)  # Debug log
+        return jsonify({"success": True, "message": "Character added successfully!"}), 201
+    except ValueError as ve:
+        print("Validation error:", ve)  # Debug log
+        return jsonify({"success": False, "message": str(ve)}), 400
+    except Exception as e:
+        db.session.rollback()
+        print("Error saving character:", e)  # Debug log
+        return jsonify({"success": False, "message": "Internal server error"}), 500
+
+@main.route("/get_characters", methods=["GET"])
+def get_characters():
+    print("Received request to /get_characters")  # Debug log
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"success": False, "message": "Missing required field: user_id"}), 400
+
+    try:
+        characters = Character.query.filter_by(user_id=user_id).all()
+        characters_data = [
+            {
+                "id": character.id,
+                "name": character.name,
+                "race": character.race,
+                "character_class": character.character_class,
+                "level": character.level,
+                "background": character.background,
+                "alignment": character.alignment,
+            }
+            for character in characters
+        ]
+        print("Characters retrieved:", characters_data)  # Debug log
+        return jsonify({"success": True, "characters": characters_data}), 200
+    except Exception as e:
+        print("Error retrieving characters:", e)  # Debug log
+        return jsonify({"success": False, "message": "Internal server error"}), 500
+
+@main.route("/delete_character/<int:id>", methods=["DELETE"])
+def delete_character(id):
+    print("Received request to delete character:", id)  # Debug log
+    try:
+        character = Character.query.get(id)
+        if not character:
+            return jsonify({"success": False, "message": "Character not found"}), 404
+
+        db.session.delete(character)
+        db.session.commit()
+        print("Character deleted successfully:", character)  # Debug log
+        return jsonify({"success": True, "message": "Character deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print("Error deleting character:", e)  # Debug log
+        return jsonify({"success": False, "message": "Internal server error"}), 500
+
+@main.route("/add_campaign", methods=["POST"])
+def add_campaign():
+    print("Received request to /add_campaign")  # Debug log
+    data = request.get_json()
+    print("Request data:", data)  # Debug log
+
+    try:
+        # Validate required fields
+        required_fields = ['name', 'dm_username']
+        for field in required_fields:
+            if not data.get(field):
+                raise ValueError(f"Missing required field: {field}")
+
+        # Check if a campaign with the same name already exists
+        existing_campaign = Campaign.query.filter_by(name=data.get('name')).first()
+        if existing_campaign:
+            raise ValueError(f"A campaign with the name '{data.get('name')}' already exists")
+
+        # Retrieve dm_id based on the dm_username
+        dm_username = data.get('dm_username')
+        dm = User.query.filter_by(username=dm_username).first()
+        if not dm:
+            raise ValueError(f"User with username '{dm_username}' not found")
+
+        # Create a new campaign
+        new_campaign = Campaign(
+            name=data.get('name'),
+            dm_id=dm.id
+        )
+        db.session.add(new_campaign)
+        db.session.commit()
+        print("Campaign created successfully:", new_campaign)  # Debug log
+        return jsonify({
+            "success": True,
+            "message": "Campaign created successfully!",
+            "campaign": {
+                "id": new_campaign.id,
+                "name": new_campaign.name,
+                "access_code": new_campaign.access_code
+            }
+        }), 201
+    except ValueError as ve:
+        print("Validation error:", ve)  # Debug log
+        return jsonify({"success": False, "message": str(ve)}), 400
+    except Exception as e:
+        db.session.rollback()
+        print("Error saving campaign to database:", e)  # Debug log
+        return jsonify({"success": False, "message": "Internal server error"}), 500
+
+@main.route("/join_campaign", methods=["POST"])
+def join_campaign():
+    print("Received request to /join_campaign")  # Debug log
+    data = request.get_json()
+    print("Request data:", data)  # Debug log
+
+    try:
+        # Validate required fields
+        required_fields = ['campaignName', 'accessCode', 'username']
+        for field in required_fields:
+            if not data.get(field):
+                raise ValueError(f"Missing required field: {field}")
+
+        # Retrieve the campaign based on name and access code
+        campaign = Campaign.query.filter_by(name=data.get('campaignName'), access_code=data.get('accessCode')).first()
+        if not campaign:
+            raise ValueError("Invalid campaign name or access code")
+
+        # Retrieve the user based on username
+        user = User.query.filter_by(username=data.get('username')).first()
+        if not user:
+            raise ValueError(f"User with username '{data.get('username')}' not found")
+
+        # Add the user to the campaign's players
+        if user in campaign.players:
+            raise ValueError("User is already a member of this campaign")
+        campaign.players.append(user)
+        db.session.commit()
+
+        print(f"User {user.username} successfully joined campaign {campaign.name}")  # Debug log
+        return jsonify({"success": True, "message": "Successfully joined the campaign!"}), 200
+    except ValueError as ve:
+        print("Validation error:", ve)  # Debug log
+        return jsonify({"success": False, "message": str(ve)}), 400
+    except Exception as e:
+        db.session.rollback()
+        print("Error adding user to campaign:", e)  # Debug log
+        return jsonify({"success": False, "message": "Internal server error"}), 500

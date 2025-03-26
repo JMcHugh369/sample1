@@ -1,16 +1,9 @@
-const { ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
-// Example function to send a message to the main process
-function sendMessageToMain(message) {
-  ipcRenderer.send('message-from-renderer', message);
-}
-
-// Example function to receive a message from the main process
-ipcRenderer.on('message-from-main', (event, message) => {
-  console.log('Message from main process:', message);
+contextBridge.exposeInMainWorld('api', {
+  sendData: (data) => ipcRenderer.send('send-data', data),
+  receiveData: (callback) => {
+    ipcRenderer.removeAllListeners('receive-data'); // Prevent duplicate listeners
+    ipcRenderer.on('receive-data', (event, data) => callback(data));
+  },
 });
-
-// Export functions to be used in other parts of the renderer process
-module.exports = {
-  sendMessageToMain,
-};

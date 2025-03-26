@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     console.log('Submitting login request:', { username, password });
     try {
-      const response = await fetch('http://localhost:5000/authenticate_user', {
+      const response = await fetch('http://localhost:5001/authenticate_user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,6 +25,8 @@ const Login = () => {
         throw new Error(data.message || 'Network response was not ok');
       }
       if (data.success) {
+        localStorage.setItem('username', username); // Store username in localStorage
+        localStorage.setItem('user_id', data.user_id); // Store user_id in localStorage
         navigate('/home'); // Redirect to home page
       } else {
         setError(data.message || 'Login failed');

@@ -8,13 +8,14 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:Avengers#1@localhost/dnd_game_db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config.from_object(Config)  # Use the Config class for configuration
     db.init_app(app)
     migrate.init_app(app, db)
 
     with app.app_context():
-        from .models import User  # Import models
+        from .models.Users import User  # Import User model
+        from .models.Characters import Character  # Import Character model
+        from .models.Admins import Admin  # Import Admin model
         db.create_all()  # Create database tables
 
         from .routes import main  # Import and register blueprints

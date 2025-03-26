@@ -1,48 +1,39 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-async function createWindow() {
-  let isDev;
-  try {
-    isDev = await import('electron-is-dev').then(module => module.default);
-  } catch (error) {
-    console.error('Error importing electron-is-dev:', error);
-    isDev = false; // Default to false if import fails
-  }
+let mainWindow;
 
-  const win = new BrowserWindow({
+app.on('ready', () => {
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false, // Set to false for security
-      contextIsolation: true, // Enable context isolation
-      enableRemoteModule: false, // Disable remote module
-      preload: path.join(__dirname, 'renderer.js'), // Add preload script
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      preload: path.join(__dirname, 'renderer.js'),
     },
   });
 
-  win.loadURL(
-    isDev
-      ? 'http://localhost:3000/login' // Change this to load the login page directly
-      : `file://${path.join(__dirname, '../public/index.html')}`
-  );
+  mainWindow.loadURL('http://localhost:3000');
 
-  if (isDev) {
-    win.webContents.openDevTools();
-  }
-
-  // Add Content Security Policy
-  win.webContents.on('did-finish-load', () => {
-    win.webContents.executeJavaScript(`
-      const meta = document.createElement('meta');
-      meta.httpEquiv = 'Content-Security-Policy';
-      meta.content = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:5000;";
-      document.getElementsByTagName('head')[0].appendChild(meta);
-    `);
+  // Set a secure Content Security Policy
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; " +
+          "script-src 'self'; " +
+          "style-src 'self'; " +
+          "connect-src 'self' http://localhost:5001; " + // Allow connections to the backend
+          "img-src 'self'; " +
+          "font-src 'self';"
+        ],
+      },
+    });
   });
-}
-
-app.on('ready', createWindow);
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -52,6 +43,17 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    mainWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        enableRemoteModule: false,
+        preload: path.join(__dirname, 'renderer.js'),
+      },
+    });
+
+    mainWindow.loadURL('http://localhost:3000');
   }
 });
