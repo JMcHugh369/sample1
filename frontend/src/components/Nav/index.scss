@@ -1,4 +1,7 @@
 nav {
+
+    z-index: 999;
+
     display: flex;
     flex-direction: row;
 
@@ -30,5 +33,21 @@ nav {
     div:nth-of-type(3) {
         position: relative;
         left: 10vw;
+    }
+
+    .nav-left {
+        button {
+            margin-left: -25vw;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            background: rgb(241, 236, 227);
+            border: none;
+            border-radius: .5vh;
+            font-size: 5vh;
+            width: 5vw;
+        }
+    
+        button:active {
+            background: rgb(233, 228, 217);
+        }
     }
 }
