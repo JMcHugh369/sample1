@@ -36,7 +36,7 @@ async function createWindow() {
     win.webContents.executeJavaScript(`
       const meta = document.createElement('meta');
       meta.httpEquiv = 'Content-Security-Policy';
-      meta.content = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:5000;";
+      meta.content = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:3000;";
       document.getElementsByTagName('head')[0].appendChild(meta);
     `);
   });

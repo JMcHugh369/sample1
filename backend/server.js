@@ -4,7 +4,7 @@ const cors = require('cors');
 const pool = require('./db'); // Import the database connection
 
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json());
