@@ -1,0 +1,47 @@
+.signup {
+    width: 30vw;
+    margin-left: 35vw;
+    display: flex;
+    margin-top: 15vh;
+    border-radius: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    background: rgba(217, 208, 192, 0.624);
+
+    span {
+        color: red;
+    }
+
+    form {
+        padding: 2.5vh;
+        margin-bottom: 1vh;
+
+        input {
+            outline: none;
+            text-align: center;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+    }
+
+}
+
+.signup-btn {
+    button {
+        font-family: "Cinzel Decorative", serif;
+        font-weight: 700;
+        font-style: normal;
+        background: rgb(241, 236, 227);
+        border-radius: 2vh;
+        margin: 2vh;
+        padding: 2vh;
+        border: none;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        font-size: 2.5vh;
+    }
+    
+    button:active {
+        background: rgb(233, 228, 217);
+    }
+    
+}
