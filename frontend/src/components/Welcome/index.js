@@ -9,14 +9,17 @@ const Welcome = () => {
             <div class="welcome">
                 <p>Welcome, Adventurer!</p>
 
-                <button class="signup">
-                    Sign Up?
-                </button>
+                <div>
+                    <button class="signup">
+                        Sign Up?
+                    </button>
+                </div>
 
-                <button class="login">
-                    Log In?
-                </button>
-
+                <div>
+                    <button class="login">
+                        Log In?
+                    </button>
+                </div>
             </div>
         </>
     )
