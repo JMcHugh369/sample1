@@ -1,5 +1,6 @@
 import "./index.scss";
 import Nav from "../Nav";
+import GameView from "../GameView";
 import { useState, useEffect } from "react";
 import wizard from "../asset/prof-pics/wizard.png";
 import map from "../asset/gameside/minimap.png";
@@ -58,6 +59,7 @@ const DMView = () => {
     return (
         <>
             <Nav />
+            <GameView />
 
           
                 <div class="dm-side">
