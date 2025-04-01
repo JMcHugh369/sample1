@@ -1,5 +1,6 @@
 import "./index.scss";
 import Nav from "../Nav";
+import GameView from "../GameView";
 import wizard from "../asset/prof-pics/wizard.png"
 import str from "../asset/charsheet/str.png"
 import dex from "../asset/charsheet/dex.png"
@@ -28,6 +29,7 @@ const PlayerView = () => {
     return (
         <>
             <Nav />
+            <GameView />
 
             <main>
                 <div class="playerside">
