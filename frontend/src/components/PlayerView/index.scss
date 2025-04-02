@@ -370,6 +370,62 @@
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
         background: rgba(217, 208, 192, 0.624);
         overflow: scroll;
+
+        .currency-name {
+            display: flex;
+            position: absolute;
+            z-index: -1;
+            p {
+                padding-left: 1.5vw;
+                padding-right: .5vw;
+                font-size: 1.5vh;
+                margin-top: 4.4vh;
+                color:rgb(151, 133, 109);
+            }
+        }
+
+        .currency-img {
+            .platinum-img {
+                position: absolute;
+                z-index: -1;
+                height: 4.5vh;
+                width: 3vw;
+                margin-left: -6.7vw;
+                margin-top: .25vh;
+            }
+            .gold-img {
+                position: absolute;
+                z-index: -1;
+                height: 4.2vh;
+                width: 3vw;
+                margin-left: -4.1vw;
+                margin-top: .25vh;
+            }
+            .electrum-img {
+                position: absolute;
+                z-index: -1;
+                height: 4.2vh;
+                width: 2.5vw;
+                margin-left: -1.2vw;
+                margin-top: .25vh;
+            }
+            .silver-img {
+                position: absolute;
+                z-index: -1;
+                height: 5.5vh;
+                width: 3vw;
+                margin-top: -.7vh;
+                margin-left: 1.15vw;
+            }
+            .copper-img {
+                position: absolute;
+                z-index: -1;
+                height: 4.2vh;
+                width: 2.5vw;
+                margin-left: 4vw;
+                margin-top: .25vh;
+            }
+        }
     
         .currency {
             input {
