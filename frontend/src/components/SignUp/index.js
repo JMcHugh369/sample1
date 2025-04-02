@@ -1,7 +1,10 @@
 import "./index.scss";
 import Nav from "../Nav";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+    {/* function to move from page to page */}
+    const navigate = useNavigate();
     return (
         <>
             <Nav />
@@ -20,7 +23,7 @@ const SignUp = () => {
             </div>
 
             <div class="signup-btn">
-            <button>Begin Your Adventure!</button>
+            <button class="signup-button" onClick={() => navigate("/home")}>Begin Your Adventure!</button>
             </div>
 
         </>
