@@ -6,35 +6,26 @@
     margin-top: 10vh;
     margin-left: 50vw;
     overflow: scroll;
-
     z-index: 1;
-
 }
 
 .initiative-container {
     border-left: solid 1vh rgb(21, 4, 4);
     margin-top: 1vh;
-
     display: flex;
     flex-direction: column;
-
     width: 20vw;
-
     height: 30vh;
-
 }
 
 .initiative-item {
     background: rgb(97, 67, 49);
     margin-top: 1vh;
     width: 15vw;
-
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
         rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
     display: flex;
     flex-direction: row;
-
     padding: 1vh;
 
     button {
@@ -61,38 +52,38 @@
     height: 4vh;
     border: none;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
 }
 
 .initiative-add:active {
     background: rgb(233, 228, 217);
 }
 
+/* Map Component Styles */
 .map {
     background: rgb(37, 15, 4);
-
     height: 35vh;
     width: 45vh;
-
     padding: 2vh;
-
     display: flex;
-
     margin-top: -30vh;
-
     margin-left: 23vw;
+    position: relative;
 
     .map-up {
         height: 35vh;
         width: 35vh;
         margin-left: 2.5vw;
+        position: relative;
+        /* This helps with positioning tokens */
     }
+
     .map-expand {
         height: 5vh;
         width: 5vh;
         margin-top: -1vh;
         margin-left: .5vw;
         border-radius: 1vh;
+
         img {
             height: 5vh;
             width: 5vh;
@@ -101,6 +92,7 @@
             border-radius: 1vh;
         }
     }
+
     .map-log {
         height: 5vh;
         width: 5vh;
@@ -130,19 +122,445 @@
         }
     }
 
+    /* View Map Button - Shows on hover */
+    .view-map-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(241, 236, 227, 0.9);
+        color: rgb(37, 15, 4);
+        font-size: 2.5vh;
+        font-weight: bold;
+        padding: 1vh 2vh;
+        border: none;
+        border-radius: 1vh;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: all 0.2s ease;
+        z-index: 10;
+
+        &:hover {
+            background: rgba(241, 236, 227, 1);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        &:active {
+            background: rgb(233, 228, 217);
+            transform: translate(-50%, -50%) scale(0.98);
+        }
+    }
+
+    /* Small Map Tokens Container */
+    .small-map-tokens {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        /* Allows clicks to pass through to map */
+        z-index: 5;
+    }
+
+    /* Individual Small Map Tokens */
+    .small-map-token {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        /* Center the token at its position */
+        width: 3vh;
+        height: 3vh;
+        z-index: 6;
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Add colored borders based on token type for better visibility */
+        &[title="Character"] img {
+            border: 2px solid #4a9;
+        }
+
+        &[title="Monster"] img {
+            border: 2px solid #e44;
+        }
+
+        &[title="NPC"] img {
+            border: 2px solid #fc3;
+        }
+    }
 }
 
+/* Expanded Map Overlay */
+.map-expanded-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.map-expanded-container {
+    width: 90vw;
+    height: 80vh;
+    background: rgb(165, 154, 132);
+    border-radius: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Token Selector (Left Side) */
+.token-selector {
+    width: 20%;
+    background: rgb(97, 67, 49);
+    padding: 2vh;
+    overflow-y: auto;
+
+    h3 {
+        color: rgb(241, 236, 227);
+        text-align: center;
+        margin-bottom: 2vh;
+        font-family: "Cinzel Decorative", serif;
+    }
+
+    .token-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+    .token-item {
+        background: rgb(165, 154, 132);
+        border-radius: 1vh;
+        padding: 1vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+
+        &.selected {
+            background: rgb(228, 217, 197);
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+            transform: scale(1.05);
+            border: 2px solid rgb(97, 35, 4);
+        }
+
+        img {
+            width: 5vh;
+            height: 5vh;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        p {
+            margin-top: 1vh;
+            font-weight: bold;
+            color: rgb(37, 15, 4);
+        }
+    }
+}
+
+/* Expanded Map (Center) */
+.expanded-map {
+    width: 60%;
+    background: rgb(37, 15, 4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    .close-expanded-map {
+        position: absolute;
+        top: 2vh;
+        right: 2vh;
+        background: rgba(241, 236, 227, 0.8);
+        color: rgb(37, 15, 4);
+        border: none;
+        border-radius: 50%;
+        width: 4vh;
+        height: 4vh;
+        font-size: 2vh;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        z-index: 5;
+
+        &:hover {
+            background: rgba(241, 236, 227, 1);
+        }
+
+        &:active {
+            background: rgb(233, 228, 217);
+            transform: scale(0.95);
+        }
+    }
+
+    .debug-info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: black;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .map-container {
+        position: relative;
+        width: 90%;
+        height: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .map-large {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        object-fit: contain;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    }
+
+    /* Grid and Token Styles - Updated */
+    /* Container for both grid and tokens */
+    .grid-and-tokens-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        /* This allows clicks to pass through by default */
+    }
+
+    .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        pointer-events: none;
+        /* Grid itself doesn't capture clicks */
+    }
+
+    .grid-cell {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        pointer-events: auto;
+        /* Re-enable pointer events on cells */
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    }
+
+    .grid-coordinate {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        pointer-events: none;
+    }
+
+    /* Token highlight for better visibility on hover */
+    .token-highlight {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    /* UPDATED: Token styling for better clickability */
+    .placed-token {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        /* Center the token */
+        pointer-events: auto !important;
+        /* CRITICAL: Make sure tokens capture clicks */
+        z-index: 150 !important;
+        /* Above everything */
+        border-radius: 50%;
+        background-color: transparent;
+        overflow: visible;
+
+        /* Visible border for better visibility */
+        &::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        &:hover {
+            &::after {
+                border-color: rgba(255, 215, 0, 0.8);
+                /* Gold border on hover */
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        &:active {
+            transform: translate(-50%, -50%) scale(0.9);
+            /* Shrink when clicked */
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none !important;
+            /* CRITICAL: Images should never capture clicks */
+            object-fit: cover;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    .token-cursor {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 200;
+
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+    }
+}
+
+/* Map Settings (Right Side) */
+.map-settings {
+    width: 20%;
+    background: rgb(97, 67, 49);
+    padding: 2vh;
+
+    h3 {
+        color: rgb(241, 236, 227);
+        text-align: center;
+        margin-bottom: 2vh;
+        font-family: "Cinzel Decorative", serif;
+    }
+
+    .settings-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 3vh;
+    }
+
+    .setting-item {
+        background: rgb(165, 154, 132);
+        border-radius: 1vh;
+        padding: 1.5vh;
+
+        label {
+            display: block;
+            margin-bottom: 1vh;
+            font-weight: bold;
+            color: rgb(37, 15, 4);
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 1vh;
+            border: none;
+            border-radius: 0.5vh;
+            background: rgb(241, 236, 227);
+            box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+            cursor: pointer;
+
+            &:focus {
+                outline: none;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            }
+        }
+
+        .clear-tokens-btn {
+            width: 100%;
+            padding: 1vh;
+            background: rgb(241, 236, 227);
+            color: rgb(97, 35, 4);
+            border: none;
+            border-radius: 0.5vh;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+
+            &:hover {
+                background: rgb(230, 224, 213);
+            }
+
+            &:active {
+                background: rgb(218, 212, 200);
+                transform: translateY(1px);
+            }
+        }
+    }
+}
+
+.tokens-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Container doesn't capture clicks */
+    z-index: 100;
+    /* Above grid */
+}
+
+/* Keep the rest of the original styles */
 .token-info {
     display: inline-block;
     background: rgb(220, 213, 204);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
     width: 15vw;
     padding: .5vh;
     border-radius: 1vh;
     margin-left: 5vw;
     margin-top: -20vh;
-
     z-index: 999;
 
     button {
@@ -152,7 +570,6 @@
         border: none;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
     }
 
     button:active {
@@ -176,9 +593,7 @@
         font-size: 5vh;
         margin-top: -1vh;
     }
-
 }
-
 
 .chat {
     background: rgba(113, 57, 32, 0.421);
@@ -186,7 +601,6 @@
     height: 27.5vh;
     margin-left: .5vw;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    
 }
 
 .chat-up {
@@ -209,7 +623,6 @@
         border: none;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
     }
 
     button:active {
@@ -222,7 +635,8 @@
         button {
             margin-top: 18.5vh;
             margin-right: 2vw;
-        } 
+        }
+
         button:active {
             background: rgb(233, 228, 217);
         }
@@ -236,7 +650,6 @@
         margin-right: 0;
         height: 5vh;
     }
-
 }
 
 .dice {
@@ -246,14 +659,11 @@
     margin-left: 1vw;
     height: 10vh;
     width: 50vh;
-
     padding-left: .5vw;
     padding-right: .5vw;
     align-items: center;
     border-radius: 1vh;
-
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
 
     button {
         width: 3vw;
@@ -272,7 +682,6 @@
     a {
         z-index: 999;
     }
-
 }
 
 .notes {
@@ -295,7 +704,6 @@
         border-radius: 1vh;
         justify-content: center;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
     }
 
     button {
@@ -318,7 +726,6 @@
             background: rgb(241, 236, 227);
             box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
             height: 5vh;
-
         }
 
         button {
@@ -331,11 +738,11 @@
             background: rgb(230, 224, 213);
             box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
         }
+
         button:active {
             background: rgb(198, 194, 185);
         }
     }
-
 }
 
 .orb-chat {
@@ -343,4 +750,3 @@
     margin-left: -3.5vw;
     margin-top: -3vh;
 }
-
