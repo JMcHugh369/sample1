@@ -35,7 +35,14 @@
         background: rgb(233, 228, 217);
     }
 
-    .login {
+    .login, .signup {
         text-indent: 3vw;
+    }
+
+    .login:hover, .signup:hover {
+        background: rgb(255, 255, 237);
+        transform: scale(1.05);
+        box-shadow: rgba(0,0,0,0.2) 0px 5px 10px,
+            rgba(0,0,0,0.19) 0px 5px 10px;
     }
 }
