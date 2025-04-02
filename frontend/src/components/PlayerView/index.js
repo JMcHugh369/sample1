@@ -9,6 +9,7 @@ import int from "../asset/charsheet/int.png"
 import wis from "../asset/charsheet/wis.png"
 import cha from "../asset/charsheet/cha.png"
 import ac from "../asset/charsheet/ac.png"
+import perception from "../asset/charsheet/passive-perception.png"
 
 const PlayerView = () => {
 
@@ -64,6 +65,7 @@ const PlayerView = () => {
                             <img class="int-img" src={int} />
                             <img class="wis-img" src={wis} />
                             <img class="cha-img" src={cha} />
+                            <img class="percep-img" src={perception}
                         </div>
 
                         <form class="form-str">
