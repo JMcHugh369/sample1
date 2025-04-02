@@ -17,446 +17,452 @@
 
     position: absolute;
 
-    overflow: scroll;
-}
-
-.sheet-header {
-    display: flex;
-
-    margin-top: 1vh;
-    margin-left: 1vh;
+    z-index: 998;
 
     overflow: scroll;
 
-    img {
-        height: 7.5vh;
-        width: 7.5vh;
-        border-radius: 50vh;
-    }
-
-    input {
-        width: 10vw;
-        background: none;
-        outline: none;
-        font-size: 1.7vh;
-    }
-
-}
-
-.header2 {
-    display: flex;
-
-    margin-left: 9vw;
-    margin-top: -2vw;
-
-    input {
-        width: 15vw;
-        background: none;
-        outline: none;
-        font-size: 1.7vh;
-    }
-}
-
-.player {
-    display: inline-block;
-}
-
-.abilities {
-
-    .abil-img {
-        position: absolute;
-        z-index: 2;
+    .sheet-header {
         display: flex;
-        flex-direction: column;
-        margin-left: 1.5vw;
-    }
-
-    .dex-img {
-        margin-top: 9vh;
-    }
-
-    .con-img {
-        margin-top: 9vh;
-    }
-
-    .int-img {
-        margin-top: 9vh;
-    }
-
-    .wis-img {
-        margin-top: 9vh;
-    }
-
-    .cha-img {
-        margin-top: 9vh;
-    }
-
-    input {
-        width: 5vw;
-        background: none;
-        outline: none;
-        position: absolute;
-        z-index: 3;
-        text-align: center;
-    }
-
-    .form-str {
-        margin-top: -5vh;
-    }
-
-    .str {
-        margin-top: -2.5vh;
-        margin-left: -1vw;
-    }
-
-    .str-mod {
-        font-size: 2.5vh;
-        margin-left: -1vw;
-        margin-top: 1.5vh;
-    }
-
-    .dex {
-        margin-top: 8.5vh;
-        margin-left: -1vw;
-    }
-
-    .dex-mod {
-        font-size: 2.5vh;
-        margin-left: -1vw;
-        margin-top: 12.5vh;
-    }
-
-    .con {
-        margin-top: 19.5vh;
-        margin-left: -1vw;
-    }
-
-    .con-mod {
-        font-size: 2.5vh;
-        margin-left: -1vw;
-        margin-top: 23.5vh;
-    }
-
-    .int {
-        margin-top: 30.5vh;
-        margin-left: -1vw;
-    }
-
-    .int-mod {
-        font-size: 2.5vh;
-        margin-top: 34.5vh;
-        margin-left: -1vw;
-    }
-
-    .wis {
-        margin-top: 41.5vh;
-        margin-left: -1vw;
-    }
-
-    .wis-mod {
-        font-size: 2.5vh;
-        margin-top: 45.5vh;
-        margin-left: -1vw;
-    }
-
-    .cha {
-        margin-top: 52.5vh;
-        margin-left: -1vw;
-    }
-
-    .cha-mod {
-        font-size: 2.5vh;
-        margin-top: 56.5vh;
-        margin-left: -1vw;
-    }
-
-    img {
-        height: 20vh;
-        margin-bottom: -18vh;
-        z-index: -1;
-        margin-left: -4vw;
-    }
-
-    .passive-perception {
-        margin-top: 65vh;
-        margin-left: -2vh;
-        text-align: center;
-    }
-}
-
-.top-middle {
-    display: flex;
-    flex-direction: row;
-    text-align: center;
-
-    input {
-        background: none;
-        outline: none;
-    }
-
-    .ac {
-        position: absolute;
-        z-index: 3;
-        margin-left: 7.5vw;
-        margin-top: -1vh;
-    }
-
-    .ac-img {
-        width: 15vw;
-        position: absolute;
-        z-index: 2;
-        margin-left: 2vw;
-        margin-top: -2vh;
-    }
-
-    .init {
-        position: absolute;
-        z-index: 3;
-        margin-left: 2vw;
-        margin-top: -1vh;
-    }
-
-    .spd {
-        position: absolute;
-        z-index: 3;
-        margin-left: -4vw;
-        margin-top: -1vh;
-    }
-
-    .inspiration {
-        position: absolute;
-        z-index: 3;
-        margin-left: -10vw;
-        margin-top: 5.5vh;
-        width: 2.5vh;
-        height: 2.5vh;
-    }
-
-}
-
-.skills {
-    margin-top: 13vh;
-    margin-left: 4.5vw;
-    text-align: left;
-    font-size: 1.3vh;
-    line-height: 3vh;
-    width: 15vw;
-}
-
-.center-center {
-
-    border-radius: 1vh;
-
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
-    background: rgba(217, 208, 192, 0.624);
-    width: 10vw;
-
-    margin-left: 20.5vw;
-
-    margin-top: -55vh;
-
-    .hp-container {
-        input {
-            width: 3vw;
-            text-align: center;
-            background: none;
+    
+        margin-top: 1vh;
+        margin-left: 1vh;
+    
+        img {
+            height: 7.5vh;
+            width: 7.5vh;
+            border-radius: 50vh;
         }
-
-        .temp-hp {
-            background: none;
-        }
-    }
-
-    .center-other {
+    
         input {
             width: 10vw;
-            overflow: scroll;
-            display: flex;
-            font-size: 1.5vh;
-            text-align: center;
             background: none;
+            outline: none;
+            font-size: 1.7vh;
+        }
+    
+    }
+    
+    .header2 {
+        display: flex;
+    
+        margin-left: 9vw;
+        margin-top: -2vw;
+    
+        input {
+            width: 15vw;
+            background: none;
+            outline: none;
+            font-size: 1.7vh;
         }
     }
-}
-
-.bottom-center {
-
-    position: absolute;
-    z-index: 5;
-
-    border-radius: 1vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    background: rgba(217, 208, 192, 0.624);
-    width: 15vw;
-    margin-left: 18vw;
-    margin-top: 1vh;
-    overflow: scroll;
-    padding: .5vh;
-
-    button {
-        font-family: "Cinzel Decorative", serif;
-        font-weight: 700;
-        font-style: normal;
-        background: rgb(241, 236, 227);
-        border-radius: .5vh;
-        margin: .5vh;
-        border: none;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-            rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        font-size: 1.5vh;
+    
+    .player {
+        display: inline-block;
     }
+    
+    .abilities {
+    
+        .abil-img {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            margin-left: 1.5vw;
+        }
+    
+        .dex-img {
+            margin-top: 9vh;
+        }
+    
+        .con-img {
+            margin-top: 9vh;
+        }
+    
+        .int-img {
+            margin-top: 9vh;
+        }
+    
+        .wis-img {
+            margin-top: 9vh;
+        }
+    
+        .cha-img {
+            margin-top: 9vh;
+        }
 
-    button:active {
-        background: rgb(233, 228, 217);
-    }
-
-    .add-actions {
-        font-size: 2vh;
-        width: 1.5vw;
-        padding: 0;
-    }
-    .add-spells {
-        font-size: 2vh;
-        width: 1.5vw;
-        padding: 0;
-    }
-    .add-features {
-        font-size: 2vh;
-        width: 1.5vw;
-        padding: 0;
-    }
-    .add-traits {
-        font-size: 2vh;
-        width: 1.5vw;
-        padding: 0;
-    }
-
-    h3 {
-        font-size: 1.5vh;
-        font-weight: 800;
-        text-align: left;
-        margin-left: .5vw;
-
-    }
-
-    p {
-        font-size: 1.5vh;
-    }
-}
-
-.tabcontent {
-    display: none;
-  }
-
-.inventory-container {
-
-    position: absolute;
-    z-index: 7;
-    width: 14vw;
-    height: 30vh;
-    margin-left: 34.5vw;
-    margin-top: -30vh;
-    padding: .5vh;
-
-    border-radius: 1vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    background: rgba(217, 208, 192, 0.624);
-    overflow: scroll;
-
-    .currency {
+        .percep-img {
+            margin-top: 9vh;
+        }
+    
         input {
-            width: 2.3vw;
-            font-size: 1.5vh;
+            width: 5vw;
+            background: none;
+            outline: none;
+            position: absolute;
+            z-index: 3;
             text-align: center;
-            margin-left: .25vw;
-            margin-right: .25vw;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+    
+        .form-str {
+            margin-top: -5vh;
+        }
+    
+        .str {
+            margin-top: -2.5vh;
+            margin-left: -1vw;
+        }
+    
+        .str-mod {
+            font-size: 2.5vh;
+            margin-left: -1vw;
+            margin-top: 1.5vh;
+        }
+    
+        .dex {
+            margin-top: 8.5vh;
+            margin-left: -1vw;
+        }
+    
+        .dex-mod {
+            font-size: 2.5vh;
+            margin-left: -1vw;
+            margin-top: 12.5vh;
+        }
+    
+        .con {
+            margin-top: 19.5vh;
+            margin-left: -1vw;
+        }
+    
+        .con-mod {
+            font-size: 2.5vh;
+            margin-left: -1vw;
+            margin-top: 23.5vh;
+        }
+    
+        .int {
+            margin-top: 30.5vh;
+            margin-left: -1vw;
+        }
+    
+        .int-mod {
+            font-size: 2.5vh;
+            margin-top: 34.5vh;
+            margin-left: -1vw;
+        }
+    
+        .wis {
+            margin-top: 41.5vh;
+            margin-left: -1vw;
+        }
+    
+        .wis-mod {
+            font-size: 2.5vh;
+            margin-top: 45.5vh;
+            margin-left: -1vw;
+        }
+    
+        .cha {
+            margin-top: 52.5vh;
+            margin-left: -1vw;
+        }
+    
+        .cha-mod {
+            font-size: 2.5vh;
+            margin-top: 56.5vh;
+            margin-left: -1vw;
+        }
+    
+        img {
+            height: 20vh;
+            margin-bottom: -18vh;
+            z-index: -1;
+            margin-left: -4vw;
+        }
+    
+        .passive-perception {
+            margin-top: 64.5vh;
+            margin-left: -2vh;
+            text-align: center;
+            font-size: 3vh;
+        }
+    }
+    
+    .top-middle {
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+    
+        input {
+            background: none;
             outline: none;
         }
+    
+        .ac {
+            position: absolute;
+            z-index: 3;
+            margin-left: 7.5vw;
+            margin-top: -1vh;
+        }
+    
+        .ac-img {
+            width: 15vw;
+            position: absolute;
+            z-index: 2;
+            margin-left: 2vw;
+            margin-top: -2vh;
+        }
+    
+        .init {
+            position: absolute;
+            z-index: 3;
+            margin-left: 2vw;
+            margin-top: -1vh;
+        }
+    
+        .spd {
+            position: absolute;
+            z-index: 3;
+            margin-left: -4vw;
+            margin-top: -1vh;
+        }
+    
+        .inspiration {
+            position: absolute;
+            z-index: 3;
+            margin-left: -10vw;
+            margin-top: 5.5vh;
+            width: 2.5vh;
+            height: 2.5vh;
+        }
+    
     }
-
-    button {
-        font-family: "Cinzel Decorative", serif;
-        font-weight: 800;
-        font-style: normal;
-        background: rgb(241, 236, 227);
-        border-radius: .5vh;
-        margin: .5vh;
-        border: none;
+    
+    .skills {
+        margin-top: 13vh;
+        margin-left: 4.5vw;
+        text-align: left;
+        font-size: 1.3vh;
+        line-height: 3vh;
+        width: 15vw;
+    }
+    
+    .center-center {
+    
+        border-radius: 1vh;
+    
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        font-size: 2vh;
-        width: 1.5vw;
+    
+        background: rgba(217, 208, 192, 0.624);
+        width: 10vw;
+    
+        margin-left: 20.5vw;
+    
+        margin-top: -55vh;
+    
+        .hp-container {
+            input {
+                width: 3vw;
+                text-align: center;
+                background: none;
+            }
+    
+            .temp-hp {
+                background: none;
+            }
+        }
+    
+        .center-other {
+            input {
+                width: 10vw;
+                overflow: scroll;
+                display: flex;
+                font-size: 1.5vh;
+                text-align: center;
+                background: none;
+            }
+        }
     }
-
-    button:active {
-        background: rgb(233, 228, 217);
-    }
-}
-
-.feature-container {
-    position: absolute;
-    z-index: 7;
-    background: red;
-    width: 14vw;
-    height: 30vh;
-    border-radius: 1vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    background: rgba(217, 208, 192, 0.624);
-    overflow: scroll;
-    margin-left: 34.25vw;
-    margin-top: 2vh;
-    width: 15vw;
-    padding-bottom: 1vh;
-
-    button {
-        font-family: "Cinzel Decorative", serif;
-        font-weight: 800;
-        font-style: normal;
-        background: rgb(241, 236, 227);
-        border-radius: .5vh;
-        margin: .5vh;
-        border: none;
+    
+    .bottom-center {
+    
+        position: absolute;
+        z-index: 5;
+    
+        border-radius: 1vh;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        font-size: 2vh;
-        width: 1.5vw;
-    }
-
-    button:active {
-        background: rgb(233, 228, 217);
-    }
-}
-
-.char-notes {
-
-    position: absolute;
-    z-index: 7;
-    background: red;
-    width: 14vw;
-    height: 15vh;
-    border-radius: 1vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    background: rgba(217, 208, 192, 0.624);
-    overflow: scroll;
-    margin-left: 34.25vw;
-    margin-top: 34vh;
-    width: 15vw;
-    font-size: 1.5vh;
-
-    .notes {
-        width: 14vw;
-        height: 5vh;
+        background: rgba(217, 208, 192, 0.624);
+        width: 15vw;
+        margin-left: 18vw;
+        margin-top: 1vh;
         overflow: scroll;
-        margin-top: 4vh;
+        padding: .5vh;
+    
+        button {
+            font-family: "Cinzel Decorative", serif;
+            font-weight: 700;
+            font-style: normal;
+            background: rgb(241, 236, 227);
+            border-radius: .5vh;
+            margin: .5vh;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            font-size: 1.5vh;
+        }
+    
+        button:active {
+            background: rgb(233, 228, 217);
+        }
+    
+        .add-actions {
+            font-size: 2vh;
+            width: 1.5vw;
+            padding: 0;
+        }
+        .add-spells {
+            font-size: 2vh;
+            width: 1.5vw;
+            padding: 0;
+        }
+        .add-features {
+            font-size: 2vh;
+            width: 1.5vw;
+            padding: 0;
+        }
+        .add-traits {
+            font-size: 2vh;
+            width: 1.5vw;
+            padding: 0;
+        }
+    
+        h3 {
+            font-size: 1.5vh;
+            font-weight: 800;
+            text-align: left;
+            margin-left: .5vw;
+    
+        }
+    
+        p {
+            font-size: 1.5vh;
+        }
+    }
+    
+    .tabcontent {
+        display: none;
+      }
+    
+    .inventory-container {
+    
+        position: absolute;
+        z-index: 7;
+        width: 14vw;
+        height: 30vh;
+        margin-left: 34.5vw;
+        margin-top: -30vh;
+        padding: .5vh;
+    
+        border-radius: 1vh;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        background: rgba(217, 208, 192, 0.624);
+        overflow: scroll;
+    
+        .currency {
+            input {
+                width: 2.3vw;
+                font-size: 1.5vh;
+                text-align: center;
+                margin-left: .25vw;
+                margin-right: .25vw;
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+                outline: none;
+            }
+        }
+    
+        button {
+            font-family: "Cinzel Decorative", serif;
+            font-weight: 800;
+            font-style: normal;
+            background: rgb(241, 236, 227);
+            border-radius: .5vh;
+            margin: .5vh;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            font-size: 2vh;
+            width: 1.5vw;
+        }
+    
+        button:active {
+            background: rgb(233, 228, 217);
+        }
+    }
+    
+    .feature-container {
+        position: absolute;
+        z-index: 7;
+        background: red;
+        width: 14vw;
+        height: 30vh;
+        border-radius: 1vh;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        background: rgba(217, 208, 192, 0.624);
+        overflow: scroll;
+        margin-left: 34.25vw;
+        margin-top: 2vh;
+        width: 15vw;
+        padding-bottom: 1vh;
+    
+        button {
+            font-family: "Cinzel Decorative", serif;
+            font-weight: 800;
+            font-style: normal;
+            background: rgb(241, 236, 227);
+            border-radius: .5vh;
+            margin: .5vh;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            font-size: 2vh;
+            width: 1.5vw;
+        }
+    
+        button:active {
+            background: rgb(233, 228, 217);
+        }
+    }
+    
+    .char-notes {
+    
+        position: absolute;
+        z-index: 7;
+        background: red;
+        width: 14vw;
+        height: 15vh;
+        border-radius: 1vh;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        background: rgba(217, 208, 192, 0.624);
+        overflow: scroll;
+        margin-left: 34.25vw;
+        margin-top: 34vh;
+        width: 15vw;
         font-size: 1.5vh;
-        padding-left: .5vw;
+    
+        .notes {
+            width: 14vw;
+            height: 5vh;
+            overflow: scroll;
+            margin-top: 4vh;
+            font-size: 1.5vh;
+            padding-left: .5vw;
+        }
     }
 }
+
