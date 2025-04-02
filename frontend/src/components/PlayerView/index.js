@@ -10,6 +10,12 @@ import wis from "../asset/charsheet/wis.png"
 import cha from "../asset/charsheet/cha.png"
 import ac from "../asset/charsheet/ac.png"
 import perception from "../asset/charsheet/passive-perception.png"
+import gold from "../asset/charsheet/gold.png"
+import silver from "../asset/charsheet/silver.png"
+import copper from "../asset/charsheet/copper.png"
+import platinum from "../asset/charsheet/platinum.png"
+import electrum from "../asset/charsheet/electrum.png"
+
 
 const PlayerView = () => {
 
@@ -196,6 +202,20 @@ const PlayerView = () => {
                     </div>
 
                     <div class="inventory-container">
+                      <div class="currency-img">
+                            <img class="platinum-img" src={platinum} />
+                            <img class="gold-img" src={gold} />
+                            <img class="electrum-img" src={electrum} />
+                            <img class="silver-img" src={silver} />
+                            <img class="copper-img" src={copper} />
+                        </div>
+                        <div class="currency-name">
+                            <p>P</p>
+                            <p>G</p>
+                            <p>E</p>
+                            <p>S</p>
+                            <p>C</p>
+                        </div>
                         <div class="currency">
                             <input type="text" class="platinum" placeholder="0" />
                             <input type="text" class="gold" placeholder="0" />
