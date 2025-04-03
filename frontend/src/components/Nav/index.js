@@ -12,6 +12,7 @@ const Nav = () => {
     //Next to the back button when you're in a campaign should be the option to save the data currently on your side (dm or player side)
     //and to save the gameview data (where the tokens are, the map, the initiative, the notes, the messages, etc.
                 <div className={"nav-center"}><img src={logogrung}/></div>
+    //Clicking the profile picture on the far right should open up the user settings sidebar, which I need to implement.
                 <div className={"nav-right"}><img src={adventurer}/></div>
             </nav>
         </>
