@@ -203,11 +203,14 @@ const GameView = () => {
 
             <main>
                 <div className="gameside">
+        //The initiative area should let users add a new initiative-block and add a name for the new initiative character/monster/npc
+        //They should also be able to click on one of the initiative blocks to highlight it / make it bigger to show whose turn it is in the initiative
                     <div className="initiative-container">
                         <div className="initiative-item">
                             <img className="initiative-block" src="" />
                             <img className="initiative-prof-pic" src="" />
                             <span>Character 1</span>
+        //They should also be able to delete a character/monster/npc from initiative
                             <button className="initiative-delete">-</button>
                         </div>
                         <div className="initiative-new">
@@ -216,6 +219,7 @@ const GameView = () => {
                         </div>
                     </div>
 
+        //for the map, the dm should be allowed to choose which map is displayed, from their list of maps on the left (the dmside)
                     <div
                         className="map"
                         onMouseEnter={() => setShowMapButton(true)}
@@ -327,6 +331,9 @@ const GameView = () => {
                                             }}
                                         />
 
+                                                //the dm should also be able to select tokens based on the player characters/npcs/monsters 
+                                                //that they can see/create on dmside (Note: dms can't create player characters)
+                                                //When a token is hovered over, it should display the info like name and hp
                                         {/* Grid overlay and tokens container */}
                                         <div
                                             className="grid-and-tokens-container"
@@ -474,6 +481,10 @@ const GameView = () => {
                         <p>HP: 99</p>
                     </div>
 
+                        //The last 100 dice rolls should appear here, with users scrolling up to see the past ones and the most recent one
+                        //displayed at the bottom.  They should also be able to tell which user rolled the die.  If it's the dm, maybe
+                        //it could display "DM Rolled: " and then the roll.  For players, something like "Callie Rolled: 9" for example.
+                        //It would also be nice to show the image of the die that was rolled, we can deal with that when the dice assets are up.
                     <div className="gamelog">
                         <p>\Character\ Rolled: </p>
                         <p id="testd4"> </p>
@@ -488,6 +499,11 @@ const GameView = () => {
                                 <img className="player2-chat" src="" />
                             </div>
 
+                        //For the chat: The crystal ball will contain the names in a vertical row of all the players and the dm
+                        //(except the player currently viewing it, they cannot message themself after all.  When they hover over a name,
+                        //It should get bigger and "glow", and clicking on it will make the message section slide out from behind the orb
+                        //(currently it's already displayed out)
+                        //The chat should let users send messages, and display the last 100 messages.
                             <div className="chat-up">
                                 <button className="chat-minimize">-</button>
                                 <form>
@@ -497,6 +513,14 @@ const GameView = () => {
                             </div>
                         </div>
 
+                        //Notes: When no notes are selected, the bottom "note-open" should not be visble.  When a note tab (either
+                        //public, private, or dm) is selected, it should move to the bottom and the note-open should be displayed under it.
+                        //The user should be able to input notes into the input, and have the notes be displayed above the input, showing all
+                        //the notes ever written in that section.
+                        //Private notes should only be readable and writable to the player writing them.
+                        //DM notes should be readable to everyone but only the DM can write them.
+                        //Public notes are shared amongst everyone, everyone can read them and write them.
+                        //If someone can write to a note section, they should be able to delete from it as well.
                         <div className="notes">
                             <div className="public-notes">
                                 <button>
@@ -520,7 +544,7 @@ const GameView = () => {
                             </div>
                         </div>
                     </div>
-
+//Dice rolls the dice.  These rolls need to be saved.
                     <div className="dice">
                         <button className="d4"
                             onClick={
