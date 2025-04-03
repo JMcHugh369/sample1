@@ -68,6 +68,10 @@ const DMView = () => {
                 <div class="dm-side">
                     <div class="monsters">
                         <div>
+        //The Dm should be able to add monsters with the add monsters button, and on clicking this button, a new monster token to the right
+        //Will appear, and the view-monster tab should appear.  When the minimize button is clicked on the view-monster tab, it should disappear.
+        //It should be hidden by default.  The user can edit info about the monster there, including the monster's image, which will show up on
+        //The monster's token.  The npcs class has the same concept, and really all that's different is that it will say "NPC instead of "Monster".
                             <p>Monsters</p>
                             <img class="img-frame" src=""></img>
                             <img class="dm-token-img" src=""></img>
@@ -199,14 +203,15 @@ const DMView = () => {
                             Challenge <input type="text" name="monster-challenge" placeholder="Add Challenge Rating..."/>
                             </div>
                         </form>
-
+//The + button for monster-abilities should add input field for Name and Description for the user to fill out.  Just like how the player can
+                                //add multiple abilities etc., the monster or npc can have as many abilities as the user wants.
                         <form class="monster-abilities">
                             <p>Abilities</p>
                             <input type="text" name="monster-ability-name" placholder="Name..."/>
                             <input type="text" name="monster-ability" placholder="Descr..." />
                             <button id="new-monster-ability">+</button>
                         </form>
-
+//Same concept for Actions and Reactions, with an input field for Name and Description when the + button is clicked.
                         <h1>Actions</h1>
                         <form class="monster-actions-form">
                             <input type="text" name="monster-action-name" placeholder="Name..." />
@@ -222,11 +227,15 @@ const DMView = () => {
                         </form>
 
                     </div>
-
+//There should be as many view-pc icons as player characters, with each image correlating to that player's character's image.
+                                //clicking on a player icon will display a mini version of the character sheet that the dm can expand to
+                                //look at, and minimize.
                     <div class="view-pc">
 
                     </div>
-
+//view-map is a bit of a misnomer, it's an add map button allowing the dm to add map images.  They should display to the right of the add
+                            //button.  Clicking on a map should maximize it for the dm, and they should be allowed to delete it from there,
+                                //or minimize.
                     <div class="view-map">
 
                     </div>
