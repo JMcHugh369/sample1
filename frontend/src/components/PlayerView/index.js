@@ -43,6 +43,8 @@ const PlayerView = () => {
                     <header class="sheet-header">
                         <img class="sheet-pc-image" src={adventurer} />
         //The character name, level, species, class, and background should all be saved and displayed here if already saved.
+
+        //Clicking on the sheet-pc-image icon should allow the user to change the image of the icon.
                         <form>
                             <input type="text" class="char-name" placeholder="Name..." />
                         </form>
