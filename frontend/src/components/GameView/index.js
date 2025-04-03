@@ -504,6 +504,7 @@ const GameView = () => {
                         //It should get bigger and "glow", and clicking on it will make the message section slide out from behind the orb
                         //(currently it's already displayed out)
                         //The chat should let users send messages, and display the last 100 messages.
+                        //you can scroll up to see the chat log
                             <div className="chat-up">
                                 <button className="chat-minimize">-</button>
                                 <form>
@@ -521,6 +522,7 @@ const GameView = () => {
                         //DM notes should be readable to everyone but only the DM can write them.
                         //Public notes are shared amongst everyone, everyone can read them and write them.
                         //If someone can write to a note section, they should be able to delete from it as well.
+                        //You can scroll up to see the previous notes in the notes section selected.
                         <div className="notes">
                             <div className="public-notes">
                                 <button>
