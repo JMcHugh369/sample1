@@ -4,6 +4,9 @@ import GameView from "../GameView";
 import { useState, useEffect } from "react";
 import wizard from "../asset/prof-pics/wizard.png";
 import map from "../asset/gameside/minimap.png";
+import adventurer from "../asset/dmside/adventurer.png";
+import addmonster from "../asset/dmside/add-monster.png";
+import addnpc from "../asset/dmside/add-npc.png";
 
 const DMView = () => {
 
@@ -74,7 +77,7 @@ const DMView = () => {
                                     upMonster();
                                 }
                             }
-                            ><img class="add-monster-img" src={wizard} />
+                            ><img class="add-monster-img" src={addmonster} />
                             </button>
                         </div>
                     </div>
@@ -90,7 +93,7 @@ const DMView = () => {
                                         addNPC();
                                     }
                                 }
-                            ><img class="add-npc-img" src={wizard} />
+                            ><img class="add-npc-img" src={addnpc} />
                             </button>
                         </div>
                     </div>
@@ -105,7 +108,7 @@ const DMView = () => {
                                         viewPC();
                                     }
                                 }
-                            ><img class="view-pc-img" src={wizard} />
+                            ><img class="view-pc-img" src={adventurer} />
                             </button>
                         </div>
                     </div>
