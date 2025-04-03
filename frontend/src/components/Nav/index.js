@@ -7,7 +7,10 @@ const Nav = () => {
     return (
         <>
             <nav>
+        //We should make sure we have functionality for the back button for Nav, and that the back button doesn't show up at Welcome.
                 <div className={"nav-left"}><button>&larr;</button></div>
+    //Next to the back button when you're in a campaign should be the option to save the data currently on your side (dm or player side)
+    //and to save the gameview data (where the tokens are, the map, the initiative, the notes, the messages, etc.
                 <div className={"nav-center"}><img src={logogrung}/></div>
                 <div className={"nav-right"}><img src={adventurer}/></div>
             </nav>
