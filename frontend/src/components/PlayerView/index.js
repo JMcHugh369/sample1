@@ -1,21 +1,21 @@
 import "./index.scss";
 import Nav from "../Nav";
 import GameView from "../GameView";
-import wizard from "../asset/prof-pics/wizard.png"
-import str from "../asset/charsheet/str.png"
-import dex from "../asset/charsheet/dex.png"
-import con from "../asset/charsheet/con.png"
-import int from "../asset/charsheet/int.png"
-import wis from "../asset/charsheet/wis.png"
-import cha from "../asset/charsheet/cha.png"
-import ac from "../asset/charsheet/ac.png"
-import perception from "../asset/charsheet/passive-perception.png"
-import gold from "../asset/charsheet/gold.png"
-import silver from "../asset/charsheet/silver.png"
-import copper from "../asset/charsheet/copper.png"
-import platinum from "../asset/charsheet/platinum.png"
-import electrum from "../asset/charsheet/electrum.png"
-
+import wizard from "../asset/prof-pics/wizard.png";
+import str from "../asset/charsheet/str.png";
+import dex from "../asset/charsheet/dex.png";
+import con from "../asset/charsheet/con.png";
+import int from "../asset/charsheet/int.png";
+import wis from "../asset/charsheet/wis.png";
+import cha from "../asset/charsheet/cha.png";
+import ac from "../asset/charsheet/ac.png";
+import perception from "../asset/charsheet/passive-perception.png";
+import gold from "../asset/charsheet/gold.png";
+import silver from "../asset/charsheet/silver.png";
+import copper from "../asset/charsheet/copper.png";
+import platinum from "../asset/charsheet/platinum.png";
+import electrum from "../asset/charsheet/electrum.png";
+import adventurer from "../asset/dmside/adventurer.png";
 
 const PlayerView = () => {
 
@@ -41,7 +41,8 @@ const PlayerView = () => {
             <main>
                 <div class="playerside">
                     <header class="sheet-header">
-                        <img class="sheet-pc-image" src={wizard} />
+                        <img class="sheet-pc-image" src={adventurer} />
+        //The character name, level, species, class, and background should all be saved and displayed here if already saved.
                         <form>
                             <input type="text" class="char-name" placeholder="Name..." />
                         </form>
@@ -62,7 +63,7 @@ const PlayerView = () => {
                     </div>
 
 
-
+//Abilities should also be saved and displayed if saved.  Anything in the sheet that's already saved should be displayed as it was last saved.
                     <sidebar class="abilities">
                         <div class="abil-img">
                             <img class="str-img" src={str} />
@@ -169,7 +170,8 @@ const PlayerView = () => {
                     </div>
 
                     <div class="bottom-center">
-
+//On the click of one of these buttons, it should show the tab contents.  So, Actions should show the Actions tabcontent, Spells should
+        //show Spells, etc.
                         <div class="tab">
                             <button class="tablinks" onclick="openTab(event, 'Actions')">Actions</button>
                             <button class="tablinks" onclick="openTab(event, 'Spells')">Spells</button>
@@ -180,7 +182,7 @@ const PlayerView = () => {
                         <div id="Actions" class="tabcontent">
                             <h3>Actions</h3>
                             <button class="add-actions">+</button>
-
+//when the + button is pressed, it should add a new input field for Name and Description.  For this, as well as Spells, Features, Traits.
                         </div>
 
                         <div id="Spells" class="tabcontent">
@@ -200,7 +202,7 @@ const PlayerView = () => {
 
 
                     </div>
-
+        
                     <div class="inventory-container">
                       <div class="currency-img">
                             <img class="platinum-img" src={platinum} />
@@ -223,11 +225,14 @@ const PlayerView = () => {
                             <input type="text" class="silver" placeholder="0" />
                             <input type="text" class="copper" placeholder="0" />
                         </div>
+        //when the + button is pressed, it should add a new input field for Name and Description for the inventory item.
                         <p>Inventory</p>
                         <button class="add-features">+</button>
-
+        
                     </div>
 
+        //when the + button is pressed, it should add a new input field for Name and Description for the Features/Traits, the Background,
+        //and the Extra.
                     <div class="feature-container">
                         <p>Features/Traits</p>
                         <button class="add-features">+</button>
@@ -239,6 +244,8 @@ const PlayerView = () => {
                     </div>
 
                     <div class="char-notes">
+        //The character notes will act similarly to the notes on the right (gameview), with notes being added by the player to be
+        //displayed above the input.  All character notes will be saved, and they can scroll up to view the previous notes.
                         <p>Character Notes</p>
                         <input type="text" class="notes" placeholder="Notes..." />
 
