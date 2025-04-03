@@ -17,7 +17,7 @@
 
     position: absolute;
 
-    z-index: 998;
+    z-index: 99;
 
     overflow: scroll;
 
@@ -38,6 +38,8 @@
             background: none;
             outline: none;
             font-size: 1.7vh;
+
+            text-align: center;
         }
     
     }
@@ -53,6 +55,8 @@
             background: none;
             outline: none;
             font-size: 1.7vh;
+
+            text-align: center;
         }
     }
     
@@ -61,37 +65,54 @@
     }
     
     .abilities {
-    
+
         .abil-img {
             position: absolute;
             z-index: 2;
             display: flex;
             flex-direction: column;
-            margin-left: 1.5vw;
+            margin-left: 4.5vw;
         }
     
+        .str-img {
+            height: 10vh;
+            width: 10vh;
+            margin-top: 2vh;
+
+        }
         .dex-img {
-            margin-top: 9vh;
+            height: 10vh;
+            width: 10vh;
+            margin-top: 18vh;
         }
     
         .con-img {
-            margin-top: 9vh;
+            height: 10vh;
+            width: 10vh;
+            margin-top: 18vh;
         }
     
         .int-img {
-            margin-top: 9vh;
+            height: 10vh;
+            width: 10vh;
+            margin-top: 18vh;
         }
     
         .wis-img {
-            margin-top: 9vh;
+            height: 10vh;
+            width: 10vh;
+            margin-top: 18vh;
         }
     
         .cha-img {
-            margin-top: 9vh;
+            height: 10vh;
+            width: 10vh;
+            margin-top: 18vh;
         }
 
         .percep-img {
-            margin-top: 9vh;
+            margin-top: 18vh;
+            margin-left: -6.7vw;
         }
     
         input {
@@ -108,69 +129,94 @@
         }
     
         .str {
-            margin-top: -2.5vh;
-            margin-left: -1vw;
+            margin-top: -4vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
+
     
         .str-mod {
             font-size: 2.5vh;
-            margin-left: -1vw;
-            margin-top: 1.5vh;
+            margin-left: -.8vw;
+            margin-top: 0vh;
+            width: 10vh;
+            height: 5vh;
         }
     
         .dex {
-            margin-top: 8.5vh;
-            margin-left: -1vw;
+            margin-top: 6vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .dex-mod {
             font-size: 2.5vh;
-            margin-left: -1vw;
-            margin-top: 12.5vh;
+            margin-left: -.8vw;
+            margin-top: 10vh;
+            width: 10vh;
+            height: 5vh;
         }
     
         .con {
-            margin-top: 19.5vh;
-            margin-left: -1vw;
+            margin-top: 16vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .con-mod {
             font-size: 2.5vh;
-            margin-left: -1vw;
-            margin-top: 23.5vh;
+            margin-left: -.8vw;
+            margin-top: 20vh;
+            width: 10vh;
+            height: 5vh;
         }
     
         .int {
-            margin-top: 30.5vh;
-            margin-left: -1vw;
+            margin-top: 26vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .int-mod {
             font-size: 2.5vh;
-            margin-top: 34.5vh;
-            margin-left: -1vw;
+            margin-top: 30vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .wis {
-            margin-top: 41.5vh;
-            margin-left: -1vw;
+            margin-top: 36vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .wis-mod {
             font-size: 2.5vh;
-            margin-top: 45.5vh;
-            margin-left: -1vw;
+            margin-top: 40vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .cha {
-            margin-top: 52.5vh;
-            margin-left: -1vw;
+            margin-top: 46vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         .cha-mod {
             font-size: 2.5vh;
-            margin-top: 56.5vh;
-            margin-left: -1vw;
+            margin-top: 50vh;
+            margin-left: -.8vw;
+            width: 10vh;
+            height: 5vh;
         }
     
         img {
@@ -181,10 +227,12 @@
         }
     
         .passive-perception {
-            margin-top: 64.5vh;
-            margin-left: -2vh;
+            margin-top: 60vh;
+            margin-left: -1.8vh;
             text-align: center;
             font-size: 3vh;
+            width: 10vh;
+            height: 5vh;
         }
     }
     
@@ -429,13 +477,12 @@
     
         .currency {
             input {
-                width: 2.2vw;
+                width: 2.1vw;
                 font-size: 1.5vh;
                 text-align: center;
                 margin-left: .25vw;
                 margin-right: .25vw;
-                box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+                background: none;
                 outline: none;
             }
         }
@@ -521,4 +568,3 @@
         }
     }
 }
-
