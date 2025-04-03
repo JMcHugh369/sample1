@@ -57,16 +57,19 @@ form {
 
     margin-left: 1vw;
 
-    outline: none;
+    border: none;
+    background: none;
 
     align-items: center;
   }
 
   .add-monster-img {
-    height: 15.5vh;
-    width: 15.5vh;
+    height: 15vh;
+    width: 15vh;
     border-radius: 50vh;
     outline: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
   }
 }
 
@@ -92,7 +95,8 @@ form {
 
     margin-left: 1vw;
 
-    outline: none;
+    border: none;
+    background: none;
 
     align-items: center;
   }
@@ -103,6 +107,8 @@ form {
     border-radius: 50vh;
     outline: none;
     margin-top: 0;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
   }
 }
 
@@ -128,7 +134,8 @@ form {
 
     margin-left: 1vw;
 
-    outline: none;
+    border: none;
+    background: none;
 
     align-items: center;
   }
@@ -138,6 +145,8 @@ form {
     width: 15.5vh;
     border-radius: 50vh;
     outline: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
   }
 }
 
@@ -396,6 +405,11 @@ h1 {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
+
+
+.visible {
+  visibility: visible;
+}
 
 
 .visible {
