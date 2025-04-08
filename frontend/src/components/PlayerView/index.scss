@@ -1,4 +1,9 @@
 .playerside {
+
+    input {
+        outline: none;
+    }
+
     font-family: "Cinzel Decorative", serif;
     font-weight: 700;
     font-style: normal;
@@ -271,7 +276,7 @@
         .init {
             position: absolute;
             z-index: 3;
-            margin-left: 1vw;
+            margin-left: -.5vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             width: 3vw;
@@ -292,7 +297,7 @@
         .spd {
             position: absolute;
             z-index: 3;
-            margin-left: -5vw;
+            margin-left: -8vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             z-index: 3;
@@ -313,10 +318,11 @@
         .inspiration {
             position: absolute;
             z-index: 3;
-            margin-left: -10vw;
-            margin-top: 5.5vh;
-            width: 2.5vh;
-            height: 2.5vh;
+            margin-left: -14.7vw;
+            margin-top: 4.5vh;
+            width: 5vh;
+            height: 4vh;
+            background: none;
         }
 
         .inspiration-img {
@@ -331,7 +337,7 @@
     }
     
     .skills {
-        margin-top: 5vh;
+        margin-top: 15vh;
         margin-left: 4.5vw;
         text-align: left;
         font-size: 1.3vh;
@@ -611,4 +617,6 @@
             padding-left: .5vw;
         }
     }
+
+
 }
