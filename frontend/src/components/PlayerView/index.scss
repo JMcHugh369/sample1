@@ -469,6 +469,27 @@
         background: rgba(217, 208, 192, 0.624);
         overflow: scroll;
 
+        #inventory-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .inv-name {
+                color: rgb(160, 31, 31);
+            }
+            .inv-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
         .currency-name {
             display: flex;
             position: absolute;
@@ -549,6 +570,7 @@
                 rgba(0, 0, 0, 0.23) 0px 3px 6px;
             font-size: 2vh;
             width: 1.5vw;
+            margin-left: .5vw;
         }
     
         button:active {
@@ -571,6 +593,69 @@
         margin-top: 2vh;
         width: 15vw;
         padding-bottom: 1vh;
+
+        #feature-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .feature-name {
+                color: rgb(160, 31, 31);
+            }
+            .feature-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
+        #bg-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .bg-name {
+                color: rgb(160, 31, 31);
+            }
+            .bg-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
+        #extra-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .extra-name {
+                color: rgb(160, 31, 31);
+            }
+            .extra-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
     
         button {
             font-family: "Cinzel Decorative", serif;
