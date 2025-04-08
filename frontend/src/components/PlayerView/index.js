@@ -236,21 +236,121 @@ const PlayerView = () => {
                             <input type="text" class="silver" placeholder="0" />
                             <input type="text" class="copper" placeholder="0" />
                         </div>
-        //when the + button is pressed, it should add a new input field for Name and Description for the inventory item.
-                        <p>Inventory</p>
-                        <button class="add-features">+</button>
+        //still need a button to delete inventory item, and need to figure out how to let input overflow onto next line instead of overflowing
+        //to a horozontal scroll.
+                        <p>Inventory<span>
+                            <button class="add-inventory" onClick={
+                                () => {
+                                    var invName = document.createElement("input");
+                                    var invDesc = document.createElement("input");
+                                    invName.setAttribute('type', 'text');
+                                    invDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("inventory-items");
+                                    parent.appendChild(invName);
+
+                                    invName.classList.add("inv-name");
+                                    invDesc.classList.add("inv-desc");
+
+                                    invName.placeholder = "Name...";
+                                    invDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("inventory-items");
+                                    parent.appendChild(invDesc);
+                                }
+                            }>+</button>
+                        </span></p>
+                        <div id="inventory-items">
+
+                        </div>
         
                     </div>
 
-        //when the + button is pressed, it should add a new input field for Name and Description for the Features/Traits, the Background,
-        //and the Extra.
+       //still need a button to delete items, and need to figure out how to let input overflow onto next line instead of overflowing
+        //to a horozontal scroll.
                     <div class="feature-container">
-                        <p>Features/Traits</p>
-                        <button class="add-features">+</button>
-                        <p>Background</p>
-                        <button class="add-features">+</button>
-                        <p>Extra</p>
-                        <button class="add-features">+</button>
+                        <p>Features/Traits <span>
+                            <button class="add-features" onClick={
+                                () => {
+                                    var featureName = document.createElement("input");
+                                    var featureDesc = document.createElement("input");
+                                    featureName.setAttribute('type', 'text');
+                                    featureDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("feature-items");
+                                    parent.appendChild(featureName);
+
+                                    featureName.classList.add("feature-name");
+                                    featureDesc.classList.add("feature-desc");
+
+                                    featureName.placeholder = "Name...";
+                                    featureDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("feature-items");
+                                    parent.appendChild(featureDesc);
+                                }
+                            }>+</button>
+                        </span></p>
+
+
+                        <div id="feature-items">
+
+                        </div>
+
+
+                        <p>Background <span>
+                            <button class="add-bg" onClick={
+                                () => {
+                                    var bgName = document.createElement("input");
+                                    var bgDesc = document.createElement("input");
+                                    bgName.setAttribute('type', 'text');
+                                    bgDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("bg-items");
+                                    parent.appendChild(bgName);
+
+                                    bgName.classList.add("bg-name");
+                                    bgDesc.classList.add("bg-desc");
+
+                                    bgName.placeholder = "Name...";
+                                    bgDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("bg-items");
+                                    parent.appendChild(bgDesc);
+                                }
+                            }>+</button>
+                        </span></p>
+
+                        <div id="bg-items">
+
+                        </div>
+
+                        <p>Extra <span>
+                            <button class="add-extra" onClick={
+                                () => {
+                                    var extraName = document.createElement("input");
+                                    var extraDesc = document.createElement("input");
+                                    extraName.setAttribute('type', 'text');
+                                    extraDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("extra-items");
+                                    parent.appendChild(extraName);
+
+                                    extraName.classList.add("extra-name");
+                                    extraDesc.classList.add("extra-desc");
+
+                                    extraName.placeholder = "Name...";
+                                    extraDesc.placeholder = "Description...";
+
+                                    var parent = document.getElementById("extra-items");
+                                    parent.appendChild(extraDesc);
+                                }
+                            }>+</button>
+                        </span></p>
+
+                        <div id="extra-items">
+
+                        </div>
 
                     </div>
 
