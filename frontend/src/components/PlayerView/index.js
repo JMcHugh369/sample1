@@ -139,7 +139,7 @@ const PlayerView = () => {
         //is in the imports.  When it's clicked again, the inspon image should disappear.  The inspon image is invisible by default.
         //(inspon is short for "inspiration on" and implies that the character has inspiration, which is just represented by the inspon image)
                             <button class="inspiration"/>
-                            <input type="checkbox"/>
+                        
                         </form>
                     </div>
 
