@@ -253,10 +253,6 @@ const GameView = () => {
                             </div>
                         )}
 
-                        <button className="map-expand"><img src={wizard} /></button>
-                        <button className="map-log"><img src={minimap} /></button>
-                        <button className="add-token"><img src={wizard} /></button>
-
                         {showMapButton && (
                             <button
                                 className="view-map-button"
@@ -266,7 +262,9 @@ const GameView = () => {
                             </button>
                         )}
                     </div>
-
+//For the map, we still need something to let us switch out which map is being displayed, from the DM's collection of maps on the dmside.
+//If an additional asset is needed for this (The minimap asset might work but I can always alter it for additional readability)
+//please let me know and I'll add one.
                     {showExpandedMap && (
                         <div className="map-expanded-overlay">
                             <div className="map-expanded-container">
