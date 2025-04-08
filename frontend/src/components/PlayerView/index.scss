@@ -111,8 +111,10 @@
         }
 
         .percep-img {
-            margin-top: 18vh;
-            margin-left: -6.7vw;
+            height: 9vh;
+            width: 9vh;
+            margin-top: 21vh;
+            margin-left: -3.8vw;
         }
     
         input {
@@ -248,31 +250,64 @@
     
         .ac {
             position: absolute;
+            width: 3vw;
+            height: 5vh;
             z-index: 3;
-            margin-left: 7.5vw;
+            margin-left: 6.5vw;
             margin-top: -1vh;
+            text-align: center;
+            font-size: 2.5vh;
         }
     
         .ac-img {
-            width: 15vw;
+            height: 10vh;
+            width: 10vh;
             position: absolute;
             z-index: 2;
-            margin-left: 2vw;
-            margin-top: -2vh;
+            margin-left: 6.75vw;
+            margin-top: 3.5vh;
         }
     
         .init {
             position: absolute;
             z-index: 3;
-            margin-left: 2vw;
+            margin-left: 1vw;
             margin-top: -1vh;
+            font-size: 2.5vh;
+            width: 3vw;
+            height: 5vh;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .init-img {
+            height: 7.5vh;
+            width: 7.5vh;
+            position: absolute;
+            z-index: 2;
+            margin-left: 13vw;
+            margin-top: 5vh;
         }
     
         .spd {
             position: absolute;
             z-index: 3;
-            margin-left: -4vw;
+            margin-left: -5vw;
             margin-top: -1vh;
+            font-size: 2.5vh;
+            z-index: 3;
+            width: 3vw;
+            height: 5vh;
+            text-align: center;
+        }
+
+        .spd-img {
+            height: 7.5vh;
+            width: 7.5vh;
+            position: absolute;
+            z-index: 2;
+            margin-left: 18vw;
+            margin-top: 5vh;
         }
     
         .inspiration {
@@ -283,11 +318,20 @@
             width: 2.5vh;
             height: 2.5vh;
         }
+
+        .inspiration-img {
+            height: 7.5vh;
+            width: 7.5vh;
+            position: absolute;
+            z-index: 2;
+            margin-left: 23.5vw;
+            margin-top: 5vh;
+        }
     
     }
     
     .skills {
-        margin-top: 13vh;
+        margin-top: 5vh;
         margin-left: 4.5vw;
         text-align: left;
         font-size: 1.3vh;
