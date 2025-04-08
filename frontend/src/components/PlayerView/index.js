@@ -16,6 +16,10 @@ import copper from "../asset/charsheet/copper.png";
 import platinum from "../asset/charsheet/platinum.png";
 import electrum from "../asset/charsheet/electrum.png";
 import adventurer from "../asset/dmside/adventurer.png";
+import speed from "../asset/charsheet/speed.png";
+import initiativemod from "../asset/charsheet/initiativemod.png";
+import inspoff from "../asset/charsheet/inspoff.png";
+import inspon from "../asset/charsheet/insp-on-btn.png";
 
 const PlayerView = () => {
 
@@ -120,17 +124,18 @@ const PlayerView = () => {
                         <form>
                             <input type="text" class="ac" placeholder="0" />
                         </form>
-                        <img class="init-img" src="" />
+                        <img class="init-img" src={initiativemod} />
                         <form>
                             <input type="text" class="init" placeholder="0" />
                         </form>
-                        <img class="spd-img" src="" />
+                        <img class="spd-img" src={speed} />
                         <form>
                             <input type="text" class="spd" placeholder="0" />
                         </form>
-                        <img class="inspiration-img" src="" />
+                        <img class="inspiration-img" src={inspoff} />
                         <form>
-                            <button class="inspiration" />
+                            <button class="inspiration"/>
+                            <input type="checkbox"/>
                         </form>
                     </div>
 
