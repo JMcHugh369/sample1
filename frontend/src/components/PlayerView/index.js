@@ -134,6 +134,10 @@ const PlayerView = () => {
                         </form>
                         <img class="inspiration-img" src={inspoff} />
                         <form>
+        //When the inspiration button is clicked (it should be invisible usually and fit to the inspiration-img
+        //(also totally fine to just do an onClick for the img instead of having a button), it should display the inspon image, which
+        //is in the imports.  When it's clicked again, the inspon image should disappear.  The inspon image is invisible by default.
+        //(inspon is short for "inspiration on" and implies that the character has inspiration, which is just represented by the inspon image)
                             <button class="inspiration"/>
                             <input type="checkbox"/>
                         </form>
