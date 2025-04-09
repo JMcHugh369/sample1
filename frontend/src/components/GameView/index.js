@@ -14,6 +14,8 @@ const GameView = () => {
     const [gridSize, setGridSize] = useState(10); // Default 10x10 grid
     const [showGrid, setShowGrid] = useState(true);
     const [debugInfo, setDebugInfo] = useState("");
+    // Add the missing state variable for token hover
+    const [hoveredToken, setHoveredToken] = useState(null);
 
     const gridRef = useRef(null);
     const mapRef = useRef(null);
@@ -29,6 +31,27 @@ const GameView = () => {
     function dice(max) {
         return 1 + Math.floor(Math.random() * max);
     }
+
+    // Add a function to handle adding dice rolls to the game log
+    // This is for gamelog dice tracker
+    const addToGameLog = (diceType, rollResult) => {
+        const logContainer = document.getElementById("gamelog-container");
+
+        // Create new log entry
+        const logEntry = document.createElement("p");
+        logEntry.innerText = `Player rolled d${diceType}: ${rollResult}`;
+
+        // Add the new entry to the log (at the bottom)
+        logContainer.appendChild(logEntry);
+
+        // Limit to 100 entries
+        while (logContainer.childElementCount > 100) {
+            logContainer.removeChild(logContainer.firstChild);
+        }
+
+        // Auto-scroll to the bottom to show the latest roll
+        logContainer.scrollTop = logContainer.scrollHeight;
+    };
 
     // Handle token selection from sidebar
     const handleTokenSelect = (tokenType) => {
@@ -196,6 +219,129 @@ const GameView = () => {
             setSelectedToken(null);
         }
     };
+    // This is for chat-orb
+    // Creating chat-related state variables
+    const [isChatSlideOut, setChatSlideOut] = useState(false);
+    const [selectedChatPlayer, setSelectedChatPlayer] = useState(null);
+    {/**Later will need to communicate a loop into database to load up players */}
+    const [playerChatMessages, setPlayerChatMessages] = useState({
+        "DM": [],
+        "Player1": [],
+        "Player2": [],
+        "Player3": []
+    });
+    const [currentChatMessage, setCurrentChatMessage] = useState("");
+
+    // Chat handler functions
+    const handlePlayerSelect = (playerName) => {
+        setSelectedChatPlayer(playerName);
+        setChatSlideOut(true); // Slide out the chat when a player is selected
+    };
+
+    const handleCloseChat = () => {
+        setChatSlideOut(false);
+    };
+
+    const handleChatSubmit = (e) => {
+        e.preventDefault();
+
+        if (currentChatMessage.trim() !== "" && selectedChatPlayer) {
+            // Add message to the selected player's chat
+            setPlayerChatMessages({
+                ...playerChatMessages,
+                [selectedChatPlayer]: [
+                    ...playerChatMessages[selectedChatPlayer],
+                    currentChatMessage.trim()
+                ]
+            });
+
+            // Clear the input
+            setCurrentChatMessage("");
+        }
+    };
+
+    // This is for notes
+    const [publicExpanded, setPublicExpanded] = useState(false);
+    const [privateExpanded, setPrivateExpanded] = useState(false);
+    const [dmExpanded, setDmExpanded] = useState(false);
+    const [publicNotes, setPublicNotes] = useState([]);
+    const [privateNotes, setPrivateNotes] = useState([]);
+    const [dmNotes, setDmNotes] = useState([]);
+    const [currentNote, setCurrentNote] = useState('');
+    // This is to expand notes
+    const [activeSection, setActiveSection] = useState(null);
+
+    // Toggle public notes section
+    const togglePublicNotes = () => {
+        // This part is for the expanding notes
+        if (activeSection === 'public') {
+            // If public is already active, deactivate it
+            setActiveSection(null);
+            setPublicExpanded(false);
+        } else {
+            // Activate public, deactivate others
+            setActiveSection('public');
+            setPublicExpanded(true);
+            setPrivateExpanded(false);
+            setDmExpanded(false);
+        }
+    };
+
+    // Toggle private notes section
+    const togglePrivateNotes = () => {
+        if (activeSection === 'private') {
+            // If private is already active, deactivate it
+            setActiveSection(null);
+            setPrivateExpanded(false);
+        } else {
+            // Activate private, deactivate others
+            setActiveSection('private');
+            setPrivateExpanded(true);
+            setPublicExpanded(false);
+            setDmExpanded(false);
+        }
+    };
+
+    // Toggle DM notes section
+    const toggleDmNotes = () => {
+        if (activeSection === 'dm') {
+            // If dm is already active, deactivate it
+            setActiveSection(null);
+            setDmExpanded(false);
+        } else {
+            // Activate dm, deactivate others
+            setActiveSection('dm');
+            setDmExpanded(true);
+            setPublicExpanded(false);
+            setPrivateExpanded(false);
+        }
+    };
+
+    // Handle note submission - will add to the active section
+    const handleNoteSubmit = (e) => {
+        e.preventDefault();
+        const noteInput = e.target.querySelector('input');
+
+        if (noteInput && noteInput.value.trim() !== '') {
+            const newNote = noteInput.value.trim();
+
+            // Add note to the appropriate section based on activeSection
+            if (activeSection === 'public') {
+                setPublicNotes([...publicNotes, newNote]);
+            } else if (activeSection === 'private') {
+                setPrivateNotes([...privateNotes, newNote]);
+            } else if (activeSection === 'dm') {
+                setDmNotes([...dmNotes, newNote]);
+            } else {
+                // If no section is active, do nothing or show a message
+                console.log("No active section to add note to");
+                return;
+            }
+
+            // Clear the input field
+            noteInput.value = '';
+        }
+    };
 
     return (
         <>
@@ -203,30 +349,26 @@ const GameView = () => {
 
             <main>
                 <div className="gameside">
-        //The initiative area should let users add a new initiative-block and add a name for the new initiative character/monster/npc
-        //They should also be able to click on one of the initiative blocks to highlight it / make it bigger to show whose turn it is in the initiative
                     <div className="initiative-container">
                         <div className="initiative-item">
-                            <img className="initiative-block" src="" />
-                            <img className="initiative-prof-pic" src="" />
+                            <img className="initiative-block" src="" alt=""/>
+                            <img className="initiative-prof-pic" src="" alt=""/>
                             <span>Character 1</span>
-        //They should also be able to delete a character/monster/npc from initiative
                             <button className="initiative-delete">-</button>
                         </div>
                         <div className="initiative-new">
-                            <img className="initiative-block" src="" />
+                            <img className="initiative-block" src="" alt=""/>
                             <button className="initiative-add">+</button>
                         </div>
                     </div>
 
-        //for the map, the dm should be allowed to choose which map is displayed, from their list of maps on the left (the dmside)
                     <div
                         className="map"
                         onMouseEnter={() => setShowMapButton(true)}
                         onMouseLeave={() => setShowMapButton(false)}
                         ref={smallMapRef}
                     >
-                        <img className="map-up" src={mapplaceholder} />
+                        <img className="map-up" src={mapplaceholder} alt=""/>
 
                         {/* Render tokens on the small map */}
                         {placedTokens.length > 0 && (
@@ -262,35 +404,141 @@ const GameView = () => {
                             </button>
                         )}
                     </div>
-//For the map, we still need something to let us switch out which map is being displayed, from the DM's collection of maps on the dmside.
-//If an additional asset is needed for this (The minimap asset might work but I can always alter it for additional readability)
-//please let me know and I'll add one.
+
                     {showExpandedMap && (
                         <div className="map-expanded-overlay">
                             <div className="map-expanded-container">
+
+                                {/* Token Selector (Left) */}
                                 <div className="token-selector">
                                     <h3>Map Tokens</h3>
-                                    <div className="token-list">
-                                        <div
-                                            className={`token-item ${selectedToken?.type === 'Character' ? 'selected' : ''}`}
-                                            onClick={() => handleTokenSelect('Character')}
-                                        >
-                                            <img src={wizard} alt="Character Token" />
-                                            <p>Character</p>
+
+                                    {/* Character Section */}
+                                    <div className="token-category">
+                                        <div className="token-category-header">Character</div>
+
+                                        <div className="token-category-content">
+                                            {/* Character token options */}
+                                            <div className="token-options">
+                                                <div
+                                                    id="character-token-1"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('Character')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Wizard Character', id: 'character-token-1' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="Character Token 1" />
+                                                </div>
+
+                                                <div
+                                                    id="character-token-2"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('Character')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Knight Character', id: 'character-token-2' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="Character Token 2" />
+                                                </div>
+                                            </div>
+
+                                            {/* Character info display */}
+                                            <div className="token-info-panel">
+                                                {hoveredToken && hoveredToken.type === 'Character' ? (
+                                                    <div className="token-database-info">
+                                                        <p>{hoveredToken.name}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="token-database-info">
+                                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div
-                                            className={`token-item ${selectedToken?.type === 'Monster' ? 'selected' : ''}`}
-                                            onClick={() => handleTokenSelect('Monster')}
-                                        >
-                                            <img src={wizard} alt="Monster Token" />
-                                            <p>Monster</p>
+                                    </div>
+
+                                    {/* Monster Section */}
+                                    <div className="token-category">
+                                        <div className="token-category-header">Monster</div>
+
+                                        <div className="token-category-content">
+                                            {/* Monster token options */}
+                                            <div className="token-options">
+                                                <div
+                                                    id="monster-token-1"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('Monster')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Dragon Monster', id: 'monster-token-1' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="Monster Token 1" />
+                                                </div>
+
+                                                <div
+                                                    id="monster-token-2"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('Monster')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Goblin Monster', id: 'monster-token-2' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="Monster Token 2" />
+                                                </div>
+                                            </div>
+
+                                            {/* Monster info display */}
+                                            <div className="token-info-panel">
+                                                {hoveredToken && hoveredToken.type === 'Monster' ? (
+                                                    <div className="token-database-info">
+                                                        <p>{hoveredToken.name}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="token-database-info">
+                                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div
-                                            className={`token-item ${selectedToken?.type === 'NPC' ? 'selected' : ''}`}
-                                            onClick={() => handleTokenSelect('NPC')}
-                                        >
-                                            <img src={wizard} alt="NPC Token" />
-                                            <p>NPC</p>
+                                    </div>
+
+                                    {/* NPC Section */}
+                                    <div className="token-category">
+                                        <div className="token-category-header">NPC</div>
+
+                                        <div className="token-category-content">
+                                            {/* NPC token options */}
+                                            <div className="token-options">
+                                                <div
+                                                    id="npc-token-1"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('NPC')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Merchant NPC', id: 'npc-token-1' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="NPC Token 1" />
+                                                </div>
+
+                                                <div
+                                                    id="npc-token-2"
+                                                    className="token-item"
+                                                    onClick={() => handleTokenSelect('NPC')}
+                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Villager NPC', id: 'npc-token-2' })}
+                                                    onMouseLeave={() => setHoveredToken(null)}
+                                                >
+                                                    <img src={wizard} alt="NPC Token 2" />
+                                                </div>
+                                            </div>
+
+                                            {/* NPC info display */}
+                                            <div className="token-info-panel">
+                                                {hoveredToken && hoveredToken.type === 'NPC' ? (
+                                                    <div className="token-database-info">
+                                                        <p>{hoveredToken.name}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="token-database-info">
+                                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -329,9 +577,6 @@ const GameView = () => {
                                             }}
                                         />
 
-                                                //the dm should also be able to select tokens based on the player characters/npcs/monsters 
-                                                //that they can see/create on dmside (Note: dms can't create player characters)
-                                                //When a token is hovered over, it should display the info like name and hp
                                         {/* Grid overlay and tokens container */}
                                         <div
                                             className="grid-and-tokens-container"
@@ -472,168 +717,229 @@ const GameView = () => {
                         </div>
                     )}
 
-                    <div className="token-info">
-                        <button className="token-delete">X</button>
-                        <button className="token-info-minimize">-</button>
-                        <p>Name</p>
-                        <p>HP: 99</p>
-                    </div>
-
-                        //The last 100 dice rolls should appear here, with users scrolling up to see the past ones and the most recent one
-                        //displayed at the bottom.  They should also be able to tell which user rolled the die.  If it's the dm, maybe
-                        //it could display "DM Rolled: " and then the roll.  For players, something like "Callie Rolled: 9" for example.
-                        //It would also be nice to show the image of the die that was rolled, we can deal with that when the dice assets are up.
                     <div className="gamelog">
-                        <p>\Character\ Rolled: </p>
-                        <p id="testd4"> </p>
+                        <div id="gamelog-container">
+                            {/* Dice log entries will appear here */}
+                        </div>
                     </div>
 
                     <div className="bottom">
                         <div className="chat-container">
-                            <div className="chat">
-                                <img className="orb-chat" src={crystalball} />
-                                <img className="group-chat" src="" />
-                                <img className="dm-chat" src="" />
-                                <img className="player2-chat" src="" />
+                            {/* Chat-up first in DOM order since it's behind */}
+                            <div className={`chat-up ${isChatSlideOut ? 'slide-out' : ''}`}>
+                                <button className="chat-minimize" onClick={handleCloseChat}>-</button>
+
+                                {/* Add player name header */}
+                                <div className="chat-header">
+                                    {selectedChatPlayer && (
+                                        <h4>{selectedChatPlayer}</h4>
+                                    )}
+                                </div>
+
+                                {/* Message display area - simple list of messages */}
+                                <div className="chat-messages">
+                                    {selectedChatPlayer && playerChatMessages[selectedChatPlayer]?.length > 0 ? (
+                                        <ul>
+                                            {playerChatMessages[selectedChatPlayer].map((message, index) => (
+                                                <li key={index}>{message}</li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="empty-chat">No messages yet</p>
+                                    )}
+                                </div>
+
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const inputField = e.target.querySelector('input');
+                                    if (inputField && inputField.value.trim() !== '' && selectedChatPlayer) {
+                                        // Add message to the selected player's chat
+                                        setPlayerChatMessages({
+                                            ...playerChatMessages,
+                                            [selectedChatPlayer]: [
+                                                ...playerChatMessages[selectedChatPlayer],
+                                                inputField.value.trim()
+                                            ]
+                                        });
+                                        // Clear the input field
+                                        inputField.value = '';
+                                    }
+                                }}>
+                                    <input
+                                        type="text"
+                                        className="message-player"
+                                        placeholder="Message Player..."
+                                        disabled={!selectedChatPlayer}
+                                    />
+                                    <button type="submit" disabled={!selectedChatPlayer}>&#8594;</button>
+                                </form>
                             </div>
 
-                        //For the chat: The crystal ball will contain the names in a vertical row of all the players and the dm
-                        //(except the player currently viewing it, they cannot message themself after all.  When they hover over a name,
-                        //It should get bigger and "glow", and clicking on it will make the message section slide out from behind the orb
-                        //(currently it's already displayed out)
-                        //The chat should let users send messages, and display the last 100 messages.
-                        //you can scroll up to see the chat log
-                            <div className="chat-up">
-                                <button className="chat-minimize">-</button>
-                                <form>
-                                    <input type="text" className="message-player" placeholder="Message Player..." />
-                                    <button>&#8594;</button>
-                                </form>
+                            <div className="chat">
+                                {/* Crystal ball image stays as background element */}
+                                <img className="orb-chat" src={crystalball} alt="Crystal Ball" />
+
+                                {/* Player list that appears on hover */}
+                                <div className="orb-chat-player-list">
+                                    {Object.keys(playerChatMessages).map(playerName => (
+                                        <div
+                                            key={playerName}
+                                            className={`player-item ${selectedChatPlayer === playerName ? 'selected' : ''}`}
+                                            onClick={() => handlePlayerSelect(playerName)}
+                                        >
+                                            {playerName}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Keep these as they were */}
+                                <img className="group-chat" src="" alt="" />
+                                <img className="dm-chat" src="" alt="" />
+                                <img className="player2-chat" src="" alt="" />
                             </div>
                         </div>
 
-                        //Notes: When no notes are selected, the bottom "note-open" should not be visble.  When a note tab (either
-                        //public, private, or dm) is selected, it should move to the bottom and the note-open should be displayed under it.
-                        //The user should be able to input notes into the input, and have the notes be displayed above the input, showing all
-                        //the notes ever written in that section.
-                        //Private notes should only be readable and writable to the player writing them.
-                        //DM notes should be readable to everyone but only the DM can write them.
-                        //Public notes are shared amongst everyone, everyone can read them and write them.
-                        //If someone can write to a note section, they should be able to delete from it as well.
-                        //You can scroll up to see the previous notes in the notes section selected.
+                        {/* Notes section with multiple note types */}
                         <div className="notes">
-                            <div className="public-notes">
-                                <button>
+                            <div className={`public-notes ${activeSection === 'public' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
+                                <button onClick={togglePublicNotes}>
                                     Public
                                 </button>
+                                {publicExpanded && (
+                                    <div className="written-public-notes">
+                                        {publicNotes.length > 0 ? (
+                                            <ul>
+                                                {publicNotes.map((note, index) => (
+                                                    <li key={index}>{note}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No public notes yet</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                            <div className="private-notes">
-                                <button>
+                            <div className={`private-notes ${activeSection === 'private' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
+                                <button onClick={togglePrivateNotes}>
                                     Private
                                 </button>
+                                {privateExpanded && (
+                                    <div className="written-notes">
+                                        {privateNotes.length > 0 ? (
+                                            <ul>
+                                                {privateNotes.map((note, index) => (
+                                                    <li key={index}>{note}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No private notes yet</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                            <div className="dm-public-notes">
-                                <button>
+                            <div className={`dm-notes ${activeSection === 'dm' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
+                                <button onClick={toggleDmNotes}>
                                     DM
                                 </button>
+                                {dmExpanded && (
+                                    <div className="written-notes">
+                                        {dmNotes.length > 0 ? (
+                                            <ul>
+                                                {dmNotes.map((note, index) => (
+                                                    <li key={index}>{note}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No DM notes yet</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                            <div className="note-open" id="note-dm">
-                                <form><input type="text" />
-                                    <button type="submit">{">"}</button>
+                            <div className="input-notes">
+                                <form className="input-notes-form" onSubmit={handleNoteSubmit}>
+                                    <input
+                                        type="text"
+                                        placeholder={activeSection ? `Write a ${activeSection} note...` : "Select a section first..."}
+                                        disabled={!activeSection}
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={!activeSection}
+                                    >{">"}</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-//Dice rolls the dice.  These rolls need to be saved.
+
+                    {/* Updated dice buttons to use addToGameLog function */}
                     <div className="dice">
                         <button className="d4"
-                            onClick={
-                                () => {
-                                    const rollD4 = dice(4);
-                                    console.log(rollD4);
-
-                                    document.getElementById("testd4").innerHTML = rollD4;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD4 = dice(4);
+                                console.log(rollD4);
+                                addToGameLog(4, rollD4);
+                            }}
                         >
-                            <img className="d4-img" src="" />d4
+                            <img className="d4-img" src="" alt=""/>d4
                         </button>
 
                         <button className="d6"
-                            onClick={
-                                () => {
-                                    const rollD6 = dice(6);
-                                    console.log(rollD6);
-
-                                    document.getElementById("testd4").innerHTML = rollD6;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD6 = dice(6);
+                                console.log(rollD6);
+                                addToGameLog(6, rollD6);
+                            }}
                         >
-                            <img className="d6-img" src="" />d6
+                            <img className="d6-img" src="" alt=""/>d6
                         </button>
 
                         <button className="d8"
-                            onClick={
-                                () => {
-                                    const rollD8 = dice(8);
-                                    console.log(rollD8);
-
-                                    document.getElementById("testd4").innerHTML = rollD8;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD8 = dice(8);
+                                console.log(rollD8);
+                                addToGameLog(8, rollD8);
+                            }}
                         >
-                            <img className="d8-img" src="" />d8
+                            <img className="d8-img" src="" alt=""/>d8
                         </button>
 
                         <button className="d10"
-                            onClick={
-                                () => {
-                                    const rollD10 = dice(10);
-                                    console.log(rollD10);
-
-                                    document.getElementById("testd4").innerHTML = rollD10;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD10 = dice(10);
+                                console.log(rollD10);
+                                addToGameLog(10, rollD10);
+                            }}
                         >
-                            <img className="d10-img" src="" />d10
+                            <img className="d10-img" src="" alt=""/>d10
                         </button>
 
                         <button className="d12"
-                            onClick={
-                                () => {
-                                    const rollD12 = dice(12);
-                                    console.log(rollD12);
-
-                                    document.getElementById("testd4").innerHTML = rollD12;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD12 = dice(12);
+                                console.log(rollD12);
+                                addToGameLog(12, rollD12);
+                            }}
                         >
-                            <img className="d12-img" src="" />d12
+                            <img className="d12-img" src="" alt=""/>d12
                         </button>
 
                         <button className="d20"
-                            onClick={
-                                () => {
-                                    const rollD20 = dice(20);
-                                    console.log(rollD20);
-
-                                    document.getElementById("testd4").innerHTML = rollD20;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD20 = dice(20);
+                                console.log(rollD20);
+                                addToGameLog(20, rollD20);
+                            }}
                         >
-                            <img className="d20-img" src="" />d20
+                            <img className="d20-img" src="" alt=""/>d20
                         </button>
                         <button className="d100"
-                            onClick={
-                                () => {
-                                    const rollD100 = dice(100);
-                                    console.log(rollD100);
-
-                                    document.getElementById("testd4").innerHTML = rollD100;
-                                }
-                            }
+                            onClick={() => {
+                                const rollD100 = dice(100);
+                                console.log(rollD100);
+                                addToGameLog(100, rollD100);
+                            }}
                         >
-                            <img className="d100-img" src="" />d100
+                            <img className="d100-img" src="" alt=""/>d100
                         </button>
                     </div>
                 </div>
