@@ -1,19 +1,37 @@
+import { useLocation } from "react-router-dom";
 import "./index.scss";
 import logogrung from "../asset/logogrung.png";
 import wizard from "../asset/prof-pics/wizard.png";
-import adventurer from "../asset/dmside/adventurer.png";
 
 const Nav = () => {
+    const location = useLocation();
+
+    // Added fuction to go back to the previous page
+    const goBack = () => {
+        window.history.back();
+    };
+
+    const isPlayerOrGameView = location.pathname === "/playerview" || location.pathname === "/gameview";
+
     return (
         <>
             <nav>
-        //We should make sure we have functionality for the back button for Nav, and that the back button doesn't show up at Welcome.
-                <div className={"nav-left"}><button>&larr;</button></div>
-    //Next to the back button when you're in a campaign should be the option to save the data currently on your side (dm or player side)
-    //and to save the gameview data (where the tokens are, the map, the initiative, the notes, the messages, etc.
-                <div className={"nav-center"}><img src={logogrung}/></div>
-    //Clicking the profile picture on the far right should open up the user settings sidebar, which I need to implement.
-                <div className={"nav-right"}><img src={adventurer}/></div>
+                <div className="nav-left">
+                    <button onClick={goBack}>&larr;</button>
+                </div>
+                {/* Needs onClick function but have no clue what file should be saving specifically; variable wise */}
+                {isPlayerOrGameView && (
+                    <div className="nav-left-file">
+                        
+                        <button>File</button>
+                    </div>
+                )}
+                <div className="nav-center">
+                    <img src={logogrung} alt="Logo" />
+                </div>
+                <div className="nav-right">
+                    <img src={wizard} alt="Wizard" />
+                </div>
             </nav>
         </>
     );
