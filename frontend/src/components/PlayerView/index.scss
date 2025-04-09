@@ -414,26 +414,121 @@
         button:active {
             background: rgb(233, 228, 217);
         }
+
+        .tabcontent {
+            h3 {
+                text-align: center;
+                font-size: 2vh;
+            }
+                
+        }
     
         .add-actions {
             font-size: 2vh;
             width: 1.5vw;
             padding: 0;
         }
+
+        #action-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .action-name {
+                color: rgb(160, 31, 31);
+            }
+            .action-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
         .add-spells {
             font-size: 2vh;
             width: 1.5vw;
             padding: 0;
         }
-        .add-features {
+
+        #spell-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .spell-name {
+                color: rgb(160, 31, 31);
+            }
+            .spell-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
+        .add-f {
             font-size: 2vh;
             width: 1.5vw;
             padding: 0;
         }
+
+        #f-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .f-name {
+                color: rgb(160, 31, 31);
+            }
+            .f-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
+        }
+
         .add-traits {
             font-size: 2vh;
             width: 1.5vw;
             padding: 0;
+        }
+
+        #t-items {
+            margin-top: -1vh;
+
+            input {
+                width: 14vw;
+                height: 3vh; 
+                background: none;
+            }
+            
+            .t-name {
+                color: rgb(160, 31, 31);
+            }
+            .t-desc {
+                    font-size: 1.5vh;
+                    text-indent: 1vw;
+                    justify-content: flex-end;
+                    display: inline-flex;
+                    margin-bottom: 1vh;
+            }
         }
     
         h3 {
