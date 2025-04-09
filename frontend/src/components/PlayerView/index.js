@@ -180,35 +180,153 @@ const PlayerView = () => {
                         </div>
                     </div>
 
+        //for these, we still need a minus button to delete an action or a spell, etc.
                     <div class="bottom-center">
-//On the click of one of these buttons, it should show the tab contents.  So, Actions should show the Actions tabcontent, Spells should
-        //show Spells, etc.
+
                         <div class="tab">
-                            <button class="tablinks" onclick="openTab(event, 'Actions')">Actions</button>
-                            <button class="tablinks" onclick="openTab(event, 'Spells')">Spells</button>
-                            <button class="tablinks" onclick="openTab(event, 'Features')">Features</button>
-                            <button class="tablinks" onclick="openTab(event, 'Traits')">Traits</button>
+                            <button class="tablinks" onClick={
+
+                                (event) => {
+                                    openTab(event, "Actions")
+                                }
+                            }
+                            >Actions</button>
+                            <button class="tablinks" onClick={
+
+                                (event) => {
+                                    openTab(event, "Spells")
+                                }
+                            }
+                            >Spells</button>
+                            <button class="tablinks" onClick={
+
+                                (event) => {
+                                    openTab(event, "Features")
+                                }
+                            }>Features</button>
+                            <button class="tablinks" onClick={
+
+                                (event) => {
+                                    openTab(event, "Traits")
+                                }
+                            }>Traits</button>
                         </div>
 
                         <div id="Actions" class="tabcontent">
-                            <h3>Actions</h3>
-                            <button class="add-actions">+</button>
-//when the + button is pressed, it should add a new input field for Name and Description.  For this, as well as Spells, Features, Traits.
+                            <h3>Actions <span><button class="add-actions" onClick={
+                                () => {
+                                    var actionName = document.createElement("input");
+                                    var actionDesc = document.createElement("input");
+                                    actionName.setAttribute('type', 'text');
+                                    actionDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("action-items");
+                                    parent.appendChild(actionName);
+
+                                    actionName.classList.add("action-name");
+                                    actionDesc.classList.add("action-desc");
+
+                                    actionName.placeholder = "Name...";
+                                    actionDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("action-items");
+                                    parent.appendChild(actionDesc);
+                                }
+                            }>+</button>
+                            </span></h3>
+                            <div id="action-items">
+
+                            </div>
                         </div>
 
                         <div id="Spells" class="tabcontent">
-                            <h3>Spells</h3>
-                            <button class="add-spells">+</button>
+                            <h3>Spells <span><button class="add-spells" onClick={
+                                    () => {
+                                        var spellName = document.createElement("input");
+                                        var spellDesc = document.createElement("input");
+                                        spellName.setAttribute('type', 'text');
+                                        spellDesc.setAttribute('type', 'text');
+
+                                        var parent = document.getElementById("spell-items");
+                                        parent.appendChild(spellName);
+
+                                        spellName.classList.add("spell-name");
+                                        spellDesc.classList.add("spell-desc");
+
+                                        spellName.placeholder = "Name...";
+                                        spellDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("spell-items");
+                                        parent.appendChild(spellDesc);
+                                    }
+                                }
+                            >+</button>
+                            </span></h3>
+
+                            <div id="spell-items">
+
+                            </div>
+
                         </div>
 
                         <div id="Features" class="tabcontent">
-                            <h3>Features</h3>
-                            <button class="add-features">+</button>
+                            <h3>Features <span>
+                                <button class="add-f" onClick={
+                                () => {
+                                    var fName = document.createElement("input");
+                                    var fDesc = document.createElement("input");
+                                    fName.setAttribute('type', 'text');
+                                    fDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("f-items");
+                                    parent.appendChild(fName);
+
+                                    fName.classList.add("f-name");
+                                    fDesc.classList.add("f-desc");
+
+                                    fName.placeholder = "Name...";
+                                    fDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("f-items");
+                                    parent.appendChild(fDesc);
+                                }
+                            }>+</button>
+                            </span></h3>
+
+                            <div id="f-items">
+
+                            </div>
+
                         </div>
 
                         <div id="Traits" class="tabcontent">
-                            <h3>Traits</h3>
-                            <button class="add-traits">+</button>
+                            <h3>Traits <span>
+                                <button class="add-traits" onClick={
+                                () => {
+                                    var tName = document.createElement("input");
+                                    var tDesc = document.createElement("input");
+                                    tName.setAttribute('type', 'text');
+                                    tDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("t-items");
+                                    parent.appendChild(tName);
+
+                                    tName.classList.add("t-name");
+                                    tDesc.classList.add("t-desc");
+
+                                    tName.placeholder = "Name...";
+                                    tDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("t-items");
+                                    parent.appendChild(tDesc);
+                                }
+                            }>+</button>
+                            </span></h3>
+
+                            <div id="t-items">
+
+                            </div>
+
                         </div>
 
 
