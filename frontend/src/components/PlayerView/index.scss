@@ -135,15 +135,16 @@
             margin-top: -5vh;
         }
     
-        .str {
+        .str-mod {
             margin-top: -4vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
 
     
-        .str-mod {
+        .str {
             font-size: 2.5vh;
             margin-left: -.8vw;
             margin-top: 0vh;
@@ -151,14 +152,15 @@
             height: 5vh;
         }
     
-        .dex {
+        .dex-mod {
             margin-top: 6vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
     
-        .dex-mod {
+        .dex {
             font-size: 2.5vh;
             margin-left: -.8vw;
             margin-top: 10vh;
@@ -166,14 +168,15 @@
             height: 5vh;
         }
     
-        .con {
+        .con-mod {
             margin-top: 16vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
     
-        .con-mod {
+        .con {
             font-size: 2.5vh;
             margin-left: -.8vw;
             margin-top: 20vh;
@@ -181,14 +184,15 @@
             height: 5vh;
         }
     
-        .int {
+        .int-mod {
             margin-top: 26vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
     
-        .int-mod {
+        .int {
             font-size: 2.5vh;
             margin-top: 30vh;
             margin-left: -.8vw;
@@ -196,14 +200,15 @@
             height: 5vh;
         }
     
-        .wis {
+        .wis-mod {
             margin-top: 36vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
     
-        .wis-mod {
+        .wis {
             font-size: 2.5vh;
             margin-top: 40vh;
             margin-left: -.8vw;
@@ -211,14 +216,15 @@
             height: 5vh;
         }
     
-        .cha {
+        .cha-mod {
             margin-top: 46vh;
             margin-left: -.8vw;
             width: 10vh;
             height: 5vh;
+            font-size: 3vh;
         }
     
-        .cha-mod {
+        .cha {
             font-size: 2.5vh;
             margin-top: 50vh;
             margin-left: -.8vw;
@@ -276,7 +282,7 @@
         .init {
             position: absolute;
             z-index: 3;
-            margin-left: -.5vw;
+            margin-left: 2vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             width: 3vw;
@@ -297,7 +303,7 @@
         .spd {
             position: absolute;
             z-index: 3;
-            margin-left: -8vw;
+            margin-left: -3vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             z-index: 3;
@@ -314,11 +320,32 @@
             margin-left: 18vw;
             margin-top: 5vh;
         }
+
+        .prof-bonus {
+            position: absolute;
+            z-index: 3;
+            margin-left: -7.8vw;
+            margin-top: -1vh;
+            font-size: 2.5vh;
+            z-index: 3;
+            width: 3vw;
+            height: 5vh;
+            text-align: center;
+        }
+
+        .prof-bonus-img {
+            height: 7.5vh;
+            width: 7.5vh;
+            position: absolute;
+            z-index: 2;
+            margin-left: 23vw;
+            margin-top: 5vh;
+        }
     
         .inspiration {
             position: absolute;
             z-index: 3;
-            margin-left: -14.7vw;
+            margin-left: -12.5vw;
             margin-top: 4.5vh;
             width: 5vh;
             height: 4vh;
@@ -330,7 +357,7 @@
             width: 7.5vh;
             position: absolute;
             z-index: 2;
-            margin-left: 23.5vw;
+            margin-left: 28vw;
             margin-top: 5vh;
         }
     
@@ -343,6 +370,22 @@
         font-size: 1.3vh;
         line-height: 3vh;
         width: 15vw;
+
+        .skill-num {
+            width: 1.5vw;
+            height: 3vh;
+            font-size: 2vh;
+            background: none;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type:circle;
+
+            li::marker {
+                font-size: 2.5vh;
+              }
+        }
     }
     
     .center-center {
@@ -357,9 +400,20 @@
     
         margin-left: 20.5vw;
     
-        margin-top: -55vh;
+        margin-top: -60vh;
     
         .hp-container {
+
+            p {
+                margin-bottom: 0;
+                padding-top: 1vh;
+                font-size: 1.5vh;
+            }
+
+            .temp {
+                font-size: 1.5vh;
+            }
+
             input {
                 width: 3vw;
                 text-align: center;
@@ -420,6 +474,9 @@
                 text-align: center;
                 font-size: 2vh;
             }
+
+            max-height: 30vh;
+            overflow: scroll;
                 
         }
     
@@ -676,7 +733,6 @@
     .feature-container {
         position: absolute;
         z-index: 7;
-        background: red;
         width: 14vw;
         height: 30vh;
         border-radius: 1vh;
@@ -775,7 +831,6 @@
     
         position: absolute;
         z-index: 7;
-        background: red;
         width: 14vw;
         height: 15vh;
         border-radius: 1vh;
