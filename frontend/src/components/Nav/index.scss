@@ -9,7 +9,7 @@ nav {
 
     background: rgb(220, 213, 204);
 
-    justify-content: space-around;
+    justify-content: space-between; /* Adjusted to space elements correctly */
     align-items: center;
 
     position: fixed;
@@ -24,6 +24,7 @@ nav {
     img {
         max-height: 7.5vh;
         max-width: 7.5vh;
+        margin-left: -37vw; /* Adjusted to move logo back to middle*/
     }
 
     div:nth-of-type(3) img {
@@ -36,8 +37,11 @@ nav {
     }
 
     .nav-left {
+        display: flex; /* Ensures nav-left and nav-left-file are beside each other */
+        align-items: center;
+
         button {
-            margin-left: -25vw;
+            margin-left: 0; /* Reset margin to ensure visibility */
             box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
             background: rgb(241, 236, 227);
             border: none;
@@ -49,5 +53,24 @@ nav {
         button:active {
             background: rgb(233, 228, 217);
         }
+    }
+
+    .nav-left-file {
+        margin-left: -40vw; /* Adds spacing between nav-left and nav-left-file */
+
+        button {
+            margin-left: 0; /* Reset margin to ensure visibility */
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            background: rgb(241, 236, 227);
+            border: none;
+            border-radius: .5vh;
+            font-size: 2vh;
+            width: 3vw;
+        }
+    }
+
+    .nav-right {
+        position: relative;
+        right: -10vw; /* Moves nav-right slightly to the left */
     }
 }
