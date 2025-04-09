@@ -143,28 +143,28 @@ const PlayerView = () => {
                         </form>
                     </div>
 
+        //Need to be able to click on the bullet of a specific skill to change that bullet to be filled in
                     <div class="skills">
                         <ul>
-                            <li>0 Acrobatics (Dex)</li>
-                            <li>0 Animal Handling (Wis)</li>
-                            <li>0 Arcana (Int)</li>
-                            <li>0 Athletics (Str)</li>
-                            <li>0 Deception (Cha)</li>
-                            <li>0 History (Int)</li>
-                            <li>0 Insight (Wis)</li>
-                            <li>0 Intimidation (Cha)</li>
-                            <li>0 Investigation (Int)</li>
-                            <li>0 Medicine (Wis)</li>
-                            <li>0 Nature (Int)</li>
-                            <li>0 Perception (Wis)</li>
-                            <li>0 Performance (Cha)</li>
-                            <li>0 Persuasion (Cha)</li>
-                            <li>0 Religion (Int)</li>
-                            <li>0 Sleight of Hand (Dex)</li>
-                            <li>0 Stealth (Dex)</li>
-                            <li>0 Survival (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Acrobatics (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Animal Handling (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Arcana (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Athletics (Str)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Deception (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> History (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Insight (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Intimidation (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Investigation (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Medicine (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Nature (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Perception (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Performance (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Persuasion (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Religion (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Sleight of Hand (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Stealth (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0"/> Survival (Wis)</li>
                         </ul>
-
                     </div>
 
                     <div class="center-center">
