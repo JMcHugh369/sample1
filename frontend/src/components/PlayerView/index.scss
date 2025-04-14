@@ -282,7 +282,7 @@
         .init {
             position: absolute;
             z-index: 3;
-            margin-left: 2vw;
+            margin-left: -.5vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             width: 3vw;
@@ -303,7 +303,7 @@
         .spd {
             position: absolute;
             z-index: 3;
-            margin-left: -3vw;
+            margin-left: -7.8vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             z-index: 3;
@@ -324,7 +324,7 @@
         .prof-bonus {
             position: absolute;
             z-index: 3;
-            margin-left: -7.8vw;
+            margin-left: -15.3vw;
             margin-top: -1vh;
             font-size: 2.5vh;
             z-index: 3;
@@ -345,11 +345,21 @@
         .inspiration {
             position: absolute;
             z-index: 3;
-            margin-left: -12.5vw;
-            margin-top: 4.5vh;
+            margin-left: -21.15vw;
+            margin-top: 6.2vh;
             width: 5vh;
             height: 4vh;
             background: none;
+            border: none;
+        }
+
+        .inspiration-on {
+            position: absolute;
+            z-index: 2;
+            height: 7vh;
+            width: 4.5vw;
+            margin-left: -22vw;
+            margin-top: 5.3vh;
         }
 
         .inspiration-img {
