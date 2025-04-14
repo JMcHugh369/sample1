@@ -25,16 +25,16 @@ const PlayerView = () => {
 
     function openTab(event, tabName) {
         var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByclassNameName("tabcontent");
+        tabcontent = document.getElementsByclassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
         }
-        tablinks = document.getElementsByclassNameName("tablinks");
+        tablinks = document.getElementsByclassName("tablinks");
         for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].classNameName = tablinks[i].classNameName.replace(" active", "");
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
         document.getElementById(tabName).style.display = "block";
-        event.currentTarget.classNameName += " active";
+        event.currentTarget.className += " active";
     }
 
     return (
@@ -46,7 +46,7 @@ const PlayerView = () => {
                 <div className="playerside">
                     <header className="sheet-header">
                         <img className="sheet-pc-image" src={adventurer} />
-        //The character name, level, species, className, and background should all be saved and displayed here if already saved.
+        //The character name, level, species, class, and background should all be saved and displayed here if already saved.
 
         //Clicking on the sheet-pc-image icon should allow the user to change the image of the icon.
                         <form>
@@ -61,7 +61,7 @@ const PlayerView = () => {
                     </header>
                     <div className="header2">
                         <form>
-                            <input type="text" className="char-className" placeholder="className..." />
+                            <input type="text" className="char-class" placeholder="Class..." />
                         </form>
                         <form>
                             <input type="text" className="char-bg" placeholder="Background..." />
@@ -230,8 +230,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("action-items");
                                     parent.appendChild(actionName);
 
-                                    actionName.classNameList.add("action-name");
-                                    actionDesc.classNameList.add("action-desc");
+                                    actionName.classList.add("action-name");
+                                    actionDesc.classList.add("action-desc");
 
                                     actionName.placeholder = "Name...";
                                     actionDesc.placeholder = "Description..."
@@ -257,8 +257,8 @@ const PlayerView = () => {
                                         var parent = document.getElementById("spell-items");
                                         parent.appendChild(spellName);
 
-                                        spellName.classNameList.add("spell-name");
-                                        spellDesc.classNameList.add("spell-desc");
+                                        spellName.classList.add("spell-name");
+                                        spellDesc.classList.add("spell-desc");
 
                                         spellName.placeholder = "Name...";
                                         spellDesc.placeholder = "Description..."
@@ -288,8 +288,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("f-items");
                                     parent.appendChild(fName);
 
-                                    fName.classNameList.add("f-name");
-                                    fDesc.classNameList.add("f-desc");
+                                    fName.classList.add("f-name");
+                                    fDesc.classList.add("f-desc");
 
                                     fName.placeholder = "Name...";
                                     fDesc.placeholder = "Description..."
@@ -318,8 +318,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("t-items");
                                     parent.appendChild(tName);
 
-                                    tName.classNameList.add("t-name");
-                                    tDesc.classNameList.add("t-desc");
+                                    tName.classList.add("t-name");
+                                    tDesc.classList.add("t-desc");
 
                                     tName.placeholder = "Name...";
                                     tDesc.placeholder = "Description..."
@@ -374,8 +374,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("inventory-items");
                                     parent.appendChild(invName);
 
-                                    invName.classNameList.add("inv-name");
-                                    invDesc.classNameList.add("inv-desc");
+                                    invName.classList.add("inv-name");
+                                    invDesc.classList.add("inv-desc");
 
                                     invName.placeholder = "Name...";
                                     invDesc.placeholder = "Description..."
@@ -405,8 +405,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("feature-items");
                                     parent.appendChild(featureName);
 
-                                    featureName.classNameList.add("feature-name");
-                                    featureDesc.classNameList.add("feature-desc");
+                                    featureName.classList.add("feature-name");
+                                    featureDesc.classList.add("feature-desc");
 
                                     featureName.placeholder = "Name...";
                                     featureDesc.placeholder = "Description..."
@@ -434,8 +434,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("bg-items");
                                     parent.appendChild(bgName);
 
-                                    bgName.classNameList.add("bg-name");
-                                    bgDesc.classNameList.add("bg-desc");
+                                    bgName.classList.add("bg-name");
+                                    bgDesc.classList.add("bg-desc");
 
                                     bgName.placeholder = "Name...";
                                     bgDesc.placeholder = "Description..."
@@ -461,8 +461,8 @@ const PlayerView = () => {
                                     var parent = document.getElementById("extra-items");
                                     parent.appendChild(extraName);
 
-                                    extraName.classNameList.add("extra-name");
-                                    extraDesc.classNameList.add("extra-desc");
+                                    extraName.classList.add("extra-name");
+                                    extraDesc.classList.add("extra-desc");
 
                                     extraName.placeholder = "Name...";
                                     extraDesc.placeholder = "Description...";
