@@ -5,6 +5,13 @@ import wizard from "../asset/prof-pics/wizard.png";
 import mapplaceholder from "../asset/mapplaceholder.png";
 import crystalball from "../asset/gameside/crystalball.png";
 import minimap from "../asset/gameside/minimap.png";
+import imgd4 from "../asset/gameside/d4.png";
+import imgd6 from "../asset/gameside/d6.png";
+import imgd8 from "../asset/gameside/d8.png";
+import imgd10 from "../asset/gameside/d10.png";
+import imgd12 from "../asset/gameside/d12.png";
+import imgd20 from "../asset/gameside/d20.png";
+import imgd100 from "../asset/gameside/d100.png";
 
 const GameView = () => {
     const [showMapButton, setShowMapButton] = useState(false);
