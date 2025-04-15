@@ -4,6 +4,25 @@
         outline: none;
     }
 
+    .extra-button-class {
+        font-family: "Cinzel Decorative", serif;
+            font-weight: 800;
+            font-style: normal;
+            background: rgb(241, 236, 227);
+            border-radius: .5vh;
+            margin: .5vh;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            font-size: 2vh;
+            padding-left: .3vw;
+            padding-right: .3vw;
+    }
+
+    .extra-button-class:active {
+        background: rgb(233, 228, 217);
+    }
+
     font-family: "Cinzel Decorative", serif;
     font-weight: 700;
     font-style: normal;
@@ -457,6 +476,7 @@
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
         background: rgba(217, 208, 192, 0.624);
         width: 15vw;
+        max-height: 36vh;
         margin-left: 18vw;
         margin-top: 1vh;
         overflow: scroll;
@@ -744,7 +764,7 @@
         position: absolute;
         z-index: 7;
         width: 14vw;
-        height: 30vh;
+        max-height: 35vh;
         border-radius: 1vh;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
             rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -831,10 +851,26 @@
             font-size: 2vh;
             width: 1.5vw;
         }
+
+        .extra-button-class {
+            font-family: "Cinzel Decorative", serif;
+            font-weight: 800;
+            font-style: normal;
+            background: rgb(241, 236, 227);
+            border-radius: .5vh;
+            margin: .5vh;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+                rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            font-size: 2vh;
+            width: 1.5vw;
+        }
     
         button:active {
             background: rgb(233, 228, 217);
         }
+
+       
     }
     
     .char-notes {
