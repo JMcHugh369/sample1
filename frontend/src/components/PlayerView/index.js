@@ -1,7 +1,6 @@
 import "./index.scss";
 import Nav from "../Nav";
 import GameView from "../GameView";
-import wizard from "../asset/prof-pics/wizard.png";
 import str from "../asset/charsheet/str.png";
 import dex from "../asset/charsheet/dex.png";
 import con from "../asset/charsheet/con.png";
@@ -20,21 +19,23 @@ import speed from "../asset/charsheet/speed.png";
 import initiativemod from "../asset/charsheet/initiativemod.png";
 import inspoff from "../asset/charsheet/inspoff.png";
 import inspon from "../asset/charsheet/insp-on-btn.png";
+import bagtop from "../asset/charsheet/bag-top.png";
+import profbonus from "../asset/charsheet/profbonus.png";
 
 const PlayerView = () => {
 
-    function openTab(event, tabName) {
+    function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByclassName("tabcontent");
+        tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
         }
-        tablinks = document.getElementsByclassName("tablinks");
+        tablinks = document.getElementsByClassName("tablinks");
         for (i = 0; i < tablinks.length; i++) {
             tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
         document.getElementById(tabName).style.display = "block";
-        event.currentTarget.className += " active";
+        evt.currentTarget.className += " active";
     }
 
     return (
@@ -43,184 +44,187 @@ const PlayerView = () => {
             <GameView />
 
             <main>
-                <div className="playerside">
-                    <header className="sheet-header">
-                        <img className="sheet-pc-image" src={adventurer} />
-        //The character name, level, species, class, and background should all be saved and displayed here if already saved.
-
-        //Clicking on the sheet-pc-image icon should allow the user to change the image of the icon.
+                <div class="playerside">
+                    <header class="sheet-header">
+                        <img class="sheet-pc-image" src={adventurer} 
+                        />
                         <form>
-                            <input type="text" className="char-name" placeholder="Name..." />
+                            <input type="text" class="char-name" placeholder="Name..." />
                         </form>
                         <form>
-                            <input type="text" className="char-lvl" placeholder="Level..." />
+                            <input type="text" class="char-lvl" placeholder="Level..." />
                         </form>
                         <form>
-                            <input type="text" className="char-species" placeholder="Species..." />
+                            <input type="text" class="char-species" placeholder="Species..." />
                         </form>
                     </header>
-                    <div className="header2">
+                    <div class="header2">
                         <form>
-                            <input type="text" className="char-class" placeholder="Class..." />
+                            <input type="text" class="char-class" placeholder="Class..." />
                         </form>
                         <form>
-                            <input type="text" className="char-bg" placeholder="Background..." />
+                            <input type="text" class="char-bg" placeholder="Background..." />
                         </form>
                     </div>
 
 
-//Abilities should also be saved and displayed if saved.  Anything in the sheet that's already saved should be displayed as it was last saved.
-                    <sidebar className="abilities">
-                        <div className="abil-img">
-                            <img className="str-img" src={str} />
-                            <img className="dex-img" src={dex} />
-                            <img className="con-img" src={con} />
-                            <img className="int-img" src={int} />
-                            <img className="wis-img" src={wis} />
-                            <img className="cha-img" src={cha} />
-                            <img className="percep-img" src={perception}
+
+                    <sidebar class="abilities">
+                        <div class="abil-img">
+                            <img class="str-img" src={str} />
+                            <img class="dex-img" src={dex} />
+                            <img class="con-img" src={con} />
+                            <img class="int-img" src={int} />
+                            <img class="wis-img" src={wis} />
+                            <img class="cha-img" src={cha} />
+                            <img class="percep-img" src={perception} />
                         </div>
 
-                        <form className="form-str">
+                        <form class="form-str">
 
-                            <input type="text" className="str" placeholder="0" />
-                            <input type="text" className="str-mod" placeholder="0" />
+                            <input type="text" class="str-mod" placeholder="0" />
+                            <input type="text" class="str" placeholder="0" />
                         </form>
 
                         <form>
 
-                            <input type="text" className="dex" placeholder="0" />
-                            <input type="text" className="dex-mod" placeholder="0" />
+                            <input type="text" class="dex-mod" placeholder="0" />
+                            <input type="text" class="dex" placeholder="0" />
                         </form>
                         <form>
 
-                            <input type="text" className="con" placeholder="0" />
-                            <input type="text" className="con-mod" placeholder="0" />
+                            <input type="text" class="con-mod" placeholder="0" />
+                            <input type="text" class="con" placeholder="0" />
                         </form>
 
                         <form>
-                            <input type="text" className="int" placeholder="0" />
-                            <input type="text" className="int-mod" placeholder="0" />
+                            <input type="text" class="int-mod" placeholder="0" />
+                            <input type="text" class="int" placeholder="0" />
                         </form>
                         <form>
 
-                            <input type="text" className="wis" placeholder="0" />
-                            <input type="text" className="wis-mod" placeholder="0" />
+                            <input type="text" class="wis-mod" placeholder="0" />
+                            <input type="text" class="wis" placeholder="0" />
                         </form>
                         <form>
 
-                            <input type="text" className="cha" placeholder="0" />
-                            <input type="text" className="cha-mod" placeholder="0" />
+                            <input type="text" class="cha-mod" placeholder="0" />
+                            <input type="text" class="cha" placeholder="0" />
                         </form>
 
                         <form>
-                            <input type="text" className="passive-perception" placeholder="0" />
+                            <input type="text" class="passive-perception" placeholder="0" />
                         </form>
 
                     </sidebar>
 
-                    <div className="top-middle">
-                        <img className="ac-img" src={ac} />
+                    <div class="top-middle">
+                        <img class="ac-img" src={ac} />
                         <form>
-                            <input type="text" className="ac" placeholder="0" />
+                            <input type="text" class="ac" placeholder="0" />
                         </form>
-                        <img className="init-img" src={initiativemod} />
+                        <img class="init-img" src={initiativemod} />
                         <form>
-                            <input type="text" className="init" placeholder="0" />
+                            <input type="text" class="init" placeholder="0" />
                         </form>
-                        <img className="spd-img" src={speed} />
+                        <img class="spd-img" src={speed} />
                         <form>
-                            <input type="text" className="spd" placeholder="0" />
+                            <input type="text" class="spd" placeholder="0" />
                         </form>
+                        <img class="prof-bonus-img" src={profbonus} />
+                        <form>
+                            <input type="text" class="prof-bonus" placeholder="0" />
+                        </form>
+
                         <img className="inspiration-img" src={inspoff} />
                         <div>
                             <button className="inspiration" onClick={
                                 () => {
-                                        var x = document.getElementById("insp-off");
-                                        if (x.style.display === "none") {
-                                          x.style.display = "block";
-                                        } else {
-                                          x.style.display = "none";
-                                        }
+                                    var x = document.getElementById("insp-off");
+                                    if (x.style.display === "none") {
+                                        x.style.display = "block";
+                                    } else {
+                                        x.style.display = "none";
+                                    }
                                 }
                             } />
                         </div>
                         <div id="insp-off">
-                            <img className="inspiration-on" src={inspon} />
+                            <img class="inspiration-on" src={inspon} />
                         </div>
                     </div>
 
-        //Need to be able to click on the bullet of a specific skill to change that bullet to be filled in
-                    <div className="skills">
+                    <div class="skills">
                         <ul>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Acrobatics (Dex)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Animal Handling (Wis)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Arcana (Int)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Athletics (Str)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Deception (Cha)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> History (Int)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Insight (Wis)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Intimidation (Cha)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Investigation (Int)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Medicine (Wis)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Nature (Int)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Perception (Wis)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Performance (Cha)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Persuasion (Cha)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Religion (Int)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Sleight of Hand (Dex)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Stealth (Dex)</li>
-                            <li><input className="skill-num" type="text" placeholder="0"/> Survival (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Acrobatics (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Animal Handling (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Arcana (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Athletics (Str)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Deception (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> History (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Insight (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Intimidation (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Investigation (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Medicine (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Nature (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Perception (Wis)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Performance (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Persuasion (Cha)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Religion (Int)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Sleight of Hand (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Stealth (Dex)</li>
+                            <li><input class="skill-num" type="text" placeholder="0" /> Survival (Wis)</li>
                         </ul>
+
                     </div>
 
-                    <div className="center-center">
-                        <div className="hp-container">
-                            <input type="text" className="curr-hp" placeholder="0" />/<span><input type="text" className="max-hp" placeholder="0" /></span>
-                            <br /><input type="text" className="temp-hp" placeholder="- -" />
+                    <div class="center-center">
+                        <div class="hp-container">
+                            <p>Hit Points</p>
+                            <input type="text" class="curr-hp" placeholder="0" />/<span><input type="text" class="max-hp" placeholder="0" /></span>
+                            <br /><input type="text" class="temp-hp" placeholder="- -" /><span class="temp">Temp HP</span>
                         </div>
-                        <div className="center-other">
+                        <div class="center-other">
 
-                            <input type="text" className="conditions" placeholder="conditions..." />
-                            <input type="text" className="defenses" placeholder="defenses..." />
+                            <input type="text" class="conditions" placeholder="conditions..." />
+                            <input type="text" class="defenses" placeholder="defenses..." />
 
                         </div>
                     </div>
 
-        //for these, we still need a minus button to delete an action or a spell, etc.
-                    <div className="bottom-center">
+                    <div class="bottom-center">
 
-                        <div className="tab">
-                            <button className="tablinks" onClick={
+                        <div class="tab">
+                            <button class="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Actions")
                                 }
                             }
                             >Actions</button>
-                            <button className="tablinks" onClick={
+                            <button class="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Spells")
                                 }
                             }
                             >Spells</button>
-                            <button className="tablinks" onClick={
+                            <button class="tablinks" onClick={
 
                                 (event) => {
-                                    openTab(event, "Features")
+                                    openTab(event, "Proficiencies")
                                 }
-                            }>Features</button>
-                            <button className="tablinks" onClick={
+                            }>Proficiencies</button>
+                            <button class="tablinks" onClick={
 
                                 (event) => {
-                                    openTab(event, "Traits")
+                                    openTab(event, "Other")
                                 }
-                            }>Traits</button>
+                            }>Other</button>
                         </div>
 
-                        <div id="Actions" className="tabcontent">
-                            <h3>Actions <span><button className="add-actions" onClick={
+                        <div id="Actions" class="tabcontent">
+                            <h3>Actions <span><button class="add-actions" onClick={
                                 () => {
                                     var actionName = document.createElement("input");
                                     var actionDesc = document.createElement("input");
@@ -238,6 +242,32 @@ const PlayerView = () => {
 
                                     var parent = document.getElementById("action-items");
                                     parent.appendChild(actionDesc);
+  
+                                    var actionBtn = document.createElement("extra-btn");
+
+                                    actionBtn.textContent = "+";
+                                    actionBtn.classList.add("extra-button-class");
+                                    actionBtn.setAttribute('type', 'button');
+
+                                    actionBtn.addEventListener('click', function () {
+
+                                        var actionDesc = document.createElement("input");
+
+                                        actionDesc.setAttribute('type', 'text');
+
+                                        actionDesc.classList.add("action-desc");
+
+                                        actionDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("action-items");
+                                        parent.appendChild(actionDesc);
+
+                                        parent.insertBefore(actionDesc, actionBtn);
+                                    });
+
+                                    var parent = document.getElementById("action-items");
+                                    parent.appendChild(actionBtn);
+                                   
                                 }
                             }>+</button>
                             </span></h3>
@@ -246,27 +276,52 @@ const PlayerView = () => {
                             </div>
                         </div>
 
-                        <div id="Spells" className="tabcontent">
-                            <h3>Spells <span><button className="add-spells" onClick={
-                                    () => {
-                                        var spellName = document.createElement("input");
+                        <div id="Spells" class="tabcontent">
+                            <h3>Spells <span><button class="add-spells" onClick={
+                                () => {
+                                    var spellName = document.createElement("input");
+                                    var spellDesc = document.createElement("input");
+                                    spellName.setAttribute('type', 'text');
+                                    spellDesc.setAttribute('type', 'text');
+
+                                    var parent = document.getElementById("spell-items");
+                                    parent.appendChild(spellName);
+
+                                    spellName.classList.add("spell-name");
+                                    spellDesc.classList.add("spell-desc");
+
+                                    spellName.placeholder = "Name...";
+                                    spellDesc.placeholder = "Description..."
+
+                                    var parent = document.getElementById("spell-items");
+                                    parent.appendChild(spellDesc);
+
+                                    var spellBtn = document.createElement("spell-extra-btn");
+
+                                    spellBtn.textContent = "+";
+                                    spellBtn.classList.add("extra-button-class");
+                                    spellBtn.setAttribute('type', 'button');
+
+                                    spellBtn.addEventListener('click', function () {
+
                                         var spellDesc = document.createElement("input");
-                                        spellName.setAttribute('type', 'text');
+
                                         spellDesc.setAttribute('type', 'text');
 
-                                        var parent = document.getElementById("spell-items");
-                                        parent.appendChild(spellName);
-
-                                        spellName.classList.add("spell-name");
                                         spellDesc.classList.add("spell-desc");
 
-                                        spellName.placeholder = "Name...";
                                         spellDesc.placeholder = "Description..."
 
                                         var parent = document.getElementById("spell-items");
                                         parent.appendChild(spellDesc);
-                                    }
+
+                                        parent.insertBefore(spellDesc, spellBtn);
+                                    });
+
+                                    var parent = document.getElementById("spell-items");
+                                    parent.appendChild(spellBtn);
                                 }
+                            }
                             >+</button>
                             </span></h3>
 
@@ -276,28 +331,53 @@ const PlayerView = () => {
 
                         </div>
 
-                        <div id="Features" className="tabcontent">
-                            <h3>Features <span>
-                                <button className="add-f" onClick={
-                                () => {
-                                    var fName = document.createElement("input");
-                                    var fDesc = document.createElement("input");
-                                    fName.setAttribute('type', 'text');
-                                    fDesc.setAttribute('type', 'text');
+                        <div id="Proficiencies" class="tabcontent">
+                            <h3>Proficiencies <span>
+                                <button class="add-f" onClick={
+                                    () => {
+                                        var fName = document.createElement("input");
+                                        var fDesc = document.createElement("input");
+                                        fName.setAttribute('type', 'text');
+                                        fDesc.setAttribute('type', 'text');
+
+                                        var parent = document.getElementById("f-items");
+                                        parent.appendChild(fName);
+
+                                        fName.classList.add("f-name");
+                                        fDesc.classList.add("f-desc");
+
+                                        fName.placeholder = "Name...";
+                                        fDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("f-items");
+                                        parent.appendChild(fDesc);
+
+                                        var fBtn = document.createElement("f-extra-btn");
+
+                                    fBtn.textContent = "+";
+                                    fBtn.classList.add("extra-button-class");
+                                    fBtn.setAttribute('type', 'button');
+
+                                    fBtn.addEventListener('click', function () {
+
+                                        var fDesc = document.createElement("input");
+
+                                        fDesc.setAttribute('type', 'text');
+
+                                        fDesc.classList.add("f-desc");
+
+                                        fDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("f-items");
+                                        parent.appendChild(fDesc);
+
+                                        parent.insertBefore(fDesc, fBtn);
+                                    });
 
                                     var parent = document.getElementById("f-items");
-                                    parent.appendChild(fName);
-
-                                    fName.classList.add("f-name");
-                                    fDesc.classList.add("f-desc");
-
-                                    fName.placeholder = "Name...";
-                                    fDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("f-items");
-                                    parent.appendChild(fDesc);
-                                }
-                            }>+</button>
+                                    parent.appendChild(fBtn);
+                                    }
+                                }>+</button>
                             </span></h3>
 
                             <div id="f-items">
@@ -306,28 +386,53 @@ const PlayerView = () => {
 
                         </div>
 
-                        <div id="Traits" className="tabcontent">
-                            <h3>Traits <span>
-                                <button className="add-traits" onClick={
-                                () => {
-                                    var tName = document.createElement("input");
-                                    var tDesc = document.createElement("input");
-                                    tName.setAttribute('type', 'text');
-                                    tDesc.setAttribute('type', 'text');
+                        <div id="Other" class="tabcontent">
+                            <h3>Other <span>
+                                <button class="add-traits" onClick={
+                                    () => {
+                                        var tName = document.createElement("input");
+                                        var tDesc = document.createElement("input");
+                                        tName.setAttribute('type', 'text');
+                                        tDesc.setAttribute('type', 'text');
+
+                                        var parent = document.getElementById("t-items");
+                                        parent.appendChild(tName);
+
+                                        tName.classList.add("t-name");
+                                        tDesc.classList.add("t-desc");
+
+                                        tName.placeholder = "Name...";
+                                        tDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("t-items");
+                                        parent.appendChild(tDesc);
+
+                                        var tBtn = document.createElement("t-extra-btn");
+
+                                    tBtn.textContent = "+";
+                                    tBtn.classList.add("extra-button-class");
+                                    tBtn.setAttribute('type', 'button');
+
+                                    tBtn.addEventListener('click', function () {
+
+                                        var tDesc = document.createElement("input");
+
+                                        tDesc.setAttribute('type', 'text');
+
+                                        tDesc.classList.add("t-desc");
+
+                                        tDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("t-items");
+                                        parent.appendChild(tDesc);
+
+                                        parent.insertBefore(tDesc, tBtn);
+                                    });
 
                                     var parent = document.getElementById("t-items");
-                                    parent.appendChild(tName);
-
-                                    tName.classList.add("t-name");
-                                    tDesc.classList.add("t-desc");
-
-                                    tName.placeholder = "Name...";
-                                    tDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("t-items");
-                                    parent.appendChild(tDesc);
-                                }
-                            }>+</button>
+                                    parent.appendChild(tBtn);
+                                    }
+                                }>+</button>
                             </span></h3>
 
                             <div id="t-items">
@@ -338,33 +443,31 @@ const PlayerView = () => {
 
 
                     </div>
-        
-                    <div className="inventory-container">
-                      <div className="currency-img">
-                            <img className="platinum-img" src={platinum} />
-                            <img className="gold-img" src={gold} />
-                            <img className="electrum-img" src={electrum} />
-                            <img className="silver-img" src={silver} />
-                            <img className="copper-img" src={copper} />
+
+                    <div class="inventory-container">
+                        <div class="currency-img">
+                            <img class="platinum-img" src={platinum} />
+                            <img class="gold-img" src={gold} />
+                            <img class="electrum-img" src={electrum} />
+                            <img class="silver-img" src={silver} />
+                            <img class="copper-img" src={copper} />
                         </div>
-                        <div className="currency-name">
+                        <div class="currency-name">
                             <p>P</p>
                             <p>G</p>
                             <p>E</p>
                             <p>S</p>
                             <p>C</p>
                         </div>
-                        <div className="currency">
-                            <input type="text" className="platinum" placeholder="0" />
-                            <input type="text" className="gold" placeholder="0" />
-                            <input type="text" className="electrum" placeholder="0" />
-                            <input type="text" className="silver" placeholder="0" />
-                            <input type="text" className="copper" placeholder="0" />
+                        <div class="currency">
+                            <input type="text" class="platinum" placeholder="0" />
+                            <input type="text" class="gold" placeholder="0" />
+                            <input type="text" class="electrum" placeholder="0" />
+                            <input type="text" class="silver" placeholder="0" />
+                            <input type="text" class="copper" placeholder="0" />
                         </div>
-        //still need a button to delete inventory item, and need to figure out how to let input overflow onto next line instead of overflowing
-        //to a horozontal scroll.
                         <p>Inventory<span>
-                            <button className="add-inventory" onClick={
+                            <button class="add-inventory" onClick={
                                 () => {
                                     var invName = document.createElement("input");
                                     var invDesc = document.createElement("input");
@@ -382,20 +485,44 @@ const PlayerView = () => {
 
                                     var parent = document.getElementById("inventory-items");
                                     parent.appendChild(invDesc);
+
+                                    var invBtn = document.createElement("inv-extra-btn");
+
+                                    invBtn.textContent = "+";
+                                    invBtn.classList.add("extra-button-class");
+                                    invBtn.setAttribute('type', 'button');
+
+                                    invBtn.addEventListener('click', function () {
+
+                                        var invDesc = document.createElement("input");
+
+                                        invDesc.setAttribute('type', 'text');
+
+                                        invDesc.classList.add("inv-desc");
+
+                                        invDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("inventory-items");
+                                        parent.appendChild(invDesc);
+
+                                        parent.insertBefore(invDesc, invBtn);
+                                    });
+
+                                    var parent = document.getElementById("inventory-items");
+                                    parent.appendChild(invBtn);
                                 }
                             }>+</button>
                         </span></p>
                         <div id="inventory-items">
 
                         </div>
-        
+
+
                     </div>
 
-       //still need a button to delete items, and need to figure out how to let input overflow onto next line instead of overflowing
-        //to a horozontal scroll.
-                    <div className="feature-container">
+                    <div class="feature-container">
                         <p>Features/Traits <span>
-                            <button className="add-features" onClick={
+                            <button class="add-features" onClick={
                                 () => {
                                     var featureName = document.createElement("input");
                                     var featureDesc = document.createElement("input");
@@ -413,6 +540,31 @@ const PlayerView = () => {
 
                                     var parent = document.getElementById("feature-items");
                                     parent.appendChild(featureDesc);
+                                    
+                                    var featureBtn = document.createElement("feature-extra-btn");
+
+                                    featureBtn.textContent = "+";
+                                    featureBtn.classList.add("extra-button-class");
+                                    featureBtn.setAttribute('type', 'button');
+
+                                    featureBtn.addEventListener('click', function () {
+
+                                        var featureDesc = document.createElement("input");
+
+                                        featureDesc.setAttribute('type', 'text');
+
+                                        featureDesc.classList.add("feature-desc");
+
+                                        featureDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("feature-items");
+                                        parent.appendChild(featureDesc);
+
+                                        parent.insertBefore(featureDesc, featureBtn);
+                                    });
+
+                                    var parent = document.getElementById("feature-items");
+                                    parent.appendChild(featureBtn);
                                 }
                             }>+</button>
                         </span></p>
@@ -424,7 +576,7 @@ const PlayerView = () => {
 
 
                         <p>Background <span>
-                            <button className="add-bg" onClick={
+                            <button class="add-bg" onClick={
                                 () => {
                                     var bgName = document.createElement("input");
                                     var bgDesc = document.createElement("input");
@@ -442,6 +594,31 @@ const PlayerView = () => {
 
                                     var parent = document.getElementById("bg-items");
                                     parent.appendChild(bgDesc);
+
+                                    var bgBtn = document.createElement("bg-extra-btn");
+
+                                    bgBtn.textContent = "+";
+                                    bgBtn.classList.add("extra-button-class");
+                                    bgBtn.setAttribute('type', 'button');
+
+                                    bgBtn.addEventListener('click', function () {
+
+                                        var bgDesc = document.createElement("input");
+
+                                        bgDesc.setAttribute('type', 'text');
+
+                                        bgDesc.classList.add("bg-desc");
+
+                                        bgDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("bg-items");
+                                        parent.appendChild(bgDesc);
+
+                                        parent.insertBefore(bgDesc, bgBtn);
+                                    });
+
+                                    var parent = document.getElementById("bg-items");
+                                    parent.appendChild(bgBtn);
                                 }
                             }>+</button>
                         </span></p>
@@ -451,7 +628,7 @@ const PlayerView = () => {
                         </div>
 
                         <p>Extra <span>
-                            <button className="add-extra" onClick={
+                            <button class="add-extra" onClick={
                                 () => {
                                     var extraName = document.createElement("input");
                                     var extraDesc = document.createElement("input");
@@ -469,6 +646,31 @@ const PlayerView = () => {
 
                                     var parent = document.getElementById("extra-items");
                                     parent.appendChild(extraDesc);
+
+                                    var exBtn = document.createElement("ex-extra-btn");
+
+                                    exBtn.textContent = "+";
+                                    exBtn.classList.add("extra-button-class");
+                                    exBtn.setAttribute('type', 'button');
+
+                                    exBtn.addEventListener('click', function () {
+
+                                        var exDesc = document.createElement("input");
+
+                                        exDesc.setAttribute('type', 'text');
+
+                                        exDesc.classList.add("extra-desc");
+
+                                        exDesc.placeholder = "Description..."
+
+                                        var parent = document.getElementById("extra-items");
+                                        parent.appendChild(exDesc);
+
+                                        parent.insertBefore(exDesc, exBtn);
+                                    });
+
+                                    var parent = document.getElementById("extra-items");
+                                    parent.appendChild(exBtn);
                                 }
                             }>+</button>
                         </span></p>
@@ -479,13 +681,6 @@ const PlayerView = () => {
 
                     </div>
 
-                    <div className="char-notes">
-        //The character notes will act similarly to the notes on the right (gameview), with notes being added by the player to be
-        //displayed above the input.  All character notes will be saved, and they can scroll up to view the previous notes.
-                        <p>Character Notes</p>
-                        <input type="text" className="notes" placeholder="Notes..." />
-
-                    </div>
                 </div>
             </main>
         </>
