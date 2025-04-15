@@ -880,7 +880,7 @@ const GameView = () => {
                                 addToGameLog(4, rollD4);
                             }}
                         >
-                            <img className="d4-img" src="" alt=""/>d4
+                            <img className="d-img" src={imgd4}/>
                         </button>
 
                         <button className="d6"
@@ -890,7 +890,7 @@ const GameView = () => {
                                 addToGameLog(6, rollD6);
                             }}
                         >
-                            <img className="d6-img" src="" alt=""/>d6
+                            <img className="d-img" src={imgd6}/>
                         </button>
 
                         <button className="d8"
@@ -900,7 +900,7 @@ const GameView = () => {
                                 addToGameLog(8, rollD8);
                             }}
                         >
-                            <img className="d8-img" src="" alt=""/>d8
+                            <img className="d-img" src={imgd8}/>
                         </button>
 
                         <button className="d10"
@@ -910,7 +910,7 @@ const GameView = () => {
                                 addToGameLog(10, rollD10);
                             }}
                         >
-                            <img className="d10-img" src="" alt=""/>d10
+                            <img className="d-img" src={imgd10}/>
                         </button>
 
                         <button className="d12"
@@ -920,7 +920,7 @@ const GameView = () => {
                                 addToGameLog(12, rollD12);
                             }}
                         >
-                            <img className="d12-img" src="" alt=""/>d12
+                            <img className="d-img" src={imgd12}/>
                         </button>
 
                         <button className="d20"
@@ -930,7 +930,7 @@ const GameView = () => {
                                 addToGameLog(20, rollD20);
                             }}
                         >
-                            <img className="d20-img" src="" alt=""/>d20
+                            <img className="d-img" src={imgd20}/>
                         </button>
                         <button className="d100"
                             onClick={() => {
@@ -939,7 +939,7 @@ const GameView = () => {
                                 addToGameLog(100, rollD100);
                             }}
                         >
-                            <img className="d100-img" src="" alt=""/>d100
+                           <img className="d-img" src={imgd100}/>
                         </button>
                     </div>
                 </div>
