@@ -1,7 +1,7 @@
 import "./index.scss";
 import Nav from "../Nav";
 import GameView from "../GameView";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import wizard from "../asset/prof-pics/wizard.png";
 import map from "../asset/gameside/minimap.png";
 import adventurer from "../asset/dmside/adventurer.png";
@@ -9,35 +9,177 @@ import addmonster from "../asset/dmside/add-monster.png";
 import addnpc from "../asset/dmside/add-npc.png";
 
 const DMView = () => {
-
+    // State management
     const [monsters, setMonsters] = useState([]);
+    const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
+    const [dndMonsters, setDndMonsters] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredMonsters, setFilteredMonsters] = useState([]);
+    const [selectedMonster, setSelectedMonster] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [maps, setMaps] = useState([]); // To store map images
+    const [mapInfoVisible, setMapInfoVisible] = useState(false);
+    const [selectedMap, setSelectedMap] = useState(null);
+
+    // Refs
+    const searchRef = useRef(null);
+    const fileInputRef = useRef(null);
+
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    // Fetch all monsters from D&D API on component mount
+    useEffect(() => {
+        const fetchMonsters = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('https://www.dnd5eapi.co/api/monsters');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch monsters list');
+                }
+                const data = await response.json();
+                setDndMonsters(data.results);
+                setLoading(false);
+            } catch (err) {
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        fetchMonsters();
+    }, []);
+
+    // Filter monsters based on search term
+    useEffect(() => {
+        if (searchTerm.trim() === '') {
+            setFilteredMonsters([]);
+            return;
+        }
+
+        const filtered = dndMonsters.filter(monster =>
+            monster.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            monster.index.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setFilteredMonsters(filtered);
+    }, [searchTerm, dndMonsters]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    // Fetch detailed monster data
+    const fetchMonsterDetails = async (index) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`https://www.dnd5eapi.co/api/monsters/${index}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch monster details');
+            }
+            const data = await response.json();
+            setSelectedMonster(data);
+
+            // Add monster to the list with the data from the API
+            addMonsterFromDnd(data);
+
+            setLoading(false);
+            setShowDropdown(false);
+            setSearchTerm('');
+            hideTokenInfo();
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
+
+    // Calculate ability modifier
+    const getAbilityModifier = (score) => {
+        const modifier = Math.floor((score - 10) / 2);
+        return modifier >= 0 ? `+${modifier}` : modifier;
+    };
 
     function minMonster() {
-        const viewMon = document.createElement('view-monster');
-        viewMon.className = "invisible";
+        const viewMon = document.getElementById('view-monster');
+        if (viewMon) {
+            viewMon.className = "invisible";
+        }
     }
 
     function upMonster() {
-        const viewMon = document.createElement('view-monster');
-        viewMon.className = "visible";
+        const viewMon = document.getElementById('view-monster');
+        if (viewMon) {
+            viewMon.className = "visible";
+        }
+    }
+
+    function showTokenInfo() {
+        setTokenInfoVisible(true);
+    }
+
+    function hideTokenInfo() {
+        setTokenInfoVisible(false);
     }
 
     function viewPC() {
-
+        // Your existing function
     }
 
-    function addMap() {
+    // Function to handle file selection for maps
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file && file.type === 'image/png') {
+            const reader = new FileReader();
 
+            reader.onload = (e) => {
+                const newMap = {
+                    id: Date.now(), // Unique ID for the map
+                    src: e.target.result, // Base64 data URL of the image
+                    name: file.name
+                };
+
+                setMaps([...maps, newMap]);
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            alert('Please select a PNG image file.');
+        }
+    }
+
+    // Function to trigger file input click
+    function addMap() {
+        fileInputRef.current.click();
+    }
+
+    // Functions for map info popup
+    function viewMapInfo(map) {
+        setSelectedMap(map);
+        setMapInfoVisible(true);
+    }
+
+    function closeMapInfo() {
+        setMapInfoVisible(false);
     }
 
     function addNPC() {
-
+        // Your existing function
     }
-
 
     function addMonster() {
         var popup = document.getElementById("add-monster");
-        popup.classList.toggle("show");
+        if (popup) {
+            popup.classList.toggle("show");
+        }
 
         const monster = {
             name: "New Monster",
@@ -52,11 +194,72 @@ const DMView = () => {
             int: "int",
             wis: "wis",
             cha: "cha"
-
         };
 
         setMonsters([...monsters, monster]);
+    }
 
+    // Add a monster from the D&D API data
+    function addMonsterFromDnd(monsterData) {
+        // Create a monster object from the API data
+        const monster = {
+            id: monsterData.index,
+            name: monsterData.name,
+            size: monsterData.size,
+            alignment: monsterData.alignment,
+            ac: monsterData.armor_class[0].value,
+            hp: monsterData.hit_points,
+            spd: Object.entries(monsterData.speed)
+                .map(([type, value]) => `${type} ${value}`)
+                .join(', '),
+            str: monsterData.strength,
+            dex: monsterData.dexterity,
+            con: monsterData.constitution,
+            int: monsterData.intelligence,
+            wis: monsterData.wisdom,
+            cha: monsterData.charisma,
+            // Add additional properties
+            challengeRating: monsterData.challenge_rating,
+            xp: monsterData.xp,
+            type: monsterData.type,
+            // Include full monster data for reference
+            fullData: monsterData
+        };
+
+        // Add to monsters state
+        setMonsters(prevMonsters => [...prevMonsters, monster]);
+
+        // Show the monster view panel with the monster data
+        setSelectedMonster(monsterData);
+        upMonster();
+    }
+
+    // View a specific monster's details
+    function viewMonsterDetails(monster) {
+        if (monster.fullData) {
+            setSelectedMonster(monster.fullData);
+        } else {
+            setSelectedMonster({
+                name: monster.name,
+                size: monster.size,
+                alignment: monster.alignment,
+                armor_class: [{ value: monster.ac }],
+                hit_points: monster.hp,
+                speed: { walk: monster.spd },
+                strength: monster.str,
+                dexterity: monster.dex,
+                constitution: monster.con,
+                intelligence: monster.int,
+                wisdom: monster.wis,
+                charisma: monster.cha
+            });
+        }
+        upMonster();
+    }
+
+    // Delete a monster
+    function deleteMonster(id) {
+        setMonsters(monsters.filter((monster, index) => index !== id));
     }
 
     return (
@@ -64,185 +267,627 @@ const DMView = () => {
             <Nav />
             <GameView />
 
-          
-                <div class="dm-side">
-                    <div class="monsters">
-                        <div>
-        //The Dm should be able to add monsters with the add monsters button, and on clicking this button, a new monster token to the right
-        //Will appear, and the view-monster tab should appear.  When the minimize button is clicked on the view-monster tab, it should disappear.
-        //It should be hidden by default.  The user can edit info about the monster there, including the monster's image, which will show up on
-        //The monster's token.  The npcs class has the same concept, and really all that's different is that it will say "NPC instead of "Monster".
+            <div className="dm-side">
+                <div className="monsters">
+                    <div className="monsters-content">
+                        <div className="monsters-title-content">
                             <p>Monsters</p>
-                            <img class="img-frame" src=""></img>
-                            <img class="dm-token-img" src=""></img>
-                            <img class="img-frame" src=""></img>
-                            <button class="add-monster" onClick={
-                                () => {
-                                    upMonster();
-                                }
-                            }
-                            ><img class="add-monster-img" src={addmonster} />
+                        </div>
+                        <div className="monsters-token-content">
+                            {monsters.map((monster, index) => (
+                                <div key={index} className="monster-token">
+                                    {/* Will get the image from API */}
+                                    <img
+                                    
+                                        className="dm-token-img"
+                                        src={monster.fullData && monster.fullData.image 
+                                            ? `https://www.dnd5eapi.co${monster.fullData.image}` 
+                                            : addmonster}
+                                        alt={monster.name}
+                                        onClick={() => viewMonsterDetails(monster)}
+                                    />
+                                    <div className="monster-token-name">{monster.name}</div>
+                                </div>
+                            ))}
+                            <button className="add-monsters" onClick={showTokenInfo}>
+                                <img className="add-monsters-img" src={addmonster} alt="Add Monster" />
                             </button>
                         </div>
                     </div>
-                    <div class="npcs">
-                        <div>
-                            <p>NPCs</p>
-                            <img class="img-frame" src=""></img>
-                            <img class="dm-token-img" src=""></img>
-                            <img class="img-frame" src=""></img>
-                            <button class="add-npc"
-                                onclick={
-                                    () => {
-                                        addNPC();
-                                    }
-                                }
-                            ><img class="add-npc-img" src={addnpc} />
-                            </button>
-                        </div>
-                    </div>
-                    <div class="dmview-pcs">
-                        <div>
-                            <p>Player Characters</p>
-                            <img class="img-frame" src=""></img>
-                            <img class="dm-token-img" src=""></img>
-                            <button class="view-pc"
-                                onclick={
-                                    () => {
-                                        viewPC();
-                                    }
-                                }
-                            ><img class="view-pc-img" src={adventurer} />
-                            </button>
-                        </div>
-                    </div>
-                    <div class="maps">
-                        <div>
-                            <p>Maps</p>
-                            <img class="dm-map" src=""></img>
-                            <img class="add-map-img" src=""></img>
-                            <button class="dm-add-map"
-                                onclick={
-                                    () => {
-                                        addMap();
-                                    }
-                                }
-                        ><img class="add-map-img" src={map} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="invisible" id="view-monster">
-
-                        <button class="minimize-monster"
-                        onclick={
-                            () => {
-                                minMonster();
-                            }
-                        }
-                        >-</button>
-
-                        <form class="monster-basics">
-                            <input type="text" name="monster-name" placeholder="Monster Name..." />
-                            <div class="size-align">
-                                <input type="text" name="monster-size" placeholder="size" />
-                                <input type="text" name="monster-alignment" placeholder="alignment" />
-                            </div>
-                            Armor Class <input type="text" name="monster-ac" placeholder="0" />
-                            Hit Points <input type="text" name="monster-hp" placeholder="0" />
-                            Speed <input type="text" name="monster-spd" placeholder="0" />
-                        </form>
-
-                        <form class="monster-stats">
-
-                            <div>
-                                <div>STR</div>
-                                <input type="text" name="monster-str" placeholder="0" />
-                            </div>
-
-                            <div>
-                                <div>DEX</div>
-                                <input type="text" name="monster-dex" placeholder="0" />
-                            </div>
-                            <div>
-                                <div>CON</div>
-                                <input type="text" name="monster-con" placeholder="0" />
-                            </div>
-
-                            <div>
-                                <div>INT</div>
-                                <input type="text" name="monster-int" placeholder="0" />
-                            </div>
-
-                            <div>
-                                <div>WIS</div>
-                                <input type="text" name="monster-wis" placeholder="0" />
-                            </div>
-
-                            <div>
-                                <div>CHA</div>
-                                <input type="text" name="monster-cha" placeholder="0" />
-                            </div>
-
-                        </form>
-
-                        <form class="monster-details">
-                            <div>
-                            Saving Throws <input type="text" name="monster-saves" placeholder="Add Saves..."/>
-                            </div>
-                            <div>
-                            Skills <input type="text" name="monster-skills" placeholder="Add Skills..."/>
-                            </div>
-                            <div>
-                            Senses <input type="text" name="monster-senses" placeholder="Add Senses..."/>
-                            </div>
-                            <div>
-                            Languages <input type="text" name="monster-languages" placeholder="Add Languages..."/>
-                            </div>
-                            <div>
-                            Challenge <input type="text" name="monster-challenge" placeholder="Add Challenge Rating..."/>
-                            </div>
-                        </form>
-//The + button for monster-abilities should add input field for Name and Description for the user to fill out.  Just like how the player can
-                                //add multiple abilities etc., the monster or npc can have as many abilities as the user wants.
-                        <form class="monster-abilities">
-                            <p>Abilities</p>
-                            <input type="text" name="monster-ability-name" placholder="Name..."/>
-                            <input type="text" name="monster-ability" placholder="Descr..." />
-                            <button id="new-monster-ability">+</button>
-                        </form>
-//Same concept for Actions and Reactions, with an input field for Name and Description when the + button is clicked.
-                        <h1>Actions</h1>
-                        <form class="monster-actions-form">
-                            <input type="text" name="monster-action-name" placeholder="Name..." />
-                            <input type="text" name="monster-action" placeholder="Descr..." />
-                            <button id="new-monster-action">+</button>
-                        </form>
-
-                        <h1>Reactions</h1>
-                        <form class="monster-reactions-form">
-                            <input type="text" name="monster-reaction-name" placeholder="Name..." />
-                            <input type="text" name="monster-reaction" placeholder="Descr..." />
-                            <button id="new-monster-reaction">+</button>
-                        </form>
-
-                    </div>
-//There should be as many view-pc icons as player characters, with each image correlating to that player's character's image.
-                                //clicking on a player icon will display a mini version of the character sheet that the dm can expand to
-                                //look at, and minimize.
-                    <div class="view-pc">
-
-                    </div>
-//view-map is a bit of a misnomer, it's an add map button allowing the dm to add map images.  They should display to the right of the add
-                            //button.  Clicking on a map should maximize it for the dm, and they should be allowed to delete it from there,
-                                //or minimize.
-                    <div class="view-map">
-
-                    </div>
-
                 </div>
-         
+                <div className="npcs">
+                    <div className="npcs-content">
+                        <div className="npcs-title-content">
+                            <p>NPCs</p>
+                        </div>
+                        <div className="npcs-token-content">
+                            <img className="img-frame" src="" alt=""></img>
+                            <img className="dm-token-img" src="" alt=""></img>
+                            <img className="img-frame" src="" alt=""></img>
+                            {/* Is NPCs going to be created then and there or will it be based on a upload?*/}
+                            <button className="add-npc" onClick={addNPC}>
+                                <img className="add-npc-img" src={addnpc} alt="" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className="dmview-pcs">
+                    <div className="pc-content">
+                        <div className="pc-title-content">
+                            <p>Player Characters</p>
+                        </div>
+                        <div className="pc-token-content">
+                            <img className="img-frame" src="" alt=""></img>
+                            <img className="dm-token-img" src="" alt=""></img>
+                            <button className="view-pc" onClick={viewPC}>
+                                <img className="view-pc-img" src={adventurer} alt=""/>
+                                {/* When room is created with players, it needs to populate from where ever the information is being stored.
+                                        Program should then loop and fill it from the left side of "view-pc-img".
+                                */}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className="maps">
+                    <div className="maps-content">
+                        <div className="maps-title-content">
+                            <p>Maps</p>
+                        </div>
+                        <div className="maps-token-content">
+                            {/* Display uploaded maps */}
+                            {maps.map(mapItem => (
+                                <div key={mapItem.id} className="map-item">
+                                    <img
+                                        className="map-thumbnail"
+                                        src={mapItem.src}
+                                        alt={mapItem.name}
+                                        onClick={() => viewMapInfo(mapItem)}
+                                    />
+                                    <div className="map-name">{mapItem.name}</div>
+                                </div>
+                            ))}
 
+                            {/* Hidden file input */}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                className="hidden-file-input"
+                                accept="image/png"
+                                onChange={handleFileSelect}
+                            />
+
+                            {/* When the button gets clicked, it allows the user to select a png they have from their device to be uploaded 
+                                and stored (database). Then the user can expand and see this map
+                                LATER IMPLEMENTATIONS: DMVIEW needs to communicate with GAMEVIEW to show the map selection it can do
+                                 */}
+                            <button className="dm-add-map" onClick={addMap}>
+                                <img className="add-map-img" src={map} alt=""/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Monster Search Modal */}
+                {tokenInfoVisible && (
+                    <div className="token-info-popup">
+                        <div className="token-info-popup-top">
+                            <div className="token-info-title">Add Monster</div>
+                            <button
+                                className="close-token-info"
+                                onClick={hideTokenInfo}
+                            >
+                                x
+                            </button>
+                        </div>
+
+                        <div className="token-info-popup-bottom">
+                            <div className="monster-search-container" ref={searchRef}>
+                                <div className="search-instructions">
+                                    Search for Monster
+                                </div>
+
+                                <div className="search-box">
+                                    <input
+                                        type="text"
+                                        className="monster-search-input"
+                                        placeholder="Search monsters (e.g., 'dragon', 'black', 'adult')..."
+                                        value={searchTerm}
+                                        onChange={(e) => {
+                                            setSearchTerm(e.target.value);
+                                            setShowDropdown(true);
+                                        }}
+                                        onFocus={() => setShowDropdown(true)}
+                                    />
+                                </div>
+
+                                {loading && (
+                                    <div className="search-loading">Loading monsters...</div>
+                                )}
+
+                                {error && (
+                                    <div className="search-error">Error: {error}</div>
+                                )}
+
+                                {showDropdown && filteredMonsters.length > 0 && (
+                                    <ul className="search-results-dropdown">
+                                        {filteredMonsters.map((monster) => (
+                                            <li
+                                                key={monster.index}
+                                                className="search-result-item"
+                                                onClick={() => fetchMonsterDetails(monster.index)}
+                                            >
+                                                {monster.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+
+                                {searchTerm && showDropdown && filteredMonsters.length === 0 && !loading && (
+                                    <div className="no-results">
+                                        No monsters found matching '{searchTerm}'
+                                    </div>
+                                )}
+
+                                {/* Create Custom Monster button commented out, could not get it to work, may not be needed, unless bending the rules?*/}
+                                {/* <div className="search-options">
+                                    <button className="custom-monster-btn" onClick={() => {
+                                        addMonster();
+                                        hideTokenInfo();
+                                        upMonster();
+                                    }}>
+                                        Create Custom Monster
+                                    </button>
+                                </div> */}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Monster Details View */}
+                <div className={selectedMonster ? "visible" : "invisible"} id="view-monster">
+                    <div className="view-monster-top">
+                        <div className="view-monster-title">{selectedMonster?.name}</div>
+                        <button className="minimize-monster" onClick={minMonster}>-</button>
+                    </div>
+
+                    <div className="view-monster-bottom">
+                        {selectedMonster && (
+                            <>
+                                <form className="monster-basics">
+                                    <input
+                                        type="text"
+                                        name="monster-name"
+                                        value={selectedMonster.name}
+                                        readOnly={!!selectedMonster.index}
+                                        onChange={(e) => {
+                                            setSelectedMonster({ ...selectedMonster, name: e.target.value });
+                                        }}
+                                    />
+
+                                    <div className="size-align">
+                                        <input
+                                            type="text"
+                                            name="monster-size"
+                                            value={selectedMonster.size}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, size: e.target.value });
+                                            }}
+                                        />
+                                        <input
+                                            type="text"
+                                            name="monster-alignment"
+                                            value={selectedMonster.alignment}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, alignment: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                    Armor Class
+                                    <input
+                                        type="text"
+                                        name="monster-ac"
+                                        value={selectedMonster.armor_class[0].value || selectedMonster.ac}
+                                        readOnly={!!selectedMonster.index}
+                                        onChange={(e) => {
+                                            setSelectedMonster({
+                                                ...selectedMonster,
+                                                armor_class: [{ value: e.target.value }]
+                                            });
+                                        }}
+                                    />
+                                    Hit Points
+                                    <input
+                                        type="text"
+                                        name="monster-hp"
+                                        value={selectedMonster.hit_points || selectedMonster.hp}
+                                        readOnly={!!selectedMonster.index}
+                                        onChange={(e) => {
+                                            setSelectedMonster({ ...selectedMonster, hit_points: e.target.value });
+                                        }}
+                                    />
+                                    Speed
+                                    <input
+                                        type="text"
+                                        name="monster-spd"
+                                        value={
+                                            selectedMonster.speed
+                                                ? (typeof selectedMonster.speed === 'object'
+                                                    ? Object.entries(selectedMonster.speed)
+                                                        .map(([type, value]) => `${type} ${value}`)
+                                                        .join(', ')
+                                                    : selectedMonster.speed)
+                                                : ''
+                                        }
+                                        readOnly={!!selectedMonster.index}
+                                        onChange={(e) => {
+                                            setSelectedMonster({ ...selectedMonster, speed: e.target.value });
+                                        }}
+                                    />
+                                </form>
+
+                                <form className="monster-stats">
+                                    <div>
+                                        <div>STR</div>
+                                        <input
+                                            type="text"
+                                            name="monster-str"
+                                            value={selectedMonster.strength || selectedMonster.str}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, strength: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div>DEX</div>
+                                        <input
+                                            type="text"
+                                            name="monster-dex"
+                                            value={selectedMonster.dexterity || selectedMonster.dex}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, dexterity: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div>CON</div>
+                                        <input
+                                            type="text"
+                                            name="monster-con"
+                                            value={selectedMonster.constitution || selectedMonster.con}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, constitution: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div>INT</div>
+                                        <input
+                                            type="text"
+                                            name="monster-int"
+                                            value={selectedMonster.intelligence || selectedMonster.int}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, intelligence: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div>WIS</div>
+                                        <input
+                                            type="text"
+                                            name="monster-wis"
+                                            value={selectedMonster.wisdom || selectedMonster.wis}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, wisdom: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div>CHA</div>
+                                        <input
+                                            type="text"
+                                            name="monster-cha"
+                                            value={selectedMonster.charisma || selectedMonster.cha}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, charisma: e.target.value });
+                                            }}
+                                        />
+                                    </div>
+                                </form>
+
+                                {selectedMonster.index && (
+                                    <form className="monster-details">
+                                        {selectedMonster.proficiencies && selectedMonster.proficiencies.some(prof => prof.proficiency.name.includes('Saving Throw')) && (
+                                            <div>
+                                                Saving Throws
+                                                <input
+                                                    type="text"
+                                                    name="monster-saves"
+                                                    value={selectedMonster.proficiencies
+                                                        .filter(prof => prof.proficiency.name.includes('Saving Throw'))
+                                                        .map(prof => `${prof.proficiency.name.split(':')[1].trim()} +${prof.value}`)
+                                                        .join(', ')}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        )}
+
+                                        {selectedMonster.proficiencies && selectedMonster.proficiencies.some(prof => prof.proficiency.name.includes('Skill')) && (
+                                            <div>
+                                                Skills
+                                                <input
+                                                    type="text"
+                                                    name="monster-skills"
+                                                    value={selectedMonster.proficiencies
+                                                        .filter(prof => prof.proficiency.name.includes('Skill'))
+                                                        .map(prof => `${prof.proficiency.name.split(':')[1].trim()} +${prof.value}`)
+                                                        .join(', ')}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        )}
+
+                                        {selectedMonster.senses && (
+                                            <div>
+                                                Senses
+                                                <input
+                                                    type="text"
+                                                    name="monster-senses"
+                                                    value={Object.entries(selectedMonster.senses)
+                                                        .map(([sense, value]) => `${sense.replace(/_/g, ' ')} ${value}`)
+                                                        .join(', ')}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        )}
+
+                                        {selectedMonster.languages && (
+                                            <div>
+                                                Languages
+                                                <input
+                                                    type="text"
+                                                    name="monster-languages"
+                                                    value={selectedMonster.languages}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        )}
+
+                                        {selectedMonster.challenge_rating !== undefined && (
+                                            <div>
+                                                Challenge
+                                                <input
+                                                    type="text"
+                                                    name="monster-challenge"
+                                                    value={`${selectedMonster.challenge_rating} (${selectedMonster.xp.toLocaleString()} XP)`}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        )}
+                                    </form>
+                                )}
+
+                                {!selectedMonster.index && (
+                                    <form className="monster-details">
+                                        <div>
+                                            Saving Throws
+                                            <input
+                                                type="text"
+                                                name="monster-saves"
+                                                placeholder="Add Saves..."
+                                            />
+                                        </div>
+                                        <div>
+                                            Skills
+                                            <input
+                                                type="text"
+                                                name="monster-skills"
+                                                placeholder="Add Skills..."
+                                            />
+                                        </div>
+                                        <div>
+                                            Senses
+                                            <input
+                                                type="text"
+                                                name="monster-senses"
+                                                placeholder="Add Senses..."
+                                            />
+                                        </div>
+                                        <div>
+                                            Languages
+                                            <input
+                                                type="text"
+                                                name="monster-languages"
+                                                placeholder="Add Languages..."
+                                            />
+                                        </div>
+                                        <div>
+                                            Challenge
+                                            <input
+                                                type="text"
+                                                name="monster-challenge"
+                                                placeholder="Add Challenge Rating..."
+                                            />
+                                        </div>
+                                    </form>
+                                )}
+
+                                {/* Special Abilities */}
+                                {selectedMonster.index && selectedMonster.special_abilities && selectedMonster.special_abilities.length > 0 && (
+                                    <div className="monster-abilities">
+                                        <p>Abilities</p>
+                                        {selectedMonster.special_abilities.map((ability, index) => (
+                                            <div key={index} className="monster-ability-item">
+                                                <input
+                                                    type="text"
+                                                    name={`monster-ability-name-${index}`}
+                                                    value={ability.name}
+                                                    readOnly
+                                                />
+                                                <input
+                                                    type="text"
+                                                    name={`monster-ability-${index}`}
+                                                    value={ability.desc}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {!selectedMonster.index && (
+                                    <form className="monster-abilities">
+                                        <p>Abilities</p>
+                                        <input type="text" name="monster-ability-name" placeholder="Name..." />
+                                        <input type="text" name="monster-ability" placeholder="Descr..." />
+                                        <button id="new-monster-ability">+</button>
+                                    </form>
+                                )}
+
+                                {/* Actions */}
+                                <h1>Actions</h1>
+                                {selectedMonster.index && selectedMonster.actions && selectedMonster.actions.length > 0 && (
+                                    <div className="monster-actions">
+                                        {selectedMonster.actions.map((action, index) => (
+                                            <div key={index} className="monster-action-item">
+                                                <input
+                                                    type="text"
+                                                    name={`monster-action-name-${index}`}
+                                                    value={action.name}
+                                                    readOnly
+                                                />
+                                                <input
+                                                    type="text"
+                                                    name={`monster-action-${index}`}
+                                                    value={action.desc}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {!selectedMonster.index && (
+                                    <form className="monster-actions-form">
+                                        <input type="text" name="monster-action-name" placeholder="Name..." />
+                                        <input type="text" name="monster-action" placeholder="Descr..." />
+                                        <button id="new-monster-action">+</button>
+                                    </form>
+                                )}
+
+                                {/* Legendary Actions */}
+                                {selectedMonster.index && selectedMonster.legendary_actions && selectedMonster.legendary_actions.length > 0 && (
+                                    <div className="monster-legendary-actions">
+                                        <h1>Legendary Actions</h1>
+                                        <p className="legendary-description">
+                                            The {selectedMonster.name.toLowerCase()} can take 3 legendary actions, choosing from the options below.
+                                            Only one legendary action option can be used at a time and only at the end of another creature's turn.
+                                            The {selectedMonster.name.toLowerCase()} regains spent legendary actions at the start of its turn.
+                                        </p>
+                                        {selectedMonster.legendary_actions.map((action, index) => (
+                                            <div key={index} className="monster-legendary-action-item">
+                                                <input
+                                                    type="text"
+                                                    name={`monster-legendary-action-name-${index}`}
+                                                    value={action.name}
+                                                    readOnly
+                                                />
+                                                <input
+                                                    type="text"
+                                                    name={`monster-legendary-action-${index}`}
+                                                    value={action.desc}
+                                                    readOnly
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Reactions */}
+                                {selectedMonster.index && selectedMonster.reactions && selectedMonster.reactions.length > 0 && (
+                                    <>
+                                        <h1>Reactions</h1>
+                                        <div className="monster-reactions">
+                                            {selectedMonster.reactions.map((reaction, index) => (
+                                                <div key={index} className="monster-reaction-item">
+                                                    <input
+                                                        type="text"
+                                                        name={`monster-reaction-name-${index}`}
+                                                        value={reaction.name}
+                                                        readOnly
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name={`monster-reaction-${index}`}
+                                                        value={reaction.desc}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+
+                                {!selectedMonster.index && (
+                                    <>
+                                        <h1>Reactions</h1>
+                                        <form className="monster-reactions-form">
+                                            <input type="text" name="monster-reaction-name" placeholder="Name..." />
+                                            <input type="text" name="monster-reaction" placeholder="Descr..." />
+                                            <button id="new-monster-reaction">+</button>
+                                        </form>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* Map Info Popup */}
+                {mapInfoVisible && selectedMap && (
+                    <div className="map-info-popup">
+                        <div className="map-info-popup-top">
+                            <div className="map-info-title">{selectedMap.name}</div>
+                            <button
+                                className="close-map-info"
+                                onClick={closeMapInfo}
+                            >
+                                x
+                            </button>
+                        </div>
+
+                        <div className="map-info-popup-bottom">
+                            <img
+                                className="map-info-image"
+                                src={selectedMap.src}
+                                alt={selectedMap.name}
+                            />
+                        </div>
+                    </div>
+                )}
+                
+
+                {/* Did not end up using this, maybe delete later */}
+                <div className="view-pc">
+                    {/* existing view-pc content */}
+                </div>
+
+                <div className="map-list">
+                    {/* existing map-list content */}
+                </div>
+            </div>
         </>
     )
 }
