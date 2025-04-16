@@ -4,22 +4,16 @@
   font-family: "Cinzel Decorative", serif;
   font-weight: 700;
   font-style: normal;
-
   text-align: center;
-
-  background: rgb(183, 170, 153);
-
+  background: rgb(200, 180, 152);
   height: 100vh;
   width: 50vw;
-  background: rgb(200, 180, 152);
-
   margin-top: -101vh;
-
   resize: horizontal;
-
   position: absolute;
-
-  overflow: scroll;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 
   input {
     outline: none;
@@ -35,74 +29,153 @@ form {
   width: 15vw;
   margin-top: 1.5vh;
   margin-left: 1.5vw;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ================================================
+   MONSTER ROW
+   ================================================ */
 .monsters {
   display: flex;
-
-  align-items: center;
-
-  p {
-    margin-bottom: 0;
-    font-size: 2.5vh;
-    margin-left: 1.5vw;
-    text-align: left;
+  width: 100%;
+  
+  .monsters-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .monsters-title-content {
+    display: flex;
+    width: 100%;
+    
+    p {
+      margin-bottom: 0;
+      font-size: 2.5vh;
+      margin-left: 1.5vw;
+      text-align: left;
+    }
+  }
+  
+  .monsters-token-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
-  .add-monster {
+  .monster-token {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 1vw 2vh 0;
+    
+    .dm-token-img {
+      height: 15vh;
+      width: 15vh;
+      border-radius: 50vh;
+      object-fit: cover;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+      }
+    }
+    
+    .monster-token-name {
+      margin-top: 0.5vh;
+      font-size: 1.8vh;
+      color: #4a2511;
+      max-width: 15vh;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .add-monsters {
     height: 15.5vh;
     width: 15.5vh;
     border-radius: 50vh;
-
     margin-bottom: 2.5vh;
-
     display: flex;
-    justify-content: space-between;
-
+    justify-content: center;
     margin-left: 1vw;
-
     border: none;
     background: none;
-
     align-items: center;
+    transition: transform 0.2s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.05);
+      .add-monsters-img {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+      }
+    }
   }
 
-  .add-monster-img {
+  .add-monsters-img {
     height: 15vh;
     width: 15vh;
     border-radius: 50vh;
     outline: none;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
+    transition: box-shadow 0.2s ease-in-out;
   }
 }
 
+/* ================================================
+   NPCS ROW
+   ================================================ */
 .npcs {
   display: flex;
-  align-items: center;
-
-  p {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 2.5vh;
-    margin-left: 1.5vw;
-    text-align: left;
+  width: 100%;
+  
+  .npcs-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .npcs-title-content {
+    display: flex;
+    width: 100%;
+    
+    p {
+      margin-bottom: 0;
+      font-size: 2.5vh;
+      margin-left: 1.5vw;
+      text-align: left;
+    }
+  }
+  
+  .npcs-token-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .add-npc {
     height: 15.5vh;
     width: 15.5vh;
     border-radius: 50vh;
-
     display: flex;
-    justify-content: space-between;
-
+    justify-content: center;
     margin-left: 1vw;
-
     border: none;
     background: none;
-
     align-items: center;
+    transition: transform 0.2s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.05);
+      .add-npc-img {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+      }
+    }
   }
 
   .add-npc-img {
@@ -112,36 +185,60 @@ form {
     outline: none;
     margin-top: 0;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
+    transition: box-shadow 0.2s ease-in-out;
   }
 }
 
+/* ================================================
+   PLAYER CHARACTERS ROW
+   ================================================ */
 .dmview-pcs {
   display: flex;
-  align-items: center;
-
-  p {
-    margin-top: 2.5vh;
-    margin-bottom: 0;
-    font-size: 2.5vh;
-    margin-left: 1.5vw;
-    text-align: left;
+  width: 100%;
+  
+  .pc-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .pc-title-content {
+    display: flex;
+    width: 100%;
+    
+    p {
+      margin-top: 2.5vh;
+      margin-bottom: 0;
+      font-size: 2.5vh;
+      margin-left: 1.5vw;
+      text-align: left;
+    }
+  }
+  
+  .pc-token-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .view-pc {
     height: 15.5vh;
     width: 15.5vh;
     border-radius: 50vh;
-
     display: flex;
-    justify-content: space-between;
-
+    justify-content: center;
     margin-left: 1vw;
-
     border: none;
     background: none;
-
     align-items: center;
+    transition: transform 0.2s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.05);
+      .view-pc-img {
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+      }
+    }
   }
 
   .view-pc-img {
@@ -150,49 +247,236 @@ form {
     border-radius: 50vh;
     outline: none;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
+    transition: box-shadow 0.2s ease-in-out;
   }
 }
 
-.maps {
-
-  p {
-    margin-bottom: -15vh;
-    font-size: 2.5vh;
-    margin-left: 1.5vw;
-    text-align: left;
-  }
-
-  .dm-add-map {
-    height: 15.5vh;
-    width: 15.5vh;
-
-
+/* ================================================
+   MAPS ROW - UPDATED
+   ================================================ */
+   .maps {
     display: flex;
-    justify-content: space-between;
-
-    margin-left: 1vw;
-
-    margin-top: 15vh;
-
-    outline: none;
-    align-items: center;
-
-    background: none;
-    border: none;
+    width: 100%;
+    
+    .maps-content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .maps-title-content {
+      display: flex;
+      width: 100%;
+      
+      p {
+        margin-bottom: 0;
+        font-size: 2.5vh;
+        margin-left: 1.5vw;
+        text-align: left;
+        width: 100%;
+      }
+    }
+    
+    .maps-token-content {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  
+    .map-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 1vw 2vh 0;
+      
+      .map-thumbnail {
+        height: 15vh;
+        width: 25vh;
+        object-fit: cover;
+        border-radius: 1vh;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        }
+      }
+      
+      .map-name {
+        margin-top: 0.5vh;
+        font-size: 1.8vh;
+        color: #4a2511;
+        max-width: 25vh;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  
+    .dm-add-map {
+      height: 15.5vh;
+      width: 15.5vh;
+      display: flex;
+      justify-content: center;
+      margin-left: 1vw;
+      margin-top: 1vh;
+      outline: none;
+      align-items: center;
+      background: none;
+      border: none;
+      transition: transform 0.2s ease-in-out;
+      
+      &:hover {
+        transform: scale(1.05);
+        .add-map-img {
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        }
+      }
+    }
+  
+    .add-map-img {
+      width: 40vh;
+      outline: none;
+      z-index: 11;
+      position: relative;
+      transition: box-shadow 0.2s ease-in-out;
+      border: none;
+      border-radius: 0;
+    }
+    
+    .hidden-file-input {
+      display: none; /* Hide the file input element */
+    }
+    
+    /* Full-size map view when clicked */
+    .map-fullsize {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      img {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 1vh;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .close-fullsize-map {
+        position: absolute;
+        top: 2vh;
+        right: 2vw;
+        height: 5vh;
+        width: 5vh;
+        font-size: 3vh;
+        border-radius: 50%;
+        border: none;
+        background: rgba(200, 180, 152, 0.8);
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        
+        &:hover {
+          background: rgba(220, 200, 172, 0.9);
+          transform: scale(1.1);
+        }
+      }
+    }
   }
 
-  .add-map-img {
-    width: 40vh;
-    outline: none;
-    z-index: 11;
+/* ================================================
+   MAP INFO POPUP
+   ================================================ */
+   .map-info-popup {
     position: absolute;
-    margin-left: -7vw;
-    margin-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    background: rgb(220, 213, 204);
+    width: 90%;
+    height: 80%;
+    top: 10%;
+    left: 5%;
+    z-index: 1000;
+    border-radius: 1vh;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  }
+  
+  .map-info-popup-top {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2vh 2vw;
+    flex: 0 0 auto;
+  }
+  
+  .map-info-popup-bottom {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2vh;
+    overflow: auto;
+  }
+  
+  .map-info-title {
+    font-size: 3vh;
+    color: rgb(160, 31, 31);
+    font-weight: bold;
+  }
+  
+  .close-map-info {
+    height: 4vh;
+    width: 4vh;
+    font-size: 2.5vh;
+    border-radius: 50%;
+    border: none;
+    background: rgb(200, 180, 152);
+    color: rgb(53, 28, 12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+    margin-left: 30vw;
+    
+    &:hover {
+      background: rgb(190, 170, 142);
+      transform: scale(1.05);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+    
+    &:active {
+      background: rgb(180, 160, 132);
+      transform: scale(0.98);
+    }
+  }
+  
+  .map-info-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 1vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
 
-}
-
+/* ================================================
+   FORM INPUTS 
+   ================================================ */
 input {
   height: 5vh;
 }
@@ -211,7 +495,6 @@ input[type='text'] {
   margin: 0;
   text-align: left;
   background: rgb(220, 213, 204);
-
 }
 
 input[name="monster-name"] {
@@ -255,118 +538,32 @@ input[name="monster-spd"] {
   text-align: left;
 }
 
+/* ================================================
+   MONSTER STATS 
+   ================================================ */
 .monster-stats {
   display: flex;
   width: 27.5vw;
-  display: flex;
-  margin-top: 1;
+  margin-top: 1vh;
   justify-content: space-around;
+  flex-direction: row;
+  
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-input[name="monster-str"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
-}
-
-input[name="monster-dex"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
-}
-
-input[name="monster-con"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
-}
-
-input[name="monster-int"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
-}
-
-input[name="monster-wis"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
-}
-
+input[name="monster-str"],
+input[name="monster-dex"],
+input[name="monster-con"],
+input[name="monster-int"],
+input[name="monster-wis"],
 input[name="monster-cha"] {
   width: 3.5vw;
   padding: 0.5vw;
   z-index: 0;
-}
-
-input[name="monster-saves"] {
-  width: 17.5vw;
-  margin-left: 0.5vw;
-  text-align: left;
-  z-index: 999;
-}
-
-input[name="monster-skills"] {
-  width: 17.5vw;
-  margin-left: 0.5vw;
-  text-align: left;
-  z-index: 999;
-}
-
-input[name="monster-senses"] {
-  width: 17.5vw;
-  margin-left: 0.5vw;
-  text-align: left;
-  z-index: 999;
-}
-
-input[name="monster-languages"] {
-  width: 17.5vw;
-  margin-left: 0.5vw;
-  text-align: left;
-  z-index: 999;
-}
-
-input[name="monster-challenge"] {
-  width: 17.5vw;
-  margin-left: 0.5vw;
-  text-align: left;
-  z-index: 999;
-}
-
-.size-align {
-  display: inline-block;
-  width: 20vw;
-
-}
-
-input[name="monster-alignment"] {
-  font-size: 1.75vh;
-  padding: 0;
-  margin: 0;
-}
-
-.minimize-monster {
-  color: rgb(53, 28, 12);
-  position: absolute;
-  margin-left: 13vw;
-  margin-top: 1vh;
-  font-size: 3vh;
-  background: rgb(241, 236, 227);
-  border-radius: 1vh;
-  border: none;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-
-}
-
-.minimize-monster:active {
-  background: rgb(233, 228, 217);
-}
-
-h1 {
-  font-size: 2.5vh;
-  text-align: left;
-  margin-left: 1.5vw;
 }
 
 .monster-details {
@@ -375,47 +572,396 @@ h1 {
   width: 30vw;
   text-align: left;
   margin-left: 1.5vw;
-
-}
-
-.monster-abilities {
-  p {
-    font-size: 2.5vh;
+  
+  div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5vh;
   }
 
+  input {
+    width: 17.5vw;
+    margin-left: 0.5vw;
+    text-align: left;
+    z-index: 999;
+  }
 }
 
+.size-align {
+  display: flex;
+  width: 20vw;
+  gap: 1vw;
+}
 
+/* ================================================
+   MONSTER VIEW - UPDATED
+   ================================================ */
+   #view-monster {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: rgb(220, 213, 204);
+    height: 65vh;
+    width: 35vw;
+    top: 25vh;
+    left: 12vw;
+    color: rgb(53, 28, 12);
+    overflow: hidden;
+    border-radius: 1vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  }
+  
+  .view-monster-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2vh 2vw;
+    background-color: rgba(200, 180, 152, 0.4);
+    border-bottom: 1px solid rgba(53, 28, 12, 0.2);
+  }
+  
+  .view-monster-title {
+    font-size: 3vh;
+    color: rgb(160, 31, 31);
+    font-weight: bold;
+  }
+  
+  .view-monster-bottom {
+    padding: 2vh;
+    overflow-y: auto;
+    height: calc(65vh - 10vh); /* Adjust based on top height */
+  }
+  
+  .minimize-monster {
+    color: rgb(53, 28, 12);
+    height: 4vh;
+    width: 4vh;
+    font-size: 2.5vh;
+    background: rgb(241, 236, 227);
+    border-radius: 50%;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      background: rgb(233, 228, 217);
+      transform: scale(1.05);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+    
+    &:active {
+      background: rgb(225, 220, 210);
+      transform: scale(0.98);
+    }
+  }
+  
+  .monster-image-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5vh 0;
+  }
+  
+  .monster-image {
+    max-width: 100%;
+    max-height: 20vh;
+    border-radius: 1vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  }
+  
+  /* Keep all other monster-related styles the same */
+  .monster-basics {
+    /* Existing styles */
+    width: 30vw;
+  }
+  
+  .monster-stats {
+    /* Existing styles */
+  }
+  
+  .monster-details {
+    /* Existing styles */
+  }
+  
+  .monster-abilities,
+  .monster-actions,
+  .monster-legendary-actions,
+  .monster-reactions {
+    margin-left: 0;  /* Remove left margin as we now have padding in the container */
+    margin-bottom: 2vh;
+  }
+  
+  /* Style headings consistently */
+  .view-monster-bottom h1 {
+    font-size: 2.5vh;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    color: rgb(160, 31, 31);
+    border-bottom: 1px solid rgba(53, 28, 12, 0.2);
+    padding-bottom: 0.5vh;
+  }
+  
+  /* Update input style in monster-name to remove redundancy */
+  input[name="monster-name"] {
+    display: none; /* Hide this since we now show the name in the title */
+  }
+  
+  /* Monster ability sections */
+  .monster-ability-item,
+  .monster-action-item,
+  .monster-legendary-action-item,
+  .monster-reaction-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1vh;
+    
+    input {
+      margin-bottom: 0.5vh;
+      
+      &:first-child {
+        font-weight: bold;
+        width: 10vw;
+      }
+      
+      &:nth-child(2) {
+        width: calc(100% - 2vw);  /* Account for container padding */
+      }
+    }
+  }
+  
+  .legendary-description {
+    font-size: 1.8vh;
+    font-style: italic;
+    color: #4a2511;
+    line-height: 1.4;
+    margin-bottom: 1vh;
+    width: 100%;
+  }
 
-#view-monster {
-
+/* ================================================
+   TOKEN INFO POPUP
+   ================================================ */
+.token-info-popup {
   position: absolute;
-  display: inline-block;
-
+  display: flex;
+  flex-direction: column;
   background: rgb(220, 213, 204);
-  height: 55vh;
-  width: 30vw;
-  top: 32.5vh;
-  left: 18.5vw;
-
-  font-size: 15vh;
-  line-height: .7;
-  color: rgb(53, 28, 12);
-
-  overflow: scroll;
-
+  width: 90%;
+  height: 80%;
+  top: 10%;
+  left: 5%;
+  z-index: 1000;
   border-radius: 1vh;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
 
+.token-info-popup-top {
+  position: relative;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2vh 2vw;
+  flex: 0 0 auto;
+}
+
+.token-info-popup-bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.token-info-title {
+  font-size: 3vh;
+  color: rgb(160, 31, 31);
+  font-weight: bold;
+}
+
+.close-token-info {
+  height: 4vh;
+  width: 4vh;
+  font-size: 2.5vh;
+  border-radius: 50%;
+  border: none;
+  background: rgb(200, 180, 152);
+  color: rgb(53, 28, 12);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    background: rgb(190, 170, 142);
+    transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  }
+  
+  &:active {
+    background: rgb(180, 160, 132);
+    transform: scale(0.98);
+  }
 }
 
+/* ================================================
+   MONSTER SEARCH
+   ================================================ */
+.monster-search-container {
+  position: relative;
+  width: 80%;
+  margin: 2vh auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .search-instructions {
+    text-align: center;
+    margin-bottom: 2vh;
+    font-size: 2.2vh;
+    color: #4a2511;
+    font-weight: bold;
+  }
+  
+  .search-box {
+    width: 100%;
+    margin-bottom: 2vh;
+    
+    .monster-search-input {
+      width: 100%;
+      height: 6vh;
+      padding: 0 2vw;
+      font-size: 2.2vh;
+      border: 2px solid #8c6e50;
+      border-radius: 3vh; /* Rounded rectangle style */
+      background: #f5f2ed;
+      color: #4a2511;
+      font-family: inherit;
+      
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(140, 110, 80, 0.5);
+        outline: none;
+      }
+    }
+  }
+  
+  .search-loading,
+  .search-error,
+  .no-results {
+    width: 100%;
+    padding: 1.5vh;
+    text-align: center;
+    color: #4a2511;
+    margin-bottom: 2vh;
+    border-radius: 0.8vh;
+  }
+  
+  .search-loading {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .search-error {
+    background: rgba(220, 50, 50, 0.15);
+    color: #b03030;
+  }
+  
+  .no-results {
+    background: rgba(255, 200, 100, 0.2);
+  }
+  
+  .search-results-dropdown {
+    position: absolute;
+    top: calc(4.4vh + 6vh);
+    left: 0;
+    width: 100%;
+    max-height: 40vh;
+    overflow-y: auto;
+    background: #f5f2ed;
+    border: 2px solid #8c6e50;
+    border-top: none;
+    border-radius: 0 0 2vh 2vh;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    
+    .search-result-item {
+      padding: 1.5vh 2vw;
+      cursor: pointer;
+      border-bottom: 1px solid #d9c8a9;
+      color: #4a2511;
+      font-size: 2vh;
+      text-align: left;
+      margin: 0.5vh;
+      border-radius: 1vh; /* Rounded box for each result */
+      transition: all 0.2s ease-in-out;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background: #e0d6c6;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+  
+  .search-options {
+    margin-top: 4vh;
+    display: flex;
+    justify-content: center;
+    
+    .custom-monster-btn {
+      padding: 1.5vh 3vw;
+      font-size: 2vh;
+      color: #fff;
+      background: #7b3f00;
+      border: none;
+      border-radius: 0.8vh;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease-in-out;
+      
+      &:hover {
+        background: #8c4a10;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
+      }
+      
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
 
-
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
 .visible {
   visibility: visible;
 }
 
+.invisible {
+  visibility: hidden;
+}
 
-.visible {
-  visibility: visible;
+.view-pc {
+  display: flex;
+}
+
+.map-list {
+  display: flex;
+  flex-wrap: wrap;
 }
