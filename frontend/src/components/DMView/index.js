@@ -1,3 +1,6 @@
+// The key changes are in the viewMonsterDetails function and the input fields
+// for AC, HP, and Speed to make them editable and update the state correctly
+
 import "./index.scss";
 import Nav from "../Nav";
 import GameView from "../GameView";
@@ -257,6 +260,80 @@ const DMView = () => {
         upMonster();
     }
 
+    // Update monster stats
+    function updateMonsterStat(statName, value) {
+        console.log(`Updating ${statName} to ${value}`); // Helpful for debugging
+        
+        // Update the selected monster
+        setSelectedMonster(prevMonster => {
+          const updatedMonster = { ...prevMonster };
+          
+          // Handle different stat properties appropriately
+          if (statName === 'ac') {
+            updatedMonster.armor_class = [{ value }];
+          } else if (statName === 'hp') {
+            updatedMonster.hit_points = value;
+          } else if (statName === 'spd') {
+            // For simplicity, we'll just update the 'walk' speed
+            if (typeof updatedMonster.speed === 'object') {
+              updatedMonster.speed = { 
+                ...updatedMonster.speed, // Preserve other speed types
+                walk: value 
+              };
+            } else {
+              updatedMonster.speed = value;
+            }
+          }
+          
+          return updatedMonster;
+        });
+      
+        // Update the monster in the monsters array to persist changes
+        setMonsters(prevMonsters => {
+          return prevMonsters.map(m => {
+            // Check if this is the monster we want to update
+            if (m.id === selectedMonster.index || 
+                (m.fullData && m.fullData.index === selectedMonster.index)) {
+              
+              const updatedMonster = { ...m };
+              
+              // Update the direct property
+              if (statName === 'ac') {
+                updatedMonster.ac = value;
+              } else if (statName === 'hp') {
+                updatedMonster.hp = value;
+              } else if (statName === 'spd') {
+                updatedMonster.spd = value;
+              }
+              
+              // IMPORTANT: Also update the nested fullData if it exists
+              if (updatedMonster.fullData) {
+                const updatedFullData = { ...updatedMonster.fullData };
+                
+                if (statName === 'ac' && updatedFullData.armor_class) {
+                  // Create a new array with the updated value
+                  updatedFullData.armor_class = [{ value }];
+                } else if (statName === 'hp') {
+                  updatedFullData.hit_points = value;
+                } else if (statName === 'spd' && updatedFullData.speed) {
+                  // Keep existing speeds but update 'walk'
+                  updatedFullData.speed = { 
+                    ...updatedFullData.speed,
+                    walk: value 
+                  };
+                }
+                
+                updatedMonster.fullData = updatedFullData;
+              }
+              
+              return updatedMonster;
+            }
+            
+            return m;
+          });
+        });
+      }
+
     // Delete a monster
     function deleteMonster(id) {
         setMonsters(monsters.filter((monster, index) => index !== id));
@@ -278,10 +355,10 @@ const DMView = () => {
                                 <div key={index} className="monster-token">
                                     {/* Will get the image from API */}
                                     <img
-                                    
+
                                         className="dm-token-img"
-                                        src={monster.fullData && monster.fullData.image 
-                                            ? `https://www.dnd5eapi.co${monster.fullData.image}` 
+                                        src={monster.fullData && monster.fullData.image
+                                            ? `https://www.dnd5eapi.co${monster.fullData.image}`
                                             : addmonster}
                                         alt={monster.name}
                                         onClick={() => viewMonsterDetails(monster)}
@@ -320,7 +397,7 @@ const DMView = () => {
                             <img className="img-frame" src="" alt=""></img>
                             <img className="dm-token-img" src="" alt=""></img>
                             <button className="view-pc" onClick={viewPC}>
-                                <img className="view-pc-img" src={adventurer} alt=""/>
+                                <img className="view-pc-img" src={adventurer} alt="" />
                                 {/* When room is created with players, it needs to populate from where ever the information is being stored.
                                         Program should then loop and fill it from the left side of "view-pc-img".
                                 */}
@@ -361,7 +438,7 @@ const DMView = () => {
                                 LATER IMPLEMENTATIONS: DMVIEW needs to communicate with GAMEVIEW to show the map selection it can do
                                  */}
                             <button className="dm-add-map" onClick={addMap}>
-                                <img className="add-map-img" src={map} alt=""/>
+                                <img className="add-map-img" src={map} alt="" />
                             </button>
                         </div>
                     </div>
@@ -454,77 +531,87 @@ const DMView = () => {
                         {selectedMonster && (
                             <>
                                 <form className="monster-basics">
-                                    <input
-                                        type="text"
-                                        name="monster-name"
-                                        value={selectedMonster.name}
-                                        readOnly={!!selectedMonster.index}
-                                        onChange={(e) => {
-                                            setSelectedMonster({ ...selectedMonster, name: e.target.value });
-                                        }}
-                                    />
+                                    <div className="monster-basics-top">
+                                        <input
+                                            type="text"
+                                            name="monster-name"
+                                            value={selectedMonster.name}
+                                            readOnly={!!selectedMonster.index}
+                                            onChange={(e) => {
+                                                setSelectedMonster({ ...selectedMonster, name: e.target.value });
+                                            }}
+                                        />
 
-                                    <div className="size-align">
-                                        <input
-                                            type="text"
-                                            name="monster-size"
-                                            value={selectedMonster.size}
-                                            readOnly={!!selectedMonster.index}
-                                            onChange={(e) => {
-                                                setSelectedMonster({ ...selectedMonster, size: e.target.value });
-                                            }}
-                                        />
-                                        <input
-                                            type="text"
-                                            name="monster-alignment"
-                                            value={selectedMonster.alignment}
-                                            readOnly={!!selectedMonster.index}
-                                            onChange={(e) => {
-                                                setSelectedMonster({ ...selectedMonster, alignment: e.target.value });
-                                            }}
-                                        />
+                                        <div className="size-align">
+                                            <input
+                                                type="text"
+                                                name="monster-size"
+                                                value={selectedMonster.size}
+                                                readOnly={!!selectedMonster.index}
+                                                onChange={(e) => {
+                                                    setSelectedMonster({ ...selectedMonster, size: e.target.value });
+                                                }}
+                                            />
+                                            <input
+                                                type="text"
+                                                name="monster-alignment"
+                                                value={selectedMonster.alignment}
+                                                readOnly={!!selectedMonster.index}
+                                                onChange={(e) => {
+                                                    setSelectedMonster({ ...selectedMonster, alignment: e.target.value });
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                    Armor Class
-                                    <input
-                                        type="text"
-                                        name="monster-ac"
-                                        value={selectedMonster.armor_class[0].value || selectedMonster.ac}
-                                        readOnly={!!selectedMonster.index}
-                                        onChange={(e) => {
-                                            setSelectedMonster({
-                                                ...selectedMonster,
-                                                armor_class: [{ value: e.target.value }]
-                                            });
-                                        }}
-                                    />
-                                    Hit Points
-                                    <input
-                                        type="text"
-                                        name="monster-hp"
-                                        value={selectedMonster.hit_points || selectedMonster.hp}
-                                        readOnly={!!selectedMonster.index}
-                                        onChange={(e) => {
-                                            setSelectedMonster({ ...selectedMonster, hit_points: e.target.value });
-                                        }}
-                                    />
-                                    Speed
-                                    <input
-                                        type="text"
-                                        name="monster-spd"
-                                        value={
-                                            selectedMonster.speed
-                                                ? (typeof selectedMonster.speed === 'object'
-                                                    ? Object.entries(selectedMonster.speed)
-                                                        .map(([type, value]) => `${type} ${value}`)
-                                                        .join(', ')
-                                                    : selectedMonster.speed)
-                                                : ''
-                                        }
-                                        readOnly={!!selectedMonster.index}
-                                        onChange={(e) => {
-                                            setSelectedMonster({ ...selectedMonster, speed: e.target.value });
-                                        }}
-                                    />
+
+                                    <div className="monster-basics-bottom">
+                                        <div className="stat-group">
+                                            <label htmlFor="monster-ac">Armor Class:</label>
+                                            <input
+                                                type="text"
+                                                id="monster-ac"
+                                                name="monster-ac"
+                                                value={selectedMonster.armor_class?.[0]?.value || selectedMonster.ac || ''}
+                                                onChange={(e) => {
+                                                    updateMonsterStat('ac', e.target.value);
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div className="stat-group">
+                                            <label htmlFor="monster-hp">Hit Points:</label>
+                                            <input
+                                                type="text"
+                                                id="monster-hp"
+                                                name="monster-hp"
+                                                value={selectedMonster.hit_points || selectedMonster.hp || ''}
+                                                onChange={(e) => {
+                                                    updateMonsterStat('hp', e.target.value);
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div className="stat-group">
+                                            <label htmlFor="monster-spd">Speed:</label>
+                                            <input
+                                                type="text"
+                                                id="monster-spd"
+                                                name="monster-spd"
+                                                value={
+                                                    selectedMonster.speed
+                                                        ? (typeof selectedMonster.speed === 'object'
+                                                            ? Object.entries(selectedMonster.speed)
+                                                                .map(([type, value]) => `${type} ${value}`)
+                                                                .join(', ')
+                                                            : selectedMonster.speed)
+                                                        : selectedMonster.spd || ''
+                                                }
+                                                onChange={(e) => {
+                                                    updateMonsterStat('spd', e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                 </form>
 
                                 <form className="monster-stats">
@@ -877,7 +964,7 @@ const DMView = () => {
                         </div>
                     </div>
                 )}
-                
+
 
                 {/* Did not end up using this, maybe delete later */}
                 <div className="view-pc">
