@@ -13,6 +13,8 @@ import imgd12 from "../asset/gameside/d12.png";
 import imgd20 from "../asset/gameside/d20.png";
 import imgd100 from "../asset/gameside/d100.png";
 
+
+
 const GameView = () => {
     const [showMapButton, setShowMapButton] = useState(false);
     const [showExpandedMap, setShowExpandedMap] = useState(false);
@@ -230,7 +232,7 @@ const GameView = () => {
     // Creating chat-related state variables
     const [isChatSlideOut, setChatSlideOut] = useState(false);
     const [selectedChatPlayer, setSelectedChatPlayer] = useState(null);
-    {/**Later will need to communicate a loop into database to load up players */}
+    {/**Later will need to communicate a loop into database to load up players */ }
     const [playerChatMessages, setPlayerChatMessages] = useState({
         "DM": [],
         "Player1": [],
@@ -279,6 +281,7 @@ const GameView = () => {
     const [activeSection, setActiveSection] = useState(null);
 
     // Toggle public notes section
+    // VISION: Anyone can see these notes (globally)
     const togglePublicNotes = () => {
         // This part is for the expanding notes
         if (activeSection === 'public') {
@@ -295,6 +298,7 @@ const GameView = () => {
     };
 
     // Toggle private notes section
+    // VISION: Only the current player can see these notes (with other players? 1 on 1) 
     const togglePrivateNotes = () => {
         if (activeSection === 'private') {
             // If private is already active, deactivate it
@@ -310,6 +314,7 @@ const GameView = () => {
     };
 
     // Toggle DM notes section
+    // VISION: Only current player and DM can see these notes
     const toggleDmNotes = () => {
         if (activeSection === 'dm') {
             // If dm is already active, deactivate it
@@ -358,13 +363,13 @@ const GameView = () => {
                 <div className="gameside">
                     <div className="initiative-container">
                         <div className="initiative-item">
-                            <img className="initiative-block" src="" alt=""/>
-                            <img className="initiative-prof-pic" src="" alt=""/>
+                            <img className="initiative-block" src="" alt="" />
+                            <img className="initiative-prof-pic" src="" alt="" />
                             <span>Character 1</span>
                             <button className="initiative-delete">-</button>
                         </div>
                         <div className="initiative-new">
-                            <img className="initiative-block" src="" alt=""/>
+                            <img className="initiative-block" src="" alt="" />
                             <button className="initiative-add">+</button>
                         </div>
                     </div>
@@ -375,7 +380,7 @@ const GameView = () => {
                         onMouseLeave={() => setShowMapButton(false)}
                         ref={smallMapRef}
                     >
-                        <img className="map-up" src={mapplaceholder} alt=""/>
+                        <img className="map-up" src={mapplaceholder} alt="" />
 
                         {/* Render tokens on the small map */}
                         {placedTokens.length > 0 && (
@@ -734,52 +739,56 @@ const GameView = () => {
                         <div className="chat-container">
                             {/* Chat-up first in DOM order since it's behind */}
                             <div className={`chat-up ${isChatSlideOut ? 'slide-out' : ''}`}>
-                                <button className="chat-minimize" onClick={handleCloseChat}>-</button>
+                                <div className="slide-out-chat-top-context">
+                                    <button className="chat-minimize" onClick={handleCloseChat}>-</button>
 
-                                {/* Add player name header */}
-                                <div className="chat-header">
-                                    {selectedChatPlayer && (
-                                        <h4>{selectedChatPlayer}</h4>
-                                    )}
+                                    {/* Add player name header */}
+                                    <div className="chat-header">
+                                        {selectedChatPlayer && (
+                                            <h4>{selectedChatPlayer}</h4>
+                                        )}
+                                    </div>
+
+                                    {/* Message display area - simple list of messages */}
+                                    <div className="chat-messages">
+                                        {selectedChatPlayer && playerChatMessages[selectedChatPlayer]?.length > 0 ? (
+                                            <ul>
+                                                {playerChatMessages[selectedChatPlayer].map((message, index) => (
+                                                    <li key={index}>{message}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="empty-chat">No messages yet</p>
+                                        )}
+                                    </div>
                                 </div>
 
-                                {/* Message display area - simple list of messages */}
-                                <div className="chat-messages">
-                                    {selectedChatPlayer && playerChatMessages[selectedChatPlayer]?.length > 0 ? (
-                                        <ul>
-                                            {playerChatMessages[selectedChatPlayer].map((message, index) => (
-                                                <li key={index}>{message}</li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="empty-chat">No messages yet</p>
-                                    )}
+                                <div className="slide-out-chat-bottom-context">
+                                    <form className="form-chat" onSubmit={(e) => {
+                                        e.preventDefault();
+                                        const inputField = e.target.querySelector('.input-chat');
+                                        if (inputField && inputField.value.trim() !== '' && selectedChatPlayer) {
+                                            // Add message to the selected player's chat
+                                            setPlayerChatMessages({
+                                                ...playerChatMessages,
+                                                [selectedChatPlayer]: [
+                                                    ...playerChatMessages[selectedChatPlayer],
+                                                    inputField.value.trim()
+                                                ]
+                                            });
+                                            // Clear the input field
+                                            inputField.value = '';
+                                        }
+                                    }}>
+                                        <input
+                                            type="text"
+                                            className="input-chat"
+                                            placeholder="Message Player..."
+                                            disabled={!selectedChatPlayer}
+                                        />
+                                        <button type="submit" className="submit-chat" disabled={!selectedChatPlayer}>&#8594;</button>
+                                    </form>
                                 </div>
-
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    const inputField = e.target.querySelector('input');
-                                    if (inputField && inputField.value.trim() !== '' && selectedChatPlayer) {
-                                        // Add message to the selected player's chat
-                                        setPlayerChatMessages({
-                                            ...playerChatMessages,
-                                            [selectedChatPlayer]: [
-                                                ...playerChatMessages[selectedChatPlayer],
-                                                inputField.value.trim()
-                                            ]
-                                        });
-                                        // Clear the input field
-                                        inputField.value = '';
-                                    }
-                                }}>
-                                    <input
-                                        type="text"
-                                        className="message-player"
-                                        placeholder="Message Player..."
-                                        disabled={!selectedChatPlayer}
-                                    />
-                                    <button type="submit" disabled={!selectedChatPlayer}>&#8594;</button>
-                                </form>
                             </div>
 
                             <div className="chat">
@@ -787,6 +796,9 @@ const GameView = () => {
                                 <img className="orb-chat" src={crystalball} alt="Crystal Ball" />
 
                                 {/* Player list that appears on hover */}
+                                {/* When the room is initialized, the program should grab 
+                                    from "party list" or whatever is holding the group of people 
+                                    and print it so orb can display it*/}
                                 <div className="orb-chat-player-list">
                                     {Object.keys(playerChatMessages).map(playerName => (
                                         <div
@@ -805,7 +817,6 @@ const GameView = () => {
                                 <img className="player2-chat" src="" alt="" />
                             </div>
                         </div>
-
                         {/* Notes section with multiple note types */}
                         <div className="notes">
                             <div className={`public-notes ${activeSection === 'public' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
@@ -887,7 +898,7 @@ const GameView = () => {
                                 addToGameLog(4, rollD4);
                             }}
                         >
-                            <img className="d-img" src={imgd4}/>
+                            <img className="d4-img" src={imgd4} alt="" />d4
                         </button>
 
                         <button className="d6"
@@ -897,7 +908,7 @@ const GameView = () => {
                                 addToGameLog(6, rollD6);
                             }}
                         >
-                            <img className="d-img" src={imgd6}/>
+                            <img className="d6-img" src={imgd6} alt="" />d6
                         </button>
 
                         <button className="d8"
@@ -907,7 +918,7 @@ const GameView = () => {
                                 addToGameLog(8, rollD8);
                             }}
                         >
-                            <img className="d-img" src={imgd8}/>
+                            <img className="d8-img" src={imgd8} alt="" />d8
                         </button>
 
                         <button className="d10"
@@ -917,7 +928,7 @@ const GameView = () => {
                                 addToGameLog(10, rollD10);
                             }}
                         >
-                            <img className="d-img" src={imgd10}/>
+                            <img className="d10-img" src={imgd10} alt="" />d10
                         </button>
 
                         <button className="d12"
@@ -927,7 +938,7 @@ const GameView = () => {
                                 addToGameLog(12, rollD12);
                             }}
                         >
-                            <img className="d-img" src={imgd12}/>
+                            <img className="d12-img" src={imgd12} alt="" />d12
                         </button>
 
                         <button className="d20"
@@ -937,7 +948,7 @@ const GameView = () => {
                                 addToGameLog(20, rollD20);
                             }}
                         >
-                            <img className="d-img" src={imgd20}/>
+                            <img className="d20-img" src={imgd20} alt="" />d20
                         </button>
                         <button className="d100"
                             onClick={() => {
@@ -946,7 +957,7 @@ const GameView = () => {
                                 addToGameLog(100, rollD100);
                             }}
                         >
-                           <img className="d-img" src={imgd100}/>
+                            <img className="d100-img" src={imgd100} alt="" />d100
                         </button>
                     </div>
                 </div>
