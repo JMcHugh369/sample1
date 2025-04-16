@@ -27,10 +27,10 @@ const Nav = () => {
                     </div>
                 )}
                 <div className="nav-center">
-                    <img src={logogrung} alt="Logo" />
+                    <img src={logogrung} alt="Logo" className="logo-img" />
                 </div>
                 <div className="nav-right">
-                    <img src={wizard} alt="Wizard" />
+                    <img src={wizard} alt="Wizard" className="wizard-img" />
                 </div>
             </nav>
         </>
