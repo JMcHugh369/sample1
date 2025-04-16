@@ -520,22 +520,41 @@ input[name="monster-alignment"] {
   width: 11vw;
 }
 
-input[name="monster-ac"] {
-  width: 5vw;
-  margin-left: 1vw;
-  text-align: left;
-}
-
-input[name="monster-hp"] {
-  width: 5vw;
-  margin-left: 1vw;
-  text-align: left;
-}
-
+/* Updated styles for the editable input fields */
+input[name="monster-ac"],
+input[name="monster-hp"],
 input[name="monster-spd"] {
-  width: 5vw;
-  margin-left: 1vw;
+  width: 7vw;
   text-align: left;
+  border: 1px solid #8c6e50;
+  border-radius: 4px;
+  padding: 0.5vh 0.5vw;
+  transition: all 0.2s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.4);
+  /* position: relative; was causing inputs to go down */
+  z-index: 10; /* Ensure these are above other elements */
+  pointer-events: auto; /* Explicitly enable pointer events */
+  margin-left: 0; /* Reset the margin */
+}
+
+/* Add hover effect for editable fields */
+input[name="monster-ac"]:hover,
+input[name="monster-hp"]:hover,
+input[name="monster-spd"]:hover {
+  border-color: #a58563;
+  box-shadow: 0 0 3px rgba(140, 110, 80, 0.5);
+  cursor: text; /* Make sure cursor changes to text input */
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Add focus effect for editable fields */
+input[name="monster-ac"]:focus,
+input[name="monster-hp"]:focus,
+input[name="monster-spd"]:focus {
+  outline: none;
+  border-color: #7b3f00;
+  box-shadow: 0 0 5px rgba(123, 63, 0, 0.6);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 /* ================================================
