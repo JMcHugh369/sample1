@@ -692,7 +692,8 @@
 }
 
 .chat {
-    background: rgba(113, 57, 32, 0.421);
+    /*background: rgba(113, 57, 32, 0.421);  THIS WAS THE TRANSPARENT*/
+    background: rgb(97, 67, 49); /* This is the solid color for final draft */
     width: 100%;
     height: 27.5vh;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -728,32 +729,32 @@
     opacity: 0; /* Start with player list hidden */
     pointer-events: none; /* Don't capture clicks when hidden */
     transition: opacity 0.3s ease; /* Smooth fade in/out */
-    
-    .player-item {
-        background: rgba(241, 236, 227, 0.8);
-        padding: 0.5vh 1vh;
-        border-radius: 0.5vh;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 1.8vh;
-        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-        transition: all 0.2s ease;
-        
-        &:hover {
-            background: rgba(241, 236, 227, 1);
-            transform: scale(1.05);
-        }
-        
-        &:active {
-            background: rgb(233, 228, 217);
-            transform: scale(0.98);
-        }
-        
-        &.selected {
-            background: rgba(97, 67, 49, 0.8);
-            color: rgb(241, 236, 227);
-        }
-    }
+}
+
+.player-item {
+    background: rgba(241, 236, 227, 0.8);
+    padding: 0.5vh 1vh;
+    border-radius: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.8vh;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: all 0.2s ease;
+}
+
+.player-item:hover {
+    background: rgba(241, 236, 227, 1);
+    transform: scale(1.05);
+}
+
+.player-item:active {
+    background: rgb(233, 228, 217);
+    transform: scale(0.98);
+}
+
+.player-item.selected {
+    background: rgba(97, 67, 49, 0.8);
+    color: rgb(241, 236, 227);
 }
 
 /* Show player list when hovering over the orb */
@@ -777,114 +778,159 @@
     flex-direction: column;
     transform: translateX(0); /* Start in default position */
     transition: transform 0.3s ease-in-out; /* Add smooth transition */
-    
-    &.slide-out {
-        transform: translateX(100%); /* Move right by 100% of its width */
-    }
-
-    button.chat-minimize {
-        background: rgb(241, 236, 227);
-        border-radius: .5vh;
-        float: right;
-        margin: .5vh;
-        border: none;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        
-        &:active {
-            background: rgb(233, 228, 217);
-        }
-    }
-    
-    /* Chat header styling */
-    .chat-header {
-        padding: 0.5vh 1vh;
-        background: rgba(97, 67, 49, 0.5);
-        margin: 0 1vh;
-        border-radius: 0.5vh;
-        
-        h4 {
-            margin: 0;
-            padding: 0.5vh 0;
-            color: rgb(241, 236, 227);
-            text-align: center;
-            font-family: "Cinzel Decorative", serif;
-        }
-    }
-    
-    /* Message display area with individual message styling */
-    .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1vh;
-        margin: 0 1vh 1vh;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 0.5vh;
-        
-        .message {
-            margin-bottom: 0.8vh;
-            padding: 0.8vh;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 0.5vh;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .empty-chat {
-            font-style: italic;
-            color: rgba(97, 67, 49, 0.6);
-            text-align: center;
-            margin-top: 2vh;
-        }
-        
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            
-            li {
-                padding: 0.8vh;
-                margin-bottom: 0.8vh;
-                background: rgba(255, 255, 255, 0.7);
-                border-radius: 0.5vh;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            }
-        }
-    }
-
-    form {
-        display: flex;
-        margin: 0 1vh 1vh;
-        align-items: center;
-        justify-content: space-between;
-        
-        .message-player {
-            flex: 1;
-            height: 5vh;
-            background: rgb(241, 236, 227);
-            border: none;
-            border-radius: 0.5vh;
-            padding: 0 1vh;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        }
-        
-        button {
-            height: 5vh;
-            width: 5vh;
-            margin-left: 1vh;
-            background: rgb(241, 236, 227);
-            border: none;
-            border-radius: 0.5vh;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            &:active {
-                background: rgb(233, 228, 217);
-            }
-        }
-    }
+    overflow: hidden; /* Prevent content from spilling out */
+    box-sizing: border-box; /* Ensure padding and borders are included in the width */
+    max-width: 100%; /* Ensure it doesn't exceed container width */
 }
 
+.chat-up.slide-out {
+    transform: translateX(100%); /* Move right by 100% of its width */
+}
+
+/* Top context container - includes minimize button, header and messages */
+.slide-out-chat-top-context {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Take up available space */
+    overflow: hidden;
+    position: relative;
+}
+
+/* Bottom context container - includes the form with input and submit button */
+.slide-out-chat-bottom-context {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    min-height: 7vh; /* Ensure enough height for the form */
+}
+
+button.chat-minimize {
+    background: rgb(241, 236, 227);
+    border-radius: .5vh;
+    float: right;
+    margin: .5vh;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 3; /* Make sure it's clickable */
+}
+
+button.chat-minimize:active {
+    background: rgb(233, 228, 217);
+}
+
+/* Chat header styling */
+.chat-header {
+    padding: 0.5vh 1vh;
+    background: rgba(97, 67, 49, 0.5);
+    margin: 0 1vh;
+    border-radius: 0.5vh;
+}
+
+.chat-header h4 {
+    margin: 0;
+    padding: 0.5vh 0;
+    color: rgb(241, 236, 227);
+    text-align: center;
+    font-family: "Cinzel Decorative", serif;
+}
+
+/* Message display area with individual message styling */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1vh;
+    margin: 0 1vh 1vh;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0.5vh;
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+.chat-messages .message {
+    margin-bottom: 0.8vh;
+    padding: 0.8vh;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.5vh;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: break-word; /* Alternative to word-wrap for better browser support */
+    max-width: 100%; /* Ensure messages don't exceed container width */
+}
+
+.chat-messages .empty-chat {
+    font-style: italic;
+    color: rgba(97, 67, 49, 0.6);
+    text-align: center;
+    margin-top: 2vh;
+}
+
+.chat-messages ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-messages ul li {
+    padding: 0.8vh;
+    margin-bottom: 0.8vh;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.5vh;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: break-word; /* Alternative to word-wrap for better browser support */
+    max-width: 100%; /* Ensure messages don't exceed container width */
+}
+
+.form-chat {
+    display: flex;
+    margin: 0 1vh 1vh;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 2vh); /* Ensure form stays contained within parent */
+    position: relative; /* Added for proper z-index context */
+    z-index: 2; /* Ensure form and its children are visible */
+    box-sizing: border-box; /* Ensure padding and borders are included in the width */
+    max-width: 100%; /* Ensure the form doesn't exceed parent width */
+    overflow: hidden; /* Hide any potential overflow */
+}
+
+.input-chat {
+    width: 80%; /* Set width to 80% as requested */
+    height: 5vh;
+    background: rgb(241, 236, 227);
+    border: none;
+    border-radius: 0.5vh;
+    padding: 0 1vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 2;
+    box-sizing: border-box; /* Ensure padding doesn't add to width */
+    max-width: 80%; /* Ensure input doesn't grow beyond 80% */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.submit-chat {
+    width: 18%; /* Set width to slightly less than 20% to account for margin */
+    height: 5vh;
+    margin-left: 2%; /* Use percentage for margin as well */
+    background: rgb(241, 236, 227);
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2; /* Added to ensure button stays visible */
+    box-sizing: border-box; /* Ensure padding doesn't add to width */
+}
+
+.submit-chat:active {
+    background: rgb(233, 228, 217);
+}
 /* ================================================
    DICE PANEL
    ================================================ */
@@ -894,29 +940,98 @@
     margin-top: 2vh;
     margin-left: 1vw;
     height: 10vh;
+    /*width: 50vh;*/
     width: 52vh;
     padding-left: .5vw;
     padding-right: .5vw;
     align-items: center;
     border-radius: 1vh;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    justify-content: space-around; /* Even spacing between buttons */
 
     button {
-        width: 3vw;
-        height: 5vh;
+        /* Increase button size for better visibility and interaction */
+        width: 5vw;
+        height: 7vh;
+        padding: 0.5vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        background: none;
+        background: rgb(241, 236, 227);
+        /*background: none; can change it back if you want but it seems small and hard to see */
         border-radius: 1vh;
         margin: 1vh;
         border: none;
+        position: relative;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+        transition: all 0.1s ease;
+        
+        /* Style for the d4 */
+        &.d4 img.d4-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d6 */
+        &.d6 img.d6-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d8 */
+        &.d8 img.d8-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d10 */
+        &.d10 img.d10-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d12 */
+        &.d12 img.d12-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d20 */
+        &.d20 img.d20-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
+        /* Style for the d100 */
+        &.d100 img.d100-img {
+            height: 3.5vh;
+            width: auto;
+            margin-bottom: 0.5vh;
+        }
+        
     }
 
-    .d-img {
-        width: 3.5vw;
-        margin-left: -1vw;
-        margin-top: -1vh;
+    button:hover {
+        background: rgb(233, 228, 217);
+        transform: translateY(-1px);
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     }
 
+    button:active {
+        background: rgb(198, 194, 185);
+        transform: translateY(1px);
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    }
+
+    /* confused what this is supposed to be -dela */
     a {
         z-index: 999;
     }
