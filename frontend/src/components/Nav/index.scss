@@ -27,8 +27,18 @@ nav {
         margin-left: -37vw; /* Adjusted to move logo back to middle*/
     }
 
-    div:nth-of-type(3) img {
+    .logo-img {
+        max-height: 7.5vh;
+        max-width: 7.5vh;
+        margin-left: -35vw; /* Adjusted to move logo back to the middle */
+        object-fit: contain; /* Ensures the logo retains its aspect ratio */
+    }
+
+    .wizard-img {
+        max-height: 7.5vh;
+        max-width: 7.5vh;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     div:nth-of-type(3) {
