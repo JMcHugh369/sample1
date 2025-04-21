@@ -16,34 +16,93 @@
    INITIATIVE TRACKER STYLES
    ================================================ */
 .initiative-container {
-    border-left: solid 1vh rgb(21, 4, 4);
-    margin-top: 1vh;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    max-height: 300px; // Set a maximum height for the container
+    overflow-y: auto; // Enable vertical scrolling
+    padding-right: 10px; // Add padding for scrollbar spacing
+    border-left: solid 1vh rgb(21, 4, 4);
+    margin-top: 1vh;
     width: 20vw;
     height: 30vh;
-}
 
-.initiative-item {
-    background: rgb(97, 67, 49);
-    margin-top: 1vh;
-    width: 15vw;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-        rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    display: flex;
-    flex-direction: row;
-    padding: 1vh;
+    .initiative-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgb(97, 67, 49);
+        margin-top: 1vh;
+        width: 100%;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        padding: 1vh;
+        position: relative; // Ensure z-index works properly
 
-    button {
-        margin-left: 1vw;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        background: rgb(241, 236, 227);
-        border: none;
-        border-radius: .5vh;
+        input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            z-index: 2; // Ensure inputs are above the background
+            
+        }
+
+        .initiative-name {
+            flex: 2; // Name input takes more space
+            width: 40%; // Assign specific width
+        }
+
+        .initiative-value {
+            flex: 1; // Value input takes less space
+            width: 20%; // Assign specific width
+        }
+
+        .initiative-delete {
+            //background-color: #ff4d4d;
+            background: rgb(241, 236, 227);
+            color: black;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #ff1a1a;
+            }
+        }
+
+        button {
+            margin-left: 1vw;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            background: rgb(241, 236, 227);
+            border: none;
+            border-radius: 0.5vh;
+        }
+
+        button:active {
+            background: rgb(233, 228, 217);
+        }
     }
 
-    button:active {
-        background: rgb(233, 228, 217);
+    .initiative-new {
+        display: flex;
+        justify-content: center;
+
+        .initiative-add {
+            //background-color: #4caf50;
+            text-align: center;
+            background: rgb(241, 236, 227);
+            color: black;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #45a049;
+            }
+        }
     }
 }
 
@@ -62,6 +121,21 @@
 
 .initiative-add:active {
     background: rgb(233, 228, 217);
+}
+
+// Ensure inputs styled like "monster-spd"
+.monster-spd {
+    padding: 5px;
+    border: 1px solid #888; // Match the border style
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9; // Match the background color
+    color: #333;
+
+    &:focus {
+        outline: none;
+        border-color: #555; // Highlight border on focus
+    }
 }
 
 /* ================================================
