@@ -32,6 +32,31 @@ const GameView = () => {
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
     const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
 
+    // Add state to manage initiative items
+    const [initiativeItems, setInitiativeItems] = useState([]);
+
+    // Function to handle adding a new initiative item
+    const handleAddInitiativeItem = () => {
+        setInitiativeItems([
+            ...initiativeItems,
+            { id: Date.now(), name: "", value: "" } // Default values for new item
+        ]);
+    };
+
+    // Function to handle deleting an initiative item
+    const handleDeleteInitiativeItem = (id) => {
+        setInitiativeItems(initiativeItems.filter(item => item.id !== id));
+    };
+
+    // Function to handle updating an initiative item
+    const handleUpdateInitiativeItem = (id, field, value) => {
+        setInitiativeItems(
+            initiativeItems.map(item =>
+                item.id === id ? { ...item, [field]: value } : item
+            )
+        );
+    };
+
     // Add useEffect to log token state changes
     useEffect(() => {
         console.log("Token state updated:", placedTokens);
@@ -362,15 +387,32 @@ const GameView = () => {
             <main>
                 <div className="gameside">
                     <div className="initiative-container">
-                        <div className="initiative-item">
-                            <img className="initiative-block" src="" alt="" />
-                            <img className="initiative-prof-pic" src="" alt="" />
-                            <span>Character 1</span>
-                            <button className="initiative-delete">-</button>
-                        </div>
+                        {initiativeItems.map(item => (
+                            <div key={item.id} className="initiative-item">
+                                <input
+                                    type="text"
+                                    className="initiative-name monster-spd" // Add "monster-spd" class for styling
+                                    placeholder="Enter name"
+                                    value={item.name}
+                                    onChange={(e) => handleUpdateInitiativeItem(item.id, "name", e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    className="initiative-value monster-spd" // Add "monster-spd" class for styling
+                                    placeholder="Enter value"
+                                    value={item.value}
+                                    onChange={(e) => handleUpdateInitiativeItem(item.id, "value", e.target.value)}
+                                />
+                                <button
+                                    className="initiative-delete"
+                                    onClick={() => handleDeleteInitiativeItem(item.id)}
+                                >
+                                    -
+                                </button>
+                            </div>
+                        ))}
                         <div className="initiative-new">
-                            <img className="initiative-block" src="" alt="" />
-                            <button className="initiative-add">+</button>
+                            <button className="initiative-add" onClick={handleAddInitiativeItem}>+</button>
                         </div>
                     </div>
 
