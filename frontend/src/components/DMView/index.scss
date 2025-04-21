@@ -59,12 +59,22 @@ form {
   }
   
   .monsters-token-content {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    display: flex; /* Arrange tokens in a row */
+    flex-wrap: nowrap; /* Prevent wrapping */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    padding: 1vh; /* Add padding */
+    scrollbar-width: thin; /* Make scrollbar thinner for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  }
+
+  .monsters-token-content::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari */
   }
 
   .monster-token {
+    flex: 0 0 auto; /* Prevent shrinking or growing */
+    width: 5.5vw; /* Adjust width as needed */
+    text-align: center; /* Center the content */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -187,6 +197,66 @@ form {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     transition: box-shadow 0.2s ease-in-out;
   }
+}
+
+/* NPC Token Styles */
+.npc-token img {
+    height: 15vh; /* Adjust the size as needed */
+    width: 15vh;
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure the image fits within the circle */
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+    }
+}
+
+.npc-token-name {
+    text-align: center;
+    font-size: 1.8vh; /* Adjust font size as needed */
+    margin-top: 0.5vh;
+    color: #333; /* Adjust text color */
+}
+
+input[name="npc-name"],
+input[name="npc-role"],
+input[name="npc-alignment"],
+input[name="npc-ac"],
+input[name="npc-hp"],
+input[name="npc-spd"],
+input[name="npc-str"],
+input[name="npc-dex"],
+input[name="npc-con"],
+input[name="npc-int"],
+input[name="npc-wis"],
+input[name="npc-cha"] {
+    width: 7vw;
+    text-align: left;
+    border: 1px solid #8c6e50;
+    border-radius: 4px;
+    padding: 0.5vh 0.5vw;
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    pointer-events: auto;
+    margin-left: 0;
+
+    &:hover {
+        border-color: #a58563;
+        box-shadow: 0 0 3px rgba(140, 110, 80, 0.5);
+        cursor: text;
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #7b3f00;
+        box-shadow: 0 0 5px rgba(123, 63, 0, 0.6);
+        background-color: rgba(255, 255, 255, 0.7);
+    }
 }
 
 /* ================================================
@@ -572,17 +642,39 @@ input[name="monster-spd"]:focus {
     flex-direction: column;
     align-items: center;
   }
-}
 
-input[name="monster-str"],
-input[name="monster-dex"],
-input[name="monster-con"],
-input[name="monster-int"],
-input[name="monster-wis"],
-input[name="monster-cha"] {
-  width: 3.5vw;
-  padding: 0.5vw;
-  z-index: 0;
+  input[name="monster-str"],
+  input[name="monster-dex"],
+  input[name="monster-con"],
+  input[name="monster-int"],
+  input[name="monster-wis"],
+  input[name="monster-cha"] {
+    width: 3.5vw;
+    padding:1.5vw;
+    text-align: left;
+    border: 1px solid #8c6e50;
+    border-radius: 4px;
+    padding: 0.5vh 0.5vw;
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    pointer-events: auto;
+    margin-left: 0;
+
+    &:hover {
+      border-color: #a58563;
+      box-shadow: 0 0 3px rgba(140, 110, 80, 0.5);
+      cursor: text;
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #7b3f00;
+      box-shadow: 0 0 5px rgba(123, 63, 0, 0.6);
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
 }
 
 .monster-details {
@@ -640,10 +732,29 @@ input[name="monster-cha"] {
     border-bottom: 1px solid rgba(53, 28, 12, 0.2);
   }
   
-  .view-monster-title {
+  /* Updated for editable title input */
+  input.view-monster-title {
+    width: 90%; /* Increased width */
     font-size: 3vh;
     color: rgb(160, 31, 31);
     font-weight: bold;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    padding: 0.5vh;
+    margin: 0;
+    z-index: 5;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    
+    &:focus {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      outline: none;
+    }
   }
   
   .view-monster-bottom {
@@ -680,15 +791,57 @@ input[name="monster-cha"] {
   
   .monster-image-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin: 1.5vh 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(53, 28, 12, 0.2);
   }
   
-  .monster-image {
-    max-width: 100%;
-    max-height: 20vh;
-    border-radius: 1vh;
+  .monster-basics-img {
+    height: 20vh;
+    width: 20vh;
+    border-radius: 50%;
+    object-fit: cover;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    margin-bottom: 1vh;
+  }
+  
+  .monster-basics-add-img {
+    padding: 0.8vh 1.5vw;
+    font-size: 1.6vh;
+    background: rgb(200, 180, 152);
+    color: rgb(53, 28, 12);
+    border: none;
+    border-radius: 2vh;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+    font-family: inherit;
+    
+    &:hover {
+      background: rgb(190, 170, 142);
+      transform: scale(1.05);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+    
+    &:active {
+      background: rgb(180, 160, 132);
+      transform: scale(0.98);
+    }
+  }
+  
+  /* Adjustment to monster-basics-top to better accommodate the image */
+  .monster-basics-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Hide file input */
+  .hidden-file-input {
+    display: none;
   }
   
   /* Keep all other monster-related styles the same */
@@ -698,8 +851,10 @@ input[name="monster-cha"] {
   }
   
   .monster-stats {
-    /* Existing styles */
+    /* Existing styles */  
   }
+
+  
   
   .monster-details {
     /* Existing styles */
@@ -759,6 +914,76 @@ input[name="monster-cha"] {
     margin-bottom: 1vh;
     width: 100%;
   }
+
+/* ================================================
+   NPC VIEW
+   ================================================ */
+#view-npc {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: rgb(220, 213, 204);
+  height: 65vh;
+  width: 35vw;
+  top: 25vh;
+  left: 12vw;
+  color: rgb(53, 28, 12);
+  overflow: hidden;
+  border-radius: 1vh;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.view-npc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2vh 2vw;
+  background-color: rgba(200, 180, 152, 0.4);
+  border-bottom: 1px solid rgba(53, 28, 12, 0.2);
+}
+
+.view-npc-bottom {
+  padding: 2vh;
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: calc(65vh - 10vh); /* Adjust height based on the top section */
+}
+
+.npc-basics-img {
+  height: 20vh;
+  width: 20vh;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  margin-bottom: 1vh;
+}
+
+.npc-description {
+  width: 90%;
+  min-height: 10vh;
+  margin: 1vh auto;
+  padding: 1vh;
+  border: 1px solid #8c6e50;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1.8vh;
+  color: #4a2511;
+}
+
+.npc-textarea {
+  width: 90%;
+  min-height: 10vh;
+  margin: 1vh auto;
+  padding: 1vh;
+  border: 1px solid #8c6e50;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1.8vh;
+  color: #4a2511;
+}
 
 /* ================================================
    TOKEN INFO POPUP
@@ -962,6 +1187,54 @@ input[name="monster-cha"] {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
     }
+  }
+}
+
+/* ================================================
+   TEXTAREA STYLING FOR MONSTER SECTIONS
+   ================================================ */
+/* Style for all monster textareas */
+textarea.monster-textarea,
+textarea.monster-abilities-input {
+  width: 90%;
+  min-height: 10vh;
+  margin: 1vh auto;
+  padding: 1vh;
+  border: 1px solid #8c6e50;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1.8vh;
+  color: #4a2511;
+  display: block;
+  
+  &:hover {
+    border-color: #a58563;
+    box-shadow: 0 0 3px rgba(140, 110, 80, 0.5);
+    background-color: rgba(255, 255, 255, 0.6);
+    cursor: text;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: #7b3f00;
+    box-shadow: 0 0 5px rgba(123, 63, 0, 0.6);
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Make the monster forms display properly with the textareas */
+.monster-actions-form,
+.monster-legendary-form,
+.monster-reactions-form,
+.monster-abilities {
+  width: 95%;
+  margin: 1vh auto 2vh auto;
+  
+  p, h1 {
+    margin-bottom: 1vh;
+    color: #7b3f00;
   }
 }
 
