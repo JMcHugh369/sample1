@@ -19,13 +19,7 @@ const Nav = () => {
                 <div className="nav-left">
                     <button onClick={goBack}>&larr;</button>
                 </div>
-                {/* Needs onClick function but have no clue what file should be saving specifically; variable wise */}
-                {isPlayerOrGameView && (
-                    <div className="nav-left-file">
-                        
-                        <button>File</button>
-                    </div>
-                )}
+                
                 <div className="nav-center">
                     <img src={logogrung} alt="Logo" className="logo-img" />
                 </div>
