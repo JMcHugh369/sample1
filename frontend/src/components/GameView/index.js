@@ -396,13 +396,7 @@ const GameView = () => {
                                     value={item.name}
                                     onChange={(e) => handleUpdateInitiativeItem(item.id, "name", e.target.value)}
                                 />
-                                <input
-                                    type="text"
-                                    className="initiative-value monster-spd" // Add "monster-spd" class for styling
-                                    placeholder="Enter value"
-                                    value={item.value}
-                                    onChange={(e) => handleUpdateInitiativeItem(item.id, "value", e.target.value)}
-                                />
+                                
                                 <button
                                     className="initiative-delete"
                                     onClick={() => handleDeleteInitiativeItem(item.id)}
