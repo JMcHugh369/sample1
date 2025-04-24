@@ -34,12 +34,7 @@ nav {
         object-fit: contain; /* Ensures the logo retains its aspect ratio */
     }
 
-    .wizard-img {
-        max-height: 7.5vh;
-        max-width: 7.5vh;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+    
 
     div:nth-of-type(3) {
         position: relative;
@@ -82,5 +77,93 @@ nav {
     .nav-right {
         position: relative;
         right: -10vw; /* Moves nav-right slightly to the left */
+
+        .nav-social-button .social-profile-img {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            
+            max-height: 7.5vh;
+            max-width: 7.5vh;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: -100px;
+
+            &:hover {
+              transform: scale(1.05);
+              box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+            }
+          }
     }
+}
+
+/* Social Profile View */
+.social-popup {
+    position: absolute;
+    top: 10%;
+    right: 2%;
+    width: 10vw;
+    background: rgb(200, 180, 152); /* Updated background color */
+    border: 4px solid rgb(97, 67, 49); /* Updated border color */
+    border-radius: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5vh;
+}
+
+.social-popup-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2vh;
+
+  .social-profile-img {
+    height: 20vh;
+    width: 20vh;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .change-img-button {
+    margin-top: 1vh;
+    padding: 0.8vh 1.5vw;
+    font-size: 1.6vh;
+    background: rgb(233, 228, 217); /* Updated background color */
+    color: rgb(53, 28, 12);
+    border: none;
+    border-radius: 2vh;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+  }
+}
+
+.social-popup-bottom {
+  display: flex;
+  justify-content: center;
+
+  .logout-button {
+    padding: 0.8vh 1.5vw;
+    font-size: 1.6vh;
+    background: rgb(233, 228, 217); /* Updated background color */
+    color: rgb(53, 28, 12);
+    border: none;
+    border-radius: 2vh;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background: rgb(200, 80, 80); /* Change background color to red on hover */
+      color: white; /* Optional: Change text color to white for better contrast */
+      transform: scale(1.05);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+  }
 }
