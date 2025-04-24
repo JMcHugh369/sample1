@@ -88,8 +88,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 1vw 2vh 0;
-    margin-left: 2.5vw;
+    margin-left: 1vw;
 
     .dm-token-img {
       height: 15vh;
@@ -218,6 +217,7 @@ form {
     width: 15.5vh;
     border-radius: 50vh;
     outline: none;
+    margin-bottom: 2.5vh;
     margin-top: 0;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     transition: box-shadow 0.2s ease-in-out;
@@ -237,7 +237,6 @@ form {
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   margin-left: 1vw;
-  margin-top: 3vh;
 
   &:hover {
     transform: scale(1.05);
@@ -527,7 +526,7 @@ input[name="npc-cha"] {
   background: rgb(220, 213, 204);
   width: 90%;
   height: 80%;
-  top: 10%;
+  top: 5%;
   left: 5%;
   z-index: 1000;
   border-radius: 1vh;
@@ -545,10 +544,10 @@ input[name="npc-cha"] {
 }
 
 .map-info-popup-bottom {
-  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column; /* Align items vertically (top to bottom) */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
   padding: 2vh;
   overflow: auto;
 }
@@ -594,6 +593,26 @@ input[name="npc-cha"] {
   object-fit: contain;
   border-radius: 1vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2vh; /* Add spacing between the image and the button */
+}
+
+.map-info-delete-image {
+  margin-top: 0; /* Remove any extra margin */
+  padding: 0.8vh 1.5vw;
+  font-size: 1.6vh;
+  background: rgb(190, 170, 142); /* Normal background color */
+  color: white;
+  border: none;
+  border-radius: 2vh;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: rgb(200, 80, 80); /* Change background color to red on hover */
+    transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  }
 }
 
 /* ================================================
@@ -929,6 +948,23 @@ input.view-monster-title {
   margin-bottom: 2vh;
 }
 
+.monster-delete-token {
+    padding: 0.8vh 1.5vw;
+    font-size: 1.6vh;
+    background: rgb(200, 80, 80); /* Red background for delete */
+    color: white;
+    border: none;
+    border-radius: 2vh;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+}
+
 /* Style headings consistently */
 .view-monster-bottom h1 {
   font-size: 2.5vh;
@@ -1046,13 +1082,23 @@ input[name="monster-name"] {
   }
 }
 
+.npc-image-container {
+  display: flex;
+  flex-direction: column; /* Align items top to bottom */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  height: 100%; /* Ensure the container takes up the full height */
+  width: 100%; /* Ensure the container takes up the full width */
+  margin: 1.5vh 0; /* Add some spacing */
+}
+
 .npc-basics-img {
   height: 20vh;
   width: 20vh;
-  border-radius: 50%;
-  object-fit: cover;
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Ensure the image fits within the circle */
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  margin-bottom: 3.5vh;
+  margin-bottom: 1vh; /* Add spacing between the image and the button */
 }
 
 .npc-basics-add-img {
@@ -1065,19 +1111,10 @@ input[name="monster-name"] {
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   transition: all 0.2s ease-in-out;
-  font-family: inherit;
-  margin-bottom: 1vh;
-  margin-left: -10vw;
 
   &:hover {
-    background: rgb(190, 170, 142);
     transform: scale(1.05);
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-  }
-
-  &:active {
-    background: rgb(180, 160, 132);
-    transform: scale(0.98);
   }
 }
 
@@ -1107,6 +1144,24 @@ input[name="monster-name"] {
   font-family: inherit;
   font-size: 1.8vh;
   color: #4a2511;
+}
+
+.npc-delete-token {
+    padding: 0.8vh 1.5vw;
+    font-size: 1.6vh;
+    background: rgb(190, 170, 142); /* Normal background color */
+    color: white;
+    border: none;
+    border-radius: 2vh;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background: rgb(200, 80, 80); /* Change background color to red on hover */
+        transform: scale(1.05);
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
 }
 
 /* ================================================
