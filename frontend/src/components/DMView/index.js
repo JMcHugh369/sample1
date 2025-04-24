@@ -79,6 +79,9 @@ const DMView = () => {
         } else {
             alert('Please select a PNG image file.');
         }
+
+        // Reset the file input value to allow re-uploading the same file
+        event.target.value = '';
     }
 
     // Function to handle monster image selection
@@ -112,6 +115,9 @@ const DMView = () => {
         } else {
             alert('Please select a PNG or JPEG image file.');
         }
+
+        // Reset the file input value to allow re-uploading the same file
+        event.target.value = '';
     }
 
     // Function to handle NPC image selection
@@ -145,6 +151,9 @@ const DMView = () => {
         } else {
             alert('Please select a PNG or JPEG image file.');
         }
+
+        // Reset the file input value to allow re-uploading the same file
+        event.target.value = '';
     }
 
     // Function to trigger file input click
@@ -160,6 +169,10 @@ const DMView = () => {
 
     function closeMapInfo() {
         setMapInfoVisible(false);
+    }
+
+    function deleteMap(id) {
+        setMaps((prevMaps) => prevMaps.filter((map) => map.id !== id));
     }
 
     function addNPC() {
@@ -439,7 +452,14 @@ const DMView = () => {
 
     // Delete a monster
     function deleteMonster(id) {
-        setMonsters(monsters.filter((monster, index) => index !== id));
+        setMonsters((prevMonsters) => prevMonsters.filter((monster) => monster.id !== id));
+        setSelectedMonster(null); // Clear the selected monster after deletion
+    }
+
+    // Delete an NPC
+    function deleteNpc(id) {
+        setNpcs((prevNpcs) => prevNpcs.filter((npc) => npc.id !== id));
+        setSelectedNpc(null); // Clear the selected NPC after deletion
     }
 
     return (
@@ -847,6 +867,17 @@ const DMView = () => {
                                         }}
                                     />
                                 </form>
+
+                                {/**Delete Button to delete selected viewing mosnter token*/}
+                                <button 
+                                    className="monster-delete-token"
+                                    onClick={() => {
+                                        deleteMonster(selectedMonster.originalId);
+                                        minMonster();
+                                    }}
+                                    >
+                                        Delete Monster
+                                    </button>
                             </>
                         )}
                     </div>
@@ -1030,7 +1061,7 @@ const DMView = () => {
                                     </div>
                                 </form>
 
-                                <form className="npc-details">
+                                <div className="npc-details">
                                     <div>
                                         Description
                                         <textarea
@@ -1043,7 +1074,18 @@ const DMView = () => {
                                             }}
                                         />
                                     </div>
-                                </form>
+                                </div>
+
+                                {/* Delete Button for NPC */}
+                                <button
+                                    className="npc-delete-token"
+                                    onClick={() => {
+                                        deleteNpc(selectedNpc.originalId);
+                                        minNpc(); // Minimize the NPC view after deletion
+                                    }}
+                                >
+                                    Delete NPC
+                                </button>
                             </>
                         )}
                     </div>
@@ -1068,18 +1110,20 @@ const DMView = () => {
                                 src={selectedMap.src}
                                 alt={selectedMap.name}
                             />
+                            {/* Delete Map Button */}
+                            <button
+                                className="map-info-delete-image"
+                                onClick={() => {
+                                    deleteMap(selectedMap.id);
+                                    closeMapInfo(); // Close the map info popup after deletion
+                                }}
+                            >
+                                Delete Map
+                            </button>
                         </div>
                     </div>
                 )}
 
-                {/* Did not end up using this, maybe delete later */}
-                <div className="view-pc">
-                    {/* existing view-pc content */}
-                </div>
-
-                <div className="map-list">
-                    {/* existing map-list content */}
-                </div>
             </div>
         </>
     )
