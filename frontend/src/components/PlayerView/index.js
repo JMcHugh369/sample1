@@ -51,9 +51,8 @@ const skillMapping = {
 
 const PlayerView = () => {
     const { campaignId, characterId } = useParams();
-    const [playerIds, setPlayerIds] = useState([]);
     const navigate = useNavigate();
-
+    const [playerIds, setPlayerIds] = useState([]);
     const [character, setCharacter] = useState({
         name: "",
         level: "",
@@ -78,6 +77,10 @@ const PlayerView = () => {
     const [campaignIdState, setCampaignId] = useState(campaignId || null);
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState([]);
+    // Add to your PlayerView state:
+    const [features, setFeatures] = useState([]);
+    const [backgrounds, setBackgrounds] = useState([]);
+    const [extras, setExtras] = useState([]);
 
     // Fetch character data
     useEffect(() => {
@@ -149,6 +152,18 @@ const PlayerView = () => {
                 console.error("Error fetching player IDs:", err);
             });
     }, [campaignId]);
+
+    // Fetch on mount:
+    useEffect(() => {
+        if (characterId) {
+            fetch(`http://localhost:5002/features/character/${characterId}`)
+                .then(res => res.json()).then(setFeatures);
+            fetch(`http://localhost:5002/backgrounds/character/${characterId}`)
+                .then(res => res.json()).then(setBackgrounds);
+            fetch(`http://localhost:5002/extras/character/${characterId}`)
+                .then(res => res.json()).then(setExtras);
+        }
+    }, [characterId]);
 
     const fetchTabData = async (tabName) => {
         try {
@@ -340,11 +355,12 @@ const PlayerView = () => {
     };
 
     const calculateSkillValue = (skill) => {
-        const ability = skillMapping[skill];
-        const modifier = calculateModifier(character[ability] || 0);
-        const proficiencyBonus = character.proficiencyBonus || 0;
-        const isProficient = character.proficiencies?.includes(skill);
-        return modifier + (isProficient ? proficiencyBonus : 0);
+        const ability = skillMapping[skill]; // e.g., "dexterity"
+        const score = Number(character[ability]) || 0;
+        const modifier = Math.floor((score - 10) / 2);
+        const proficiencyBonus = Number(character.proficiency_bonus) || 0;
+        // Always add proficiency bonus, since you don't track per-skill proficiency
+        return modifier + proficiencyBonus;
     };
 
     if (loading) {
@@ -372,8 +388,38 @@ const PlayerView = () => {
         fetchTabData(tabName.toLowerCase());
     }
 
+    const handleSaveCharacter = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/characters/${characterId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(character),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to save character");
+            }
+            alert("Character saved!");
+        } catch (err) {
+            alert("Error saving character: " + err.message);
+        }
+    };
+
     return (
         <>
+            {/* Home Button */}
+            <button
+                id="home-button"
+                onClick={() => navigate("/home")}
+            >
+                Home
+            </button>
+            <button
+                id="save-button"
+                onClick={handleSaveCharacter}
+            >
+                Save
+            </button>
+
             {currentUser ? (
                 <GameView
                     campaignId={campaignIdState}
@@ -621,7 +667,7 @@ const PlayerView = () => {
                                         value={calculateSkillValue(skill)}
                                         readOnly
                                     />{" "}
-                                    {skill.charAt(0).toUpperCase() + skill.slice(1).replace(/([A-Z])/g, ' $1')} 
+                                    {skill.charAt(0).toUpperCase() + skill.slice(1).replace(/([A-Z])/g, ' $1')}
                                     ({skillMapping[skill].charAt(0).toUpperCase() + skillMapping[skill].slice(1)})
                                 </li>
                             ))}
@@ -631,14 +677,46 @@ const PlayerView = () => {
                     <div class="center-center">
                         <div class="hp-container">
                             <p>Hit Points</p>
-                            <input type="text" class="curr-hp" placeholder="0" />/<span><input type="text" class="max-hp" placeholder="0" /></span>
-                            <br /><input type="text" class="temp-hp" placeholder="- -" /><span class="temp">Temp HP</span>
+                            <input
+                                type="text"
+                                className="curr-hp"
+                                placeholder="0"
+                                value={character.current_hp || ""}
+                                onChange={e => setCharacter({ ...character, current_hp: e.target.value })}
+                            />/<span>
+                                <input
+                                    type="text"
+                                    className="max-hp"
+                                    placeholder="0"
+                                    value={character.max_hp || ""}
+                                    onChange={e => setCharacter({ ...character, max_hp: e.target.value })}
+                                />
+                            </span>
+                            <br />
+                            <input
+                                type="text"
+                                className="temp-hp"
+                                placeholder="- -"
+                                value={character.temp_hp || ""}
+                                onChange={e => setCharacter({ ...character, temp_hp: e.target.value })}
+                            />
+                            <span className="temp">Temp HP</span>
                         </div>
-                        <div class="center-other">
-
-                            <input type="text" class="conditions" placeholder="conditions..." />
-                            <input type="text" class="defenses" placeholder="defenses..." />
-
+                        <div className="center-other">
+                            <input
+                                type="text"
+                                className="conditions"
+                                placeholder="conditions..."
+                                value={character.conditions || ""}
+                                onChange={e => setCharacter({ ...character, conditions: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="defenses"
+                                placeholder="defenses..."
+                                value={character.defenses || ""}
+                                onChange={e => setCharacter({ ...character, defenses: e.target.value })}
+                            />
                         </div>
                     </div>
 
@@ -851,165 +929,234 @@ const PlayerView = () => {
                         </form>
                     </div>
 
-                    <div class="feature-container">
-                        <p>Features/Traits <span>
-                            <button class="add-features" onClick={
-                                () => {
-                                    var featureName = document.createElement("input");
-                                    var featureDesc = document.createElement("input");
-                                    featureName.setAttribute('type', 'text');
-                                    featureDesc.setAttribute('type', 'text');
+                    <div className="feature-container">
+                        <p>Features/Traits</p>
+                        <ul>
+                            {features.map(f => (
+                                <li key={f.id}>
+                                    <strong>{f.name}</strong>: {f.description}
+                                    <button onClick={() => deleteFeature(f.id)}>Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                        <form onSubmit={e => {
+                            e.preventDefault();
+                            addFeature(e.target.name.value, e.target.description.value);
+                            e.target.reset();
+                        }}>
+                            <input type="text" name="name" placeholder="Name..." required />
+                            <input type="text" name="description" placeholder="Description..." required />
+                            <button type="submit">Add</button>
+                        </form>
+                    </div>
 
-                                    var parent = document.getElementById("feature-items");
-                                    parent.appendChild(featureName);
+                    <div className="bottom-center">
 
-                                    featureName.classList.add("feature-name");
-                                    featureDesc.classList.add("feature-desc");
+                        <div className="tab">
+                            <button className="tablinks" onClick={
 
-                                    featureName.placeholder = "Name...";
-                                    featureDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("feature-items");
-                                    parent.appendChild(featureDesc);
-                                    
-                                    var featureBtn = document.createElement("feature-extra-btn");
-
-                                    featureBtn.textContent = "+";
-                                    featureBtn.classList.add("extra-button-class");
-                                    featureBtn.setAttribute('type', 'button');
-
-                                    featureBtn.addEventListener('click', function () {
-
-                                        var featureDesc = document.createElement("input");
-
-                                        featureDesc.setAttribute('type', 'text');
-
-                                        featureDesc.classList.add("feature-desc");
-
-                                        featureDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("feature-items");
-                                        parent.appendChild(featureDesc);
-
-                                        parent.insertBefore(featureDesc, featureBtn);
-                                    });
-
-                                    var parent = document.getElementById("feature-items");
-                                    parent.appendChild(featureBtn);
+                                (event) => {
+                                    openTab(event, "Actions")
                                 }
-                            }>+</button>
-                        </span></p>
+                            }
+                            >Actions</button>
+                            <button className="tablinks" onClick={
 
+                                (event) => {
+                                    openTab(event, "Spells")
+                                }
+                            }
+                            >Spells</button>
+                            <button className="tablinks" onClick={
 
-                        <div id="feature-items">
+                                (event) => {
+                                    openTab(event, "Proficiencies")
+                                }
+                            }>Proficiencies</button>
+                            <button className="tablinks" onClick={
 
+                                (event) => {
+                                    openTab(event, "Other")
+                                }
+                            }>Other</button>
                         </div>
 
-
-                        <p>Background <span>
-                            <button class="add-bg" onClick={
-                                () => {
-                                    var bgName = document.createElement("input");
-                                    var bgDesc = document.createElement("input");
-                                    bgName.setAttribute('type', 'text');
-                                    bgDesc.setAttribute('type', 'text');
-
-                                    var parent = document.getElementById("bg-items");
-                                    parent.appendChild(bgName);
-
-                                    bgName.classList.add("bg-name");
-                                    bgDesc.classList.add("bg-desc");
-
-                                    bgName.placeholder = "Name...";
-                                    bgDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("bg-items");
-                                    parent.appendChild(bgDesc);
-
-                                    var bgBtn = document.createElement("bg-extra-btn");
-
-                                    bgBtn.textContent = "+";
-                                    bgBtn.classList.add("extra-button-class");
-                                    bgBtn.setAttribute('type', 'button');
-
-                                    bgBtn.addEventListener('click', function () {
-
-                                        var bgDesc = document.createElement("input");
-
-                                        bgDesc.setAttribute('type', 'text');
-
-                                        bgDesc.classList.add("bg-desc");
-
-                                        bgDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("bg-items");
-                                        parent.appendChild(bgDesc);
-
-                                        parent.insertBefore(bgDesc, bgBtn);
-                                    });
-
-                                    var parent = document.getElementById("bg-items");
-                                    parent.appendChild(bgBtn);
-                                }
-                            }>+</button>
-                        </span></p>
-
-                        <div id="bg-items">
-
+                        <div id="Actions" className="tabcontent">
+                            <h3>Actions</h3>
+                            <ul>
+                                {actions.map((action) => (
+                                    <li key={action.id}>
+                                        <strong>{action.name}</strong>: {action.description}
+                                        <button onClick={() => deleteAction(action.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createAction(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
 
-                        <p>Extra <span>
-                            <button class="add-extra" onClick={
-                                () => {
-                                    var extraName = document.createElement("input");
-                                    var extraDesc = document.createElement("input");
-                                    extraName.setAttribute('type', 'text');
-                                    extraDesc.setAttribute('type', 'text');
-
-                                    var parent = document.getElementById("extra-items");
-                                    parent.appendChild(extraName);
-
-                                    extraName.classList.add("extra-name");
-                                    extraDesc.classList.add("extra-desc");
-
-                                    extraName.placeholder = "Name...";
-                                    extraDesc.placeholder = "Description...";
-
-                                    var parent = document.getElementById("extra-items");
-                                    parent.appendChild(extraDesc);
-
-                                    var exBtn = document.createElement("ex-extra-btn");
-
-                                    exBtn.textContent = "+";
-                                    exBtn.classList.add("extra-button-class");
-                                    exBtn.setAttribute('type', 'button');
-
-                                    exBtn.addEventListener('click', function () {
-
-                                        var exDesc = document.createElement("input");
-
-                                        exDesc.setAttribute('type', 'text');
-
-                                        exDesc.classList.add("extra-desc");
-
-                                        exDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("extra-items");
-                                        parent.appendChild(exDesc);
-
-                                        parent.insertBefore(exDesc, exBtn);
-                                    });
-
-                                    var parent = document.getElementById("extra-items");
-                                    parent.appendChild(exBtn);
-                                }
-                            }>+</button>
-                        </span></p>
-
-                        <div id="extra-items">
-
+                        <div id="Spells" className="tabcontent">
+                            <h3>Spells</h3>
+                            <ul>
+                                {spells.map((spell) => (
+                                    <li key={spell.id}>
+                                        <strong>{spell.name}</strong>: {spell.description}
+                                        <button onClick={() => deleteSpell(spell.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createSpell(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
 
+                        <div id="Proficiencies" className="tabcontent">
+                            <h3>Proficiencies</h3>
+                            <ul>
+                                {proficiencies.map((proficiency) => (
+                                    <li key={proficiency.id}>
+                                        <strong>{proficiency.name}</strong>: {proficiency.description}
+                                        <button onClick={() => deleteProficiency(proficiency.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createProficiency(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
+                        </div>
+
+                        <div id="Other" className="tabcontent">
+                            <h3>Other</h3>
+                            <ul>
+                                {other.map((item) => (
+                                    <li key={item.id}>
+                                        <strong>{item.name}</strong>: {item.description}
+                                        <button onClick={() => deleteOther(item.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createOther(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <div className="inventory-container">
+                        <div className="currency-img">
+                            <img className="platinum-img" src={platinum} />
+                            <img className="gold-img" src={gold} />
+                            <img className="electrum-img" src={electrum} />
+                            <img className="silver-img" src={silver} />
+                            <img className="copper-img" src={copper} />
+                        </div>
+                        <div className="currency-name">
+                            <p>P</p>
+                            <p>G</p>
+                            <p>E</p>
+                            <p>S</p>
+                            <p>C</p>
+                        </div>
+                        <div className="currency">
+                            <input
+                                type="text"
+                                className="platinum"
+                                placeholder="0"
+                                value={character?.platinum_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, platinum_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="gold"
+                                placeholder="0"
+                                value={character?.gold_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, gold_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="electrum"
+                                placeholder="0"
+                                value={character?.electrum || ""}
+                                onChange={(e) => setCharacter({ ...character, electrum: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="silver"
+                                placeholder="0"
+                                value={character?.silver_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, silver_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="copper"
+                                placeholder="0"
+                                value={character?.copper_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, copper_coins: e.target.value })}
+                            />
+                        </div>
+                        <p>Inventory</p>
+                        <ul id="inventory-items">
+                            {inventory.map((item) => (
+                                <li key={item.id}>
+                                    <strong>{item.name}</strong>: {item.description}
+                                    <button onClick={() => deleteInventoryItem(item.id)}>Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const name = e.target.elements.name.value;
+                                const description = e.target.elements.description.value;
+                                createInventoryItem(name, description);
+                                e.target.reset();
+                            }}
+                        >
+                            <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                            <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                            <button type="submit">Add</button>
+                        </form>
                     </div>
 
                 </div>

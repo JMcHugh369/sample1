@@ -86,7 +86,7 @@ app.get('/campaigns/:campaignId/players', async (req, res) => {
 app.get('/chat/messages/:campaignId', async (req, res) => {
   const { campaignId } = req.params;
   const result = await pool.query(
-    'SELECT * FROM chat_messages WHERE campaign_id = $1 ORDER BY timestamp ASC',
+    `SELECT * FROM chat_messages WHERE campaign_id = $1 AND receiver_id IS NULL ORDER BY timestamp ASC`,
     [campaignId]
   );
   res.json({ messages: result.rows });
@@ -286,35 +286,157 @@ app.post('/campaigns/:campaignId/private-notes/:userId', async (req, res) => {
     res.json({ note: result.rows[0] });
 });
 
+app.get('/campaigns/:campaignId/dice-logs', async (req, res) => {
+  const { campaignId } = req.params;
+  try {
+    const dbResult = await pool.query(
+      `SELECT * FROM dice_logs WHERE campaign_id = $1 ORDER BY timestamp ASC`,
+      [campaignId]
+    );
+    res.json({ dice_logs: dbResult.rows });
+  } catch (err) {
+    console.error("Error fetching dice logs:", err);
+    res.status(500).json({ error: "Failed to fetch dice logs" });
+  }
+});
+
 // Socket.IO logic
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-
   socket.on('join_campaign', (campaign_id) => {
     socket.join(`campaign_${campaign_id}`);
+    console.log(`Socket ${socket.id} joined campaign_${campaign_id}`);
   });
 
   socket.on('public_message', async (msg) => {
-    // Save to PostgreSQL
-    await pool.query(
-      'INSERT INTO chat_messages (campaign_id, sender_id, sender_username, content, timestamp) VALUES ($1, $2, $3, $4, NOW())',
-      [msg.campaign_id, msg.sender_id, msg.sender_username, msg.content]
-    );
-    io.to(`campaign_${msg.campaign_id}`).emit('public_message', msg);
+    try {
+      // Save to DB
+      const result = await pool.query(
+        `INSERT INTO chat_messages (campaign_id, sender_id, sender_username, content, timestamp)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [msg.campaign_id, msg.sender_id, msg.sender_username, msg.content, msg.timestamp]
+      );
+      // Emit the saved message (with DB id) to all clients
+      io.to(`campaign_${msg.campaign_id}`).emit('public_message', result.rows[0]);
+    } catch (err) {
+      console.error("Error saving public message:", err);
+    }
+  });
+
+  socket.on('tokens_update', async ({ campaignId, tokens }) => {
+    // Save to DB
+    await pool.query(`DELETE FROM campaign_tokens WHERE campaign_id = $1`, [campaignId]);
+    const insertPromises = tokens
+      .filter(token => token.position && typeof token.position.row === "number" && typeof token.position.col === "number")
+      .map(token =>
+        pool.query(
+          `INSERT INTO campaign_tokens (id, campaign_id, type, image, position_row, position_col)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [token.id, campaignId, token.type, token.image, token.position.row, token.position.col]
+        )
+      );
+    await Promise.all(insertPromises);
+
+    // Broadcast to all users in the campaign room
+    io.to(`campaign_${campaignId}`).emit('tokens_update', { campaignId, tokens });
   });
 
   socket.on('private_message', async (msg) => {
-    await pool.query(
-      'INSERT INTO chat_messages (sender_id, receiver_id, sender_username, content, timestamp) VALUES ($1, $2, $3, $4, NOW())',
-      [msg.sender_id, msg.receiver_id, msg.sender_username, msg.content]
-    );
-    io.to(msg.sender_id).emit('private_message', msg);
-    io.to(msg.receiver_id).emit('private_message', msg);
+    try {
+      const result = await pool.query(
+        `INSERT INTO chat_messages (campaign_id, sender_id, receiver_id, sender_username, content, timestamp)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [msg.campaign_id, msg.sender_id, msg.receiver_id, msg.sender_username, msg.content, msg.timestamp]
+      );
+      // Emit to both sender and receiver
+      io.to(msg.sender_id).emit('private_message', result.rows[0]);
+      io.to(msg.receiver_id).emit('private_message', result.rows[0]);
+    } catch (err) {
+      console.error("Error saving private message:", err);
+    }
   });
+});
 
-  socket.on('join_private', (user_id) => {
-    socket.join(user_id);
-  });
+app.post('/campaigns/:campaignId/dice-logs', async (req, res) => {
+  const { campaignId } = req.params;
+  const { userId, sides, result, timestamp } = req.body;
+  try {
+    const dbResult = await pool.query(
+      `INSERT INTO dice_logs (campaign_id, user_id, sides, result, timestamp)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [campaignId, userId, sides, result, timestamp]
+    );
+    res.status(201).json({ dice_log: dbResult.rows[0] });
+  } catch (err) {
+    console.error("Error saving dice log:", err);
+    res.status(500).json({ error: "Failed to save dice log" });
+  }
+});
+
+// Get initiative for a campaign
+app.get('/campaigns/:campaignId/initiative', async (req, res) => {
+  const { campaignId } = req.params;
+  try {
+    const result = await pool.query(
+      'SELECT * FROM initiative WHERE campaign_id = $1 ORDER BY id ASC',
+      [campaignId]
+    );
+    res.json({ initiative: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch initiative' });
+  }
+});
+
+// Save (replace) initiative for a campaign
+app.post('/campaigns/:campaignId/initiative', async (req, res) => {
+  const { campaignId } = req.params;
+  const { initiativeItems } = req.body; // Array of {name, roll}
+  try {
+    // Remove old initiative for this campaign
+    await pool.query('DELETE FROM initiative WHERE campaign_id = $1', [campaignId]);
+    // Insert new initiative items
+    const values = initiativeItems.map(
+      item => `('${campaignId}', '${item.name.replace(/'/g, "''")}', ${item.roll || 0})`
+    ).join(',');
+    if (values) {
+      await pool.query(
+        `INSERT INTO initiative (campaign_id, name, roll) VALUES ${values}`
+      );
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save initiative' });
+  }
+});
+
+// Fetch all tokens for a campaign
+app.get('/campaigns/:campaignId/tokens', async (req, res) => {
+  const { campaignId } = req.params;
+  const result = await pool.query(
+    `SELECT * FROM campaign_tokens WHERE campaign_id = $1`,
+    [campaignId]
+  );
+  res.json({ tokens: result.rows });
+});
+
+// Save (replace) all tokens for a campaign
+app.post('/campaigns/:campaignId/tokens', async (req, res) => {
+  const { campaignId } = req.params;
+  const { tokens } = req.body;
+
+  // Remove old tokens
+  await pool.query(`DELETE FROM campaign_tokens WHERE campaign_id = $1`, [campaignId]);
+
+  // Insert new tokens
+  const insertPromises = tokens.map(token =>
+    pool.query(
+      `INSERT INTO campaign_tokens (id, campaign_id, type, image, position_row, position_col)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [token.id, campaignId, token.type, token.image, token.position.row, token.position.col]
+    )
+  );
+  await Promise.all(insertPromises);
+
+  res.json({ success: true });
 });
 
 // Start both HTTP and Socket.IO server

@@ -19,6 +19,8 @@ from flask import send_from_directory
 import random
 import string
 
+features_bp = Blueprint('features', __name__)
+
 main = Blueprint("main", __name__)  # Define the blueprint
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
@@ -428,6 +430,32 @@ def get_user_characters(user_id):
         print("Error fetching characters:", e)
         return jsonify({"error": "An error occurred while fetching characters."}), 500
 
+
+@main.route("/characters/<int:character_id>", methods=["PUT"])
+def update_character(character_id):
+    data = request.get_json()
+    character = Character.query.get(character_id)
+    if not character:
+        return jsonify({"error": "Character not found"}), 404
+
+    for field in [
+        "name", "character_class", "species", "background", "level", "size", "alignment",
+        "proficiency_bonus", "no_hit_dice", "per_level", "passive_perception",
+        "strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma",
+        "armor_class", "initiative", "speed", "hit_points", "image_url",
+        "copper_coins", "silver_coins", "electrum", "gold_coins", "platinum_coins",
+        "current_hp", "max_hp", "conditions", "defenses"  # <-- add these
+    ]:
+        if field in data:
+            setattr(character, field, data[field])
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Character updated successfully", "character": character.to_dict()}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 @main.route("/characters/<int:character_id>", methods=["GET"])
 def get_character_details(character_id):
     """
@@ -723,52 +751,93 @@ def delete_inventory_item(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-from flask import Blueprint, request, jsonify
-from app.models import db, Feature
-
-features_bp = Blueprint('features', __name__)
-
-# Get all features for a character
-@features_bp.route('/character/<int:character_id>', methods=['GET'])
-def get_features(character_id):
-    try:
-        features = Feature.query.filter_by(character_id=character_id).all()
-        return jsonify([feature.to_dict() for feature in features])
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Add a new feature
-@features_bp.route('/', methods=['POST'])
-def add_feature():
-    try:
-        data = request.get_json()
-        new_feature = Feature(
-            character_id=data['character_id'],
-            name=data['name'],
-            description=data.get('description', '')
-        )
-        db.session.add(new_feature)
-        db.session.commit()
-        return jsonify(new_feature.to_dict()), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Delete a feature
-@features_bp.route('/<int:id>', methods=['DELETE'])
-def delete_feature(id):
-    try:
-        feature = Feature.query.get(id)
-        if not feature:
-            return jsonify({'error': 'Feature not found'}), 404
-        db.session.delete(feature)
-        db.session.commit()
-        return jsonify({'message': 'Feature deleted successfully'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @main.route("/campaigns/<int:campaign_id>/users")
 def get_campaign_users(campaign_id):
     campaign = Campaign.query.get(campaign_id)
     users = [user.to_dict() for user in campaign.players]  # Adjust as needed
     return jsonify({"users": users})
+
+from flask import request, jsonify
+from .models import db, CharacterFeature, CharacterBackground, CharacterExtra
+
+# --- Features ---
+@main.route("/features/character/<int:character_id>", methods=["GET"])
+def get_features(character_id):
+    features = CharacterFeature.query.filter_by(character_id=character_id).all()
+    return jsonify([{"id": f.id, "name": f.name, "description": f.description} for f in features])
+
+@main.route("/features", methods=["POST"])
+def add_feature():
+    data = request.get_json()
+    feature = CharacterFeature(
+        character_id=data["character_id"],
+        name=data["name"],
+        description=data["description"]
+    )
+    db.session.add(feature)
+    db.session.commit()
+    return jsonify({"id": feature.id, "name": feature.name, "description": feature.description})
+
+@main.route("/features/<int:feature_id>", methods=["DELETE"])
+def delete_feature(feature_id):
+    feature = CharacterFeature.query.get(feature_id)
+    if feature:
+        db.session.delete(feature)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Not found"}), 404
+
+# --- Backgrounds ---
+@main.route("/backgrounds/character/<int:character_id>", methods=["GET"])
+def get_backgrounds(character_id):
+    backgrounds = CharacterBackground.query.filter_by(character_id=character_id).all()
+    return jsonify([{"id": b.id, "name": b.name, "description": b.description} for b in backgrounds])
+
+@main.route("/backgrounds", methods=["POST"])
+def add_background():
+    data = request.get_json()
+    background = CharacterBackground(
+        character_id=data["character_id"],
+        name=data["name"],
+        description=data["description"]
+    )
+    db.session.add(background)
+    db.session.commit()
+    return jsonify({"id": background.id, "name": background.name, "description": background.description})
+
+@main.route("/backgrounds/<int:bg_id>", methods=["DELETE"])
+def delete_background(bg_id):
+    background = CharacterBackground.query.get(bg_id)
+    if background:
+        db.session.delete(background)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Not found"}), 404
+
+# --- Extras ---
+@main.route("/extras/character/<int:character_id>", methods=["GET"])
+def get_extras(character_id):
+    extras = CharacterExtra.query.filter_by(character_id=character_id).all()
+    return jsonify([{"id": e.id, "name": e.name, "description": e.description} for e in extras])
+
+@main.route("/extras", methods=["POST"])
+def add_extra():
+    data = request.get_json()
+    extra = CharacterExtra(
+        character_id=data["character_id"],
+        name=data["name"],
+        description=data["description"]
+    )
+    db.session.add(extra)
+    db.session.commit()
+    return jsonify({"id": extra.id, "name": extra.name, "description": extra.description})
+
+@main.route("/extras/<int:extra_id>", methods=["DELETE"])
+def delete_extra(extra_id):
+    extra = CharacterExtra.query.get(extra_id)
+    if extra:
+        db.session.delete(extra)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Not found"}), 404
 

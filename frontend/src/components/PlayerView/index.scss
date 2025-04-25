@@ -2,6 +2,9 @@
 
     position: relative;
     bottom: 0px;
+    color: black;
+
+    
 
     input {
         outline: none;
@@ -924,4 +927,37 @@
 #item-description {
     width: 80%;
     z-index: 9999;
+}
+
+#home-button {
+    position: relative;
+    z-index: 100;
+    background-color: rgb(93, 75, 51);
+    color: white;
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 800;
+    right: 100px;
+    top: 100px;
+}
+
+#save-button {
+    position: relative;
+    z-index: 100;
+    background-color: rgb(93, 75, 51);
+    color: white;
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 800;
+    right: 180px;
+    top: 160px;
+}
+#save-button:hover {
+    background-color: rgb(93, 75, 51);
+    color: white;
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 800;
+}
+
+
+input {
+    z-index: 99999;
 }

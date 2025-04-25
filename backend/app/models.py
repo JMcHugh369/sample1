@@ -275,7 +275,11 @@ class Character(db.Model):
     gold_coins = db.Column(db.Integer, nullable=False, default=0)      # Already existing
     electrum = db.Column(db.Integer, nullable=False, default=0)  # Add electrum here
     silver_coins = db.Column(db.Integer, nullable=False, default=0)    # Already existing
-    copper_coins = db.Column(db.Integer, nullable=False, default=0)  
+    copper_coins = db.Column(db.Integer, nullable=False, default=0) 
+    current_hp = db.Column(db.Integer, default=0)
+    max_hp = db.Column(db.Integer, default=0)
+    conditions = db.Column(db.String(255), default="")
+    defenses = db.Column(db.String(255), default="") 
 
     # Calculated properties for ability score modifiers
     @property
@@ -622,3 +626,24 @@ class Inventory(db.Model):
             "name": self.name,
             "description": self.description,
         }
+
+class CharacterFeature(db.Model):
+    __tablename__ = "character_features"
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, db.ForeignKey("character.id"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+class CharacterBackground(db.Model):
+    __tablename__ = "character_backgrounds"
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, db.ForeignKey("character.id"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+class CharacterExtra(db.Model):
+    __tablename__ = "character_extras"
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, db.ForeignKey("character.id"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
