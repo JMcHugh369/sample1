@@ -82,6 +82,37 @@ const PlayerView = () => {
     const [backgrounds, setBackgrounds] = useState([]);
     const [extras, setExtras] = useState([]);
 
+    const addFeature = async (name, description) => {
+        try {
+            const response = await fetch("http://localhost:5002/features", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to add feature");
+            }
+            const newFeature = await response.json();
+            setFeatures((prev) => [...prev, newFeature]);
+        } catch (err) {
+            console.error("Error adding feature:", err.message);
+        }
+    };
+
+    const deleteFeature = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5002/features/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete feature");
+            }
+            setFeatures((prev) => prev.filter((f) => f.id !== id));
+        } catch (err) {
+            console.error("Error deleting feature:", err.message);
+        }
+    };
+
     // Fetch character data
     useEffect(() => {
         const fetchCharacter = async () => {
