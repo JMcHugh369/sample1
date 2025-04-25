@@ -1,48 +1,100 @@
-.welcome {
-    width: 50vw;
-    margin-top: 15vh;
-    margin-left: 25vw;
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Tektur:wght@400..900&display=swap');
 
-    p {
-        font-size: 5vh;
+// body {
+    // font-family: "Cinzel Decorative", cursive;
+    // display: flex;
+    // height: 100vh;
+    // background-image: url("../asset/login1.jpg"); /* Adjust the path if necessary */
+    // background-size: cover;
+    // background-position: center;
+    // background-repeat: no-repeat;
+
+// }
+.signup-wrapper {
+    font-family: "Cinzel Decorative", cursive;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url("../asset/login1.jpg"); /* Adjust the path if necessary */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: black; /* Updated color */
+    text-align: center;
+    font-size: 24px;
+    color: #5a4906;
+
+}
+.signup {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    position: relative;
+    right: 475px;
+    
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    div {
+    button:focus {
+        outline: none;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    input {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 100000;
         position: relative;
+
     }
 
     button {
-        font-family: "Cinzel Decorative", serif;
-        font-weight: 700;
-        font-style: normal;
-        background: rgb(241, 236, 227);
-        border-radius: 2vh;
-        margin: 2vh;
-        padding: 5vh;
-        border: none;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
-            rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        font-size: 4vh;
-        width: 20vw;
-        height: 20vh;
-        margin-left: 15vw;
-        margin-top: 5vh;
-        text-indent: 2.5vw;
-        line-height: 10vh;
-    }
-    
-    button:active {
-        background: rgb(233, 228, 217);
+        font-family: "Cinzel Decorative", cursive;
+        background-color: #5a4906; /* Green background */
+        width: 100%;
+        align-self: center;
+        left: 22.5px;
+        position: relative;
     }
 
-    .login, .signup {
-        text-indent: 3vw;
+    .signup-password {
+        position: relative;
+        top: 0px;
     }
 
-    .login:hover, .signup:hover {
-        background: rgb(255, 255, 237);
-        transform: scale(1.05);
-        box-shadow: rgba(0,0,0,0.2) 0px 5px 10px,
-            rgba(0,0,0,0.19) 0px 5px 10px;
+    .username {
+        position: relative;
+        top: 0px;
+    }
+
+    .discord {
+        position: relative;
+        top: 0px;
+    }
+
+    .email {
+        position: relative;
+        top: 0px;
+        font-size: 16px;
     }
 }

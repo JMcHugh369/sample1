@@ -1,108 +1,72 @@
-.login-container {
-    width: 30vw;
-    margin-left: 35vw;
-    margin-top: 15vh;
-    padding: 2.5vh;
-    border-radius: 2vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    background: rgba(217, 208, 192, 0.624);
-    display: flex;
-    flex-direction: column;
-    
-    // Common styles for all prompts
-    .login-username-prompt,
-    .login-password-prompt {
-        margin-bottom: 1vh;
-        
-        p {
-            margin: 0;
-            font-weight: 500;
-        }
-    }
-    
-    // Common styles for all input containers
-    .login-username-input,
-    .login-password-input {
-        margin-bottom: 2vh;
-        position: relative;
-        
-        input {
-            width: 100%;
-            height: 4vh;
-            padding: 1vh;
-            border-radius: 0.5vh;
-            border: none;
-            outline: none;
-            text-align: center;
-            box-sizing: border-box;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        }
-    }
-    
-    // Password container with input and toggle button
-    .password-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 2vh;
-        gap: 1vh;
-        
-        .login-password-input {
-            flex: 1;
-            margin-bottom: 0;
-            
-            input {
-                width: 100%;
-                font-family: monospace; /* Better for password masking */
-                letter-spacing: 0.1em; /* Improves readability of asterisks */
-            }
-        }
-        
-        .toggle-password {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 2vh;
-            padding: 0.5vh 1vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
-            border-radius: 0.5vh;
-            background: rgba(255, 255, 255, 0.5);
-            height: 4vh;
-            transition: background-color 0.2s, transform 0.1s;
-            
-            &:hover {
-                background: rgba(255, 255, 255, 0.8);
-            }
-            
-            &:active {
-                transform: scale(0.95);
-            }
-        }
-    }
-}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Tektur:wght@400..900&display=swap');
 
 .login-container {
-    
-    .enter-button {
-        width: 100%;
-        margin-top: 2vh;
-        font-family: "Cinzel Decorative", serif;
-        font-weight: 700;
-        font-style: normal;
-        background: rgb(241, 236, 227);
-        border-radius: 2vh;
-        padding: 2vh 3vh;
-        border: none;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        font-size: 2.5vh;
-        cursor: pointer;
-        transition: background 0.2s ease;
-        
-        &:active {
-            background: rgb(233, 228, 217);
-        }
+    font-family: "Cinzel Decorative", cursive;
+    display: flex;
+    height: 100vh;
+    background-image: url("../asset/login1.jpg"); /* Adjust the path if necessary */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #5a4906;
+}
+
+.login-form {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #5a4906;
+    }
+
+    input {
+        width: 80%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    #password-box {
+        position: relative;
+        width: 80%;
+        z-index: 100;
+        top: 0px;
+    }
+
+    #login-login {
+        font-family: "Cinzel Decorative", cursive;
+        background-color: #5a4906; /* Green background */
+        width: 50%;
+    }
+
+    input:focus {
+        width: 80%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
     }
 }

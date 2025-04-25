@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
+app.commandLine.appendSwitch('disable-web-security');
+
 async function createWindow() {
   let isDev;
   try {
@@ -10,21 +12,27 @@ async function createWindow() {
     isDev = false; // Default to false if import fails
   }
 
+  // Disable Electron security warnings in development
+  if (isDev) {
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+  }
+
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false, // Set to false for security
+      nodeIntegration: false, // Disable Node.js integration for security
       contextIsolation: true, // Enable context isolation
       enableRemoteModule: false, // Disable remote module
       preload: path.join(__dirname, 'renderer.js'), // Add preload script
+      webSecurity: false, // Disable web security (disables CSP)
     },
   });
 
   win.loadURL(
     isDev
-      ? 'http://localhost:3000/login' // Change this to load the login page directly
-      : `file://${path.join(__dirname, '../public/index.html')}`
+      ? 'http://localhost:3000/' // Change this to load the login page directly
+      : `file://${path.join(__dirname, '../frontend/public/index.html')}`
   );
 
   if (isDev) {
@@ -33,12 +41,15 @@ async function createWindow() {
 
   // Add Content Security Policy
   win.webContents.on('did-finish-load', () => {
+    // Comment out or remove this block to disable CSP
+    /*
     win.webContents.executeJavaScript(`
       const meta = document.createElement('meta');
       meta.httpEquiv = 'Content-Security-Policy';
-      meta.content = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:5000;";
+      meta.content = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://localhost:5001; img-src 'self' data:;";
       document.getElementsByTagName('head')[0].appendChild(meta);
     `);
+    */
   });
 }
 
@@ -55,3 +66,6 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+console.log('Rendering Nav');
+console.log('Rendering Welcome');

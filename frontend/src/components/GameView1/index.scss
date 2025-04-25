@@ -1,385 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Tektur:wght@400..900&display=swap');
-
-ul {
-    list-style-type: none;
-}
-
-select {
-    padding: 5px;
-    font-family: "Cinzel Decorative", cursive;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    background-color:#4a2511;
-    color: white;
-}
-
-select:focus {
-    outline: none;
-}
-
-button:focus {
-    outline: none;
-}
-
-input:focus {
-    outline: none;
-}
-
-input {
-    z-index: 1000000;
-}
-
-.chat-right {
-  position: fixed;
-  bottom: 0;
-  right: 0px;
-  width: 50vw;
-  height: 60vh;
-  display: flex;
-  flex-direction: column;
-  background-color: rgb(220, 213, 204);
-  font-family: "Cinzel Decorative", cursive;
-  box-shadow: -2px 0 8px rgba(0,0,0,0.08);
-  align-items: center;
-
-  input {
-    font-family: "Cinzel Decorative", cursive;
-    z-index: 100000;
-  }
-
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    width: 40vw;
-
-    .chat-tabs {
-      display: flex;
-      gap: 0.5rem;
-
-      button {
-        background: #4a2511;
-        color: #fff;
-        border: none;
-        border-radius: 8px 8px 0 0;
-        padding: 0.5rem 1.2rem;
-        font-family: inherit;
-        position: relative;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background 0.2s;
-        &:hover, &.active {
-          background: #6d3b1c;
-        }
-      }
-    }
-  }
-
-  .chat-window {
-    flex: 1;
-    background: #f9f9f9;
-    border-radius: 12px;
-    border: 1px solid #b8b1a7;
-    padding: 1rem;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-    height: 40%;
-    width: 80%;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-
-    &::-webkit-scrollbar { width: 0; background: transparent; }
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .chat-input-area,
-  .note-section {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-
-    input {
-      flex: 1;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      border: 1px solid #b8b1a7;
-      font-size: 1rem;
-      font-family: inherit;
-      z-index: 100000;
-    }
-    button {
-      background: #4a2511;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 0.5rem 1.2rem;
-      font-family: inherit;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-      &:hover {
-        background: #6d3b1c;
-      }
-    }
-  }
-
-.notes-section {
-    background: #ede7df;
-    border-radius: 10px;
-    padding: 1rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-
-    h3 {
-      margin-top: 0;
-      color: #4a2511;
-      font-size: 1.1rem;
-      letter-spacing: 1px;
-    }
-    ul {
-      margin: 0 0 1rem 0;
-      padding-left: 1.2rem;
-      font-size: 0.98rem;
-    }
-    form {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0;
-      input {
-        flex: 1;
-      }
-    }
-  }
-}
-
-#submit {
-    position: relative;
-    bottom: 30px;
-    left: 180px;
-}
-
-#chat-message {
-    position: relative;
-    bottom: 100px;
-}
-
 /* ================================================
-   SMALL MAP COMPONENT (COLLAPSED VIEW)
+   MAIN GAME SIDEBAR CONTAINER
    ================================================ */
-.map {
-    background: rgb(37, 15, 4);
-    height: 30vh;
-    width: 30vh;
-    padding: 1vh;
-    display: flex;
-    margin-top: -30vh;
-    margin-left: 23vw;
-    position: absolute;
-    top: 250px;
-    right: 0px;
-
-    .map-up {
-        height: 35vh;
-        width: 35vh;
-        margin-left: 2.5vw;
-        position: relative;
-    }
-
-    .view-map-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(241, 236, 227, 0.9);
-        color: rgb(37, 15, 4);
-        font-size: 2.5vh;
-        font-weight: bold;
-        padding: 1vh 2vh;
-        border: none;
-        border-radius: 1vh;
-        cursor: pointer;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        transition: all 0.2s ease;
-        z-index: 10;
-
-        &:hover {
-            background: rgba(241, 236, 227, 1);
-            transform: translate(-50%, -50%) scale(1.05);
-        }
-
-        &:active {
-            background: rgb(233, 228, 217);
-            transform: translate(-50%, -50%) scale(0.98);
-        }
-    }
-
-    .small-map-tokens {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 5;
-    }
-
-    .small-map-token {
-        position: absolute;
-        transform: translate(-50%, -50%);
-        width: 3vh;
-        height: 3vh;
-        z-index: 6;
-
-        img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
-
-        &[title="Character"] img {
-            border: 2px solid #4a9;
-        }
-        &[title="Monster"] img {
-            border: 2px solid #e44;
-        }
-        &[title="NPC"] img {
-            border: 2px solid #fc3;
-        }
-    }
-}
-
-/* ================================================
-   EXPANDED MAP OVERLAY
-   ================================================ */
-.map-expanded-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.map-expanded {
-    width: 90vw;
-    height: 80vh;
+   .gameside {
+    display: inline-block;
     background: rgb(165, 154, 132);
-    border-radius: 2vh;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-
-    img {
-        max-width: 100%;
-        max-height: 100%;
-        display: block;
-        object-fit: contain;
-        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
-    }
-
-    select {
-        color: black;
-    }
-
-    .close-expanded-map {
-        position: absolute;
-        top: 2vh;
-        right: 2vh;
-        background: rgba(241, 236, 227, 0.8);
-        color: rgb(37, 15, 4);
-        border: none;
-        border-radius: 50%;
-        width: 4vh;
-        height: 4vh;
-        font-size: 2vh;
-        font-weight: bold;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-        z-index: 5;
-
-        &:hover {
-            background: rgba(241, 236, 227, 1);
-        }
-
-        &:active {
-            background: rgb(233, 228, 217);
-            transform: scale(0.95);
-        }
-    }
+    width: 50vw;
+    height: 100vh;
+    margin-top: 10vh;
+    margin-left: 50vw;
+    overflow: scroll;
+    z-index: 1;
 }
 
 /* ================================================
-   DICE PANEL
+   INITIATIVE TRACKER STYLES
    ================================================ */
-.dice {
-    display: flex;
-    background: rgba(32, 11, 4, 0.935);
-    margin-top: 2vh;
-    margin-left: 1vw;
-    height: 10vh;
-    width: 52vh;
-    padding-left: .5vw;
-    padding-right: .5vw;
-    align-items: center;
-    border-radius: 1vh;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    justify-content: space-around;
-    position: relative;
-
-    button {
-        width: 5vw;
-        height: 7vh;
-        padding: 0.5vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background: rgb(241, 236, 227);
-        border-radius: 1vh;
-        margin: 1vh;
-        border: none;
-        position: relative;
-        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-        transition: all 0.1s ease;
-
-        &.d4 img.d4-img,
-        &.d6 img.d6-img,
-        &.d8 img.d8-img,
-        &.d10 img.d10-img,
-        &.d12 img.d12-img,
-        &.d20 img.d20-img,
-        &.d100 img.d100-img {
-            height: 3.5vh;
-            width: auto;
-            margin-bottom: 0.5vh;
-        }
-    }
-
-    button:hover {
-        background: rgb(233, 228, 217);
-        transform: translateY(-1px);
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    }
-
-    button:active {
-        background: rgb(198, 194, 185);
-        transform: translateY(1px);
-        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-    }
-}
-
 .initiative-container {
     display: flex;
     flex-direction: column;
@@ -473,7 +108,6 @@ input {
     }
 }
 
-
 .initiative-add {
     background: rgb(241, 236, 227);
     font-size: 3vh;
@@ -506,18 +140,18 @@ input {
     }
 }
 
+/* ================================================
+   SMALL MAP COMPONENT (COLLAPSED VIEW)
+   ================================================ */
 .map {
     background: rgb(37, 15, 4);
     height: 35vh;
     width: 45vh;
-    padding: 2.9vh;
+    padding: 2vh;
     display: flex;
     margin-top: -30vh;
     margin-left: 23vw;
-    position: absolute;
-    border-radius: 15px;
-    left: 680px;
-    color: black;
+    position: relative;
 
     .map-up {
         height: 35vh;
@@ -573,7 +207,6 @@ input {
 
     /* View Map Button - Shows on hover */
     .view-map-button {
-        font-family: "Cinzel Decorative", serif;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -643,7 +276,9 @@ input {
     }
 }
 
-
+/* ================================================
+   EXPANDED MAP OVERLAY
+   ================================================ */
 .map-expanded-overlay {
     position: fixed;
     top: 0;
@@ -670,7 +305,7 @@ input {
 /* ================================================
    TOKEN SELECTOR (LEFT PANEL)
    ================================================ */
-   .token-selector {
+.token-selector {
     width: 20%;
     background: rgb(97, 67, 49);
     padding: 2vh;
@@ -782,6 +417,9 @@ input {
     }
 }
 
+/* ================================================
+   EXPANDED MAP (CENTER PANEL)
+   ================================================ */
 .expanded-map {
     width: 60%;
     background: rgb(37, 15, 4);
@@ -789,7 +427,6 @@ input {
     justify-content: center;
     align-items: center;
     position: relative;
-    color: black;
 
     /* Close button */
     .close-expanded-map {
@@ -842,7 +479,6 @@ input {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: black;
     }
 
     .map-large {
@@ -859,7 +495,6 @@ input {
     .grid-and-tokens-container {
         position: absolute;
         top: 50%;
-        color: black;
         left: 50%;
         transform: translate(-50%, -50%);
         pointer-events: none; /* This allows clicks to pass through by default */
@@ -996,7 +631,6 @@ input {
     width: 20%;
     background: rgb(97, 67, 49);
     padding: 2vh;
-    color: black;
 
     h3 {
         color: rgb(241, 236, 227);
@@ -1028,7 +662,6 @@ input {
             width: 100%;
             padding: 1vh;
             border: none;
-            color: black;
             border-radius: 0.5vh;
             background: rgb(241, 236, 227);
             box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
@@ -1041,7 +674,6 @@ input {
         }
 
         .clear-tokens-btn {
-            font-family: "Cinzel Decorative", serif;
             width: 100%;
             padding: 1vh;
             background: rgb(241, 236, 227);
@@ -1125,6 +757,259 @@ input {
     }
 }
 
+/* ================================================
+   CHAT PANEL
+   ================================================ */
+   .chat-container {
+    position: relative;
+    width: 15vw;
+    margin-left: .5vw;
+    margin-top: 15px;
+}
+
+.chat {
+    /*background: rgba(113, 57, 32, 0.421);  THIS WAS THE TRANSPARENT*/
+    background: rgb(97, 67, 49); /* This is the solid color for final draft */
+    width: 100%;
+    height: 27.5vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    position: relative;
+    overflow: hidden;
+    z-index: 10; /* Higher z-index to be in front of chat-up */
+}
+
+/* The crystal ball image (centered) */
+.orb-chat {
+    width: 15vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* This changes the positioning of the orb image, lowered it so it won't seem clipped */
+    transform: translate(-50%, -45%);
+    z-index: 1;
+    cursor: pointer; /* Show hand cursor to indicate interactivity */
+}
+
+/* Player list component that overlays the orb - hidden by default */
+.orb-chat-player-list {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    z-index: 3; /* Above the orb-chat */
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    opacity: 0; /* Start with player list hidden */
+    pointer-events: none; /* Don't capture clicks when hidden */
+    transition: opacity 0.3s ease; /* Smooth fade in/out */
+}
+
+.player-item {
+    background: rgba(241, 236, 227, 0.8);
+    padding: 0.5vh 1vh;
+    border-radius: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.8vh;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: all 0.2s ease;
+}
+
+.player-item:hover {
+    background: rgba(241, 236, 227, 1);
+    transform: scale(1.05);
+}
+
+.player-item:active {
+    background: rgb(233, 228, 217);
+    transform: scale(0.98);
+}
+
+.player-item.selected {
+    background: rgba(97, 67, 49, 0.8);
+    color: rgb(241, 236, 227);
+}
+
+/* Show player list when hovering over the orb */
+.orb-chat:hover + .orb-chat-player-list,
+.orb-chat-player-list:hover {
+    opacity: 1;
+    pointer-events: auto; /* Re-enable clicks when visible */
+}
+
+.chat-up {
+    position: absolute;
+    z-index: 5; /* Lower than chat but higher than other elements */
+    background: rgba(229, 222, 218, 0.739);
+    width: 100%; /* Use full width of container */
+    height: 27.5vh;
+    border-radius: 1vh;
+    left: 0; /* Position at the left edge of the container */
+    top: 0; /* Align with top of container */
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(0); /* Start in default position */
+    transition: transform 0.3s ease-in-out; /* Add smooth transition */
+    overflow: hidden; /* Prevent content from spilling out */
+    box-sizing: border-box; /* Ensure padding and borders are included in the width */
+    max-width: 100%; /* Ensure it doesn't exceed container width */
+}
+
+.chat-up.slide-out {
+    transform: translateX(100%); /* Move right by 100% of its width */
+}
+
+/* Top context container - includes minimize button, header and messages */
+.slide-out-chat-top-context {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Take up available space */
+    overflow: hidden;
+    position: relative;
+}
+
+/* Bottom context container - includes the form with input and submit button */
+.slide-out-chat-bottom-context {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    min-height: 7vh; /* Ensure enough height for the form */
+}
+
+button.chat-minimize {
+    background: rgb(241, 236, 227);
+    border-radius: .5vh;
+    float: right;
+    margin: .5vh;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 3; /* Make sure it's clickable */
+}
+
+button.chat-minimize:active {
+    background: rgb(233, 228, 217);
+}
+
+/* Chat header styling */
+.chat-header {
+    padding: 0.5vh 1vh;
+    background: rgba(97, 67, 49, 0.5);
+    margin: 0 1vh;
+    border-radius: 0.5vh;
+}
+
+.chat-header h4 {
+    margin: 0;
+    padding: 0.5vh 0;
+    color: rgb(241, 236, 227);
+    text-align: center;
+    font-family: "Cinzel Decorative", serif;
+}
+
+/* Message display area with individual message styling */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1vh;
+    margin: 0 1vh 1vh;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0.5vh;
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+.chat-messages .message {
+    margin-bottom: 0.8vh;
+    padding: 0.8vh;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.5vh;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: break-word; /* Alternative to word-wrap for better browser support */
+    max-width: 100%; /* Ensure messages don't exceed container width */
+}
+
+.chat-messages .empty-chat {
+    font-style: italic;
+    color: rgba(97, 67, 49, 0.6);
+    text-align: center;
+    margin-top: 2vh;
+}
+
+.chat-messages ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-messages ul li {
+    padding: 0.8vh;
+    margin-bottom: 0.8vh;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.5vh;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Allow long words to be broken and wrap */
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: break-word; /* Alternative to word-wrap for better browser support */
+    max-width: 100%; /* Ensure messages don't exceed container width */
+}
+
+.form-chat {
+    display: flex;
+    margin: 0 1vh 1vh;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 2vh); /* Ensure form stays contained within parent */
+    position: relative; /* Added for proper z-index context */
+    z-index: 2; /* Ensure form and its children are visible */
+    box-sizing: border-box; /* Ensure padding and borders are included in the width */
+    max-width: 100%; /* Ensure the form doesn't exceed parent width */
+    overflow: hidden; /* Hide any potential overflow */
+}
+
+.input-chat {
+    width: 80%; /* Set width to 80% as requested */
+    height: 5vh;
+    background: rgb(241, 236, 227);
+    border: none;
+    border-radius: 0.5vh;
+    padding: 0 1vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 2;
+    box-sizing: border-box; /* Ensure padding doesn't add to width */
+    max-width: 80%; /* Ensure input doesn't grow beyond 80% */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.submit-chat {
+    width: 18%; /* Set width to slightly less than 20% to account for margin */
+    height: 5vh;
+    margin-left: 2%; /* Use percentage for margin as well */
+    background: rgb(241, 236, 227);
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2; /* Added to ensure button stays visible */
+    box-sizing: border-box; /* Ensure padding doesn't add to width */
+}
+
+.submit-chat:active {
+    background: rgb(233, 228, 217);
+}
+/* ================================================
+   DICE PANEL
+   ================================================ */
 .dice {
     display: flex;
     background: rgba(32, 11, 4, 0.935);
@@ -1225,5 +1110,156 @@ input {
     /* confused what this is supposed to be -dela */
     a {
         z-index: 999;
+    }
+}
+
+/* ================================================
+   NOTES PANEL
+   ================================================ */
+   .notes {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 17vw;
+    height: 45vh;
+    margin-left: 32vw;
+    z-index: 1;
+    margin-top: -30vh;
+    padding: none;
+
+    /* Shared styles for all notes containers */
+    .public-notes, .private-notes, .dm-notes {
+        background: rgb(212, 205, 188);
+        padding: 1vh;
+        margin: .5vh;
+        border-radius: 1vh;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        transition: height 0.4s ease; /* Smooth transition for height only */
+        overflow: hidden; /* Hide overflow during transitions */
+    }
+
+    /* Animation classes - only affecting height */
+    .expanded {
+        height: 12vh !important; /* Taller when expanded */
+    }
+
+    .minimized {
+        height: 3vh !important; /* Shorter when minimized */
+    }
+
+    /* Button styles for all containers */
+    button {
+        border: none;
+        font-family: "Cinzel Decorative", serif;
+        font-weight: 600;
+        font-size: 3.5vh;
+        color: rgb(32, 10, 4);
+        background: none;
+    }
+
+    /* Specific styles for shared container types */
+    .public-notes, .private-notes, .dm-notes {
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        height: 5vh; /* Default height */
+        min-height: 5vh;
+        
+        .written-public-notes, .written-notes {
+            width: 100%;
+            margin: 1vh 0 0 0;
+            padding: 1vh;
+            background: rgb(241, 236, 227);
+            max-height: 20vh;
+            overflow-y: auto;
+            border-radius: 0.5vh;
+            
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                
+                li {
+                    padding: 0.5vh 0;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    word-wrap: break-word; /* Ensure long notes don't overflow */
+                }
+            }
+            
+            p {
+                font-style: italic;
+                color: rgba(32, 10, 4, 0.7);
+            }
+        }
+    }
+
+    /* Input notes container - container is positioned beneath the form */
+    .input-notes {
+        position: relative;
+        height: 10.0vh;
+        margin: .5vh;
+        z-index: 1;
+        
+        /* The actual form that floats above the container */
+        .input-notes-form {
+            position: absolute;
+            top: 50%;
+            left: 40.5%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+            /* Background for the form to create visual separation */
+            background: rgb(212, 205, 188);
+            padding: 1vh;
+            border-radius: 1vh;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }
+
+        input {
+            width: 75%;
+            background: rgb(241, 236, 227);
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            height: 5vh;
+            border: none;
+            border-radius: 0.5vh;
+            padding: 0 1vh;
+            
+            &:disabled {
+                background: rgba(241, 236, 227, 0.7);
+                color: rgba(32, 10, 4, 0.5);
+                cursor: not-allowed;
+            }
+            
+            &::placeholder {
+                color: rgba(32, 10, 4, 0.5);
+            }
+        }
+
+        button {
+            height: 5vh;
+            width: 5vh;
+            border: none;
+            border-radius: 1vh;
+            font-size: 2.5vh;
+            background: rgb(230, 224, 213);
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:disabled {
+                background: rgba(230, 224, 213, 0.7);
+                color: rgba(32, 10, 4, 0.5);
+                cursor: not-allowed;
+            }
+        }
+
+        button:active:not(:disabled) {
+            background: rgb(198, 194, 185);
+        }
     }
 }

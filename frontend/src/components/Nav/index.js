@@ -1,3 +1,4 @@
+import React from "react";
 import { useLocation } from "react-router-dom";
 import "./index.scss";
 import logogrung from "../asset/logogrung.png";

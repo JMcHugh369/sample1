@@ -9,17 +9,20 @@
     "@testing-library/user-event": "^13.5.0",
     "cross-env": "^7.0.3",
     "frontend": "file:",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^7.4.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "5.0.1",
+    "sass": "^1.86.3",
+    "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-react": "cross-env BROWSER=none npm start --prefix frontend"
   },
   "eslintConfig": {
     "extends": [
@@ -38,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "postcss": "^8.5.3",
+    "resolve-url-loader": "^5.0.0"
   }
 }

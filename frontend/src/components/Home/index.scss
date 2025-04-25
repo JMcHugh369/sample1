@@ -6,9 +6,10 @@ body {
     font-style: normal;
     text-align: center;
     background: rgb(183, 170, 153);
+    overflow: hidden; /* Disable scrolling */
 }
 
-a {
+/** a {
     position: absolute;
     z-index: -1;
     background: rgb(220, 213, 204);
@@ -25,7 +26,7 @@ a {
 
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 
-}
+} **/
 
 input {
 
@@ -57,7 +58,686 @@ input {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
+input {
+    width: 25vw; /* This might override the modal-specific styles */
+    height: 5vh;
+    padding: 5vh;
+}
+
 input:active {
     background: rgb(193, 185, 174);
     cursor: pointer;
+}
+
+.home-container {
+  position: relative;
+  height: 100vh; /* Full viewport height */
+  width: 101vw;
+  background-size: cover; /* Ensures the image covers the entire screen proportionally */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1; /* Ensures the content is above the background */
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh; /* Full height */
+    width: 265px; /* Adjust width as needed */
+    background-color: black; /* Sidebar background color */
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    color: #aaa;
+}
+
+/* Tab Button */
+.sidebar-tab {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: #aaa;
+    color: black;
+    border: none;
+    padding: 5px; /* Reduced padding to make the tab smaller */
+    width: 20px; /* Adjusted width to make the tab narrower */
+    height: 40px; /* Optional: Adjust height if needed */
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+    z-index: 3; /* Ensure the tab is above the sidebar */
+}
+
+.sidebar-tab:hover {
+    background-color: #888; /* Slightly darker color on hover */
+}
+
+/* Main content styles */
+.content {
+  position: relative;
+  color: white; /* Text color to contrast with the background */
+  text-align: center;
+  z-index: 1; /* Ensures the content is above the background */
+}
+
+nav {
+  position: relative;
+  z-index: 3; /* Ensures the navbar is above everything else */
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  height: 12px; /* Height of the scrollbar (for horizontal scrollbars) */
+}
+
+::-webkit-scrollbar-track {
+  background: black; /* Background color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: black; /* Color of the scrollbar thumb */
+  border-radius: 6px; /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: black; /* Color of the thumb on hover */
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.copy-button, .close-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.copy-button:hover, .close-button:hover {
+    background-color: #0056b3;
+}
+
+.characters-container {
+    flex: 1; /* Allow the container to take up available space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-right: 10px; /* Add padding for scrollbar */
+}
+
+.character-card {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 10px); /* Adjust width for two cards per row */
+}
+
+.character-card h3 {
+    margin: 0 0 10px;
+}
+
+.cancel-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: #0056b3;
+}
+
+.campaigns-container {
+    display: grid; /* Use grid layout for cards */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Space between cards */
+    width: 100%;
+    max-height: 50vh; /* Limit the height of the campaigns list */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    /* Hide scrollbars */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.campaigns-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Edge */
+}
+
+.campaign-card {
+    background-color: #f0e6d6; /* Light beige color for a softer look */
+    border: none; /* Remove the border for a cleaner appearance */
+    border-radius: 20px; /* Increase border radius for a bubbly effect */
+    padding: 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Softer shadow for a floating effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.campaign-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #4a3f35; /* Darker brown for contrast */
+}
+
+.campaign-card p {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    color: #6b5e4f; /* Medium brown for a cohesive look */
+}
+
+.campaign-card:hover {
+    transform: translateY(-10px); /* Lift the card slightly on hover */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+    background-color: #e8dccc; /* Slightly darker beige on hover */
+}
+
+.cancel-button {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.cancel-button:hover {
+    background-color: #aaa;
+}
+
+.campaign-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.campaign-item:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.cancel-button {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #aaa;
+}
+
+.modal-content {
+  width: 30vw;
+  padding: 2.5vh;
+  border-radius: 2vh;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  background: rgba(217, 208, 192, 0.624);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 700;
+  font-style: normal;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 2vh;
+  font-size: 3vh;
+}
+
+.modal-content form {
+  width: 100%; /* Ensure the form takes the full width of the modal */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content */
+  gap: 2vh; /* Add spacing between elements */
+}
+
+.modal-content label {
+  display: flex;
+  flex-direction: column;
+  font-size: 2vh;
+  text-align: left !important
+}
+
+.modal-content input {
+  width: 90% !important; /* Use !important to override global styles */
+  max-width: 500px; /* Optional: Set a maximum width */
+  height: 4vh;
+  padding: 1vh !important;
+  border-radius: 0.5vh;
+  border: none;
+  outline: none;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  background: rgb(241, 236, 227);
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.modal-content input:focus {
+  background: rgb(233, 228, 217);
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 1.5vh;
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 700;
+  font-style: normal;
+  background: rgb(241, 236, 227);
+  border-radius: 2vh;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  font-size: 2.5vh;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-content button:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.modal-content button:active {
+  background: rgb(233, 228, 217);
+}
+
+.modal-content .cancel-button {
+  background: rgb(220, 213, 204);
+  color: rgb(53, 28, 12);
+}
+
+.modal-content .cancel-button:hover {
+  background: rgb(233, 228, 217);
+}
+
+.campaign-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.play-button,
+.leave-button,
+.delete-button {
+    background-color: #6a4e42;
+    color: #fdfaf5;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: not-allowed; /* Indicate that the button is inactive */
+    opacity: 0.6; /* Dim inactive buttons */
+}
+
+#update-profile {
+    color: white;
+    font-size: 2.5vh;
+    text-decoration: none;
+    background: black;
+    position: relative;
+    list-style: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+#update-profile:hover,
+ #logout:hover{
+    background: rgb(50, 50, 50); /* Darker background on hover */
+    color: rgb(200, 200, 200); /* Slightly lighter text color */
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-image {
+    width: 150px; /* Adjust size as needed */
+    height: 150px;
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover;
+    position: relative;
+    left: 3vh;
+}
+
+#logout {
+  color: white;
+  font-size: 2.5vh;
+  text-decoration: none;
+  background: black;
+  position: relative;
+  list-style: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.sidebar ul li {
+  margin-bottom: 30px;
+}
+
+.drop-zone {
+    font-family: "Cinzel Decorative", serif;
+    width: 100%;
+    max-width: 400px;
+    height: 150px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #aaa;
+    margin: 20px auto;
+    transition: background-color 0.3s ease;
+}
+
+.drop-zone.dragging {
+    background-color: #f0f0f0;
+    border-color: #333;
+    color: #333;
+}
+
+#create-campaign {
+    color: white;
+    font-size: 2.5vh;
+    text-decoration: none;
+    background: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 500;
+}
+
+#join-campaign {
+    color: white;
+    font-size: 2.5vh;
+    text-decoration: none;
+    background: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 99999;
+}
+
+#create-campaign:hover,
+#join-campaign:hover {
+    background: rgb(50, 50, 50);
+    color: rgb(200, 200, 200);
+    transform: scale(1.1);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+#view-campaigns {
+    font-size: 2.5vh;
+    text-decoration: none;
+    background: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 30%;
+}
+
+#view-campaigns:hover {
+    background: rgb(50, 50, 50);
+    transform: scale(1.1);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.access-code-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(218, 217, 217);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Ensure it appears above other elements */
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align the content */
+    gap: 15px; /* Add spacing between elements */
+}
+
+.access-code-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.access-code-container p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.copy-button, .close-button {
+    font-family: "Cinzel Decorative", serif;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Make buttons full width */
+    max-width: 200px; /* Optional: Set a max width for buttons */
+}
+
+.copy-button:hover, .close-button:hover {
+    background-color: #333;
+}
+
+.copy-button:active, .close-button:active {
+    background-color: #555;
+}
+
+.close-button {
+    font-family: "Cinzel Decorative", serif;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin-top: auto; /* Push the button to the bottom of the container */
+}
+
+/* Update Profile Modal */
+.update-profile-modal {
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Ensure it appears above other elements */
+    width: 40vw;
+    max-width: 600px;
+}
+
+.update-profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-family: "Cinzel Decorative", serif;
+    font-weight: 700;
+    font-style: normal;
+    text-align: center;
+}
+
+.update-profile-content h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.update-profile-content form {
+    width: 100%;
+    display: grid; /* Use grid layout for better alignment */
+    grid-template-columns: 1fr 1fr; /* Two columns for a compact layout */
+    gap: 15px; /* Spacing between elements */
+}
+
+.update-profile-content label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #555;
+    text-align: left;
+    grid-column: span 2; /* Make labels span both columns */
+}
+
+.update-profile-content input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+    grid-column: span 2; /* Make inputs span both columns */
+}
+
+.update-profile-content input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.update-profile-content .drop-zone {
+    grid-column: span 2; /* Make the drop zone span both columns */
+    width: 100%;
+    height: 100px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #aaa;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+}
+
+.update-profile-content button {
+    grid-column: span 1; /* Buttons take one column each */
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-profile-content button:hover {
+    background-color: #ccc;
+    background-color: #aaa;
+}
+
+.update-profile-content .cancel-button {
+    background-color: #ccc;
+    color: #333;
+}
+
+.update-profile-content .cancel-button:hover {
+    background-color: #aaa;
+}
+
+.email {
+  position: relative;
+  top: -5vh;
 }

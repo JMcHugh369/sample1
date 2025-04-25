@@ -1,0 +1,30 @@
+.character-details-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.character-details-container h1 {
+    margin-bottom: 20px;
+}
+
+.character-details-container p {
+    margin: 10px 0;
+}
+
+.character-details-container button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.character-details-container button:hover {
+    background-color: #0056b3;
+}

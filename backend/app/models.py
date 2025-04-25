@@ -36,6 +36,10 @@ These (above) are listed respectively
 '''
 
 from app.database import db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.mutable import MutableList
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -45,6 +49,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     discord = db.Column(db.String(64), nullable=True)
+    image_url = db.Column(db.String(255), nullable=True)  # New attribute
 
     def set_password(self, password):
         self.password = password
@@ -204,41 +209,21 @@ class Saves(db.Model):
         return f'<Saves>'
     
     
-class Proficiencies(db.Model):
-    __tablename__ = 'proficiencies'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    proficiency_name = db.Column(db.String(100), nullable=False)
-    
-    proficiency_type = db.Column(db.String(50), nullable=False) # e.g., "Weapon, Armor, Tool"
-    
-    associated_ability = db.Column(db.String(50), nullable=True) # e.g., "Strength"
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
-    def __repr__(self):
-        return f'<Proficiency {self.proficiency_name}>'
-    
-    
-class Actions(db.Model):
+class Action(db.Model):
     __tablename__ = 'actions'
-    
+
     id = db.Column(db.Integer, primary_key=True)
-    action_name = db.Column(db.String(100), nullable=False)
-    
-    action_type = db.Column(db.String(50), nullable=False) # e.g., "Attack, Dash, Disengage"
-    range = db.Column(db.String(50), nullable=True) # e.g., "Melee, Ranged"
-    damage_dice = db.Column(db.String(50), nullable=True) # e.g., "1d8, 2d6"
-    damage_type = db.Column(db.String(50), nullable=True) # e.g., "Slashing, Fire"
-    
-    description = db.Column(db.String(200), nullable=True)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
-    def __repr__(self):
-        return f'<Action {self.action_name}>'
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "character_id": self.character_id,
+            "name": self.name,
+            "description": self.description,
+        }
     
     
 class Items(db.Model):
@@ -259,36 +244,97 @@ class Items(db.Model):
         return f'<Item {self.item_name}>'
     
     
-class Characters(db.Model):
+class Character(db.Model):
     __tablename__ = 'characters'
-    
+
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    level = db.Column(db.Integer, nullable=False, default=1)
-    
-    species_id = db.Column(db.Integer, db.ForeignKey('species.id'), nullable=False)
-    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
-    background_id = db.Column(db.Integer, db.ForeignKey('backgrounds.id'), nullable=False)
-    stats_id = db.Column(db.Integer, db.ForeignKey('stats.id'), nullable=False)
-    saves_id = db.Column(db.Integer, db.ForeignKey('saves.id'), nullable=False)
-    size = db.Column(db.String(10), nullable=False)
-    
-    alignment = db.Column(db.String(50), nullable=True) # e.g., "Lawful Good"
-    experience = db.Column(db.Integer, nullable=False, default=0)
-    prof_bonus = db.Column(db.Integer, nullable=False, default=2)
-    
+    size = db.Column(db.String(20), nullable=False)
+    alignment = db.Column(db.String(50), nullable=False)
+    passive_perception = db.Column(db.Integer, nullable=False, default=10)
+    character_class = db.Column(db.String(50), nullable=False)
+    proficiency_bonus = db.Column(db.Integer, nullable=False, default=2)
     no_hit_dice = db.Column(db.Integer, nullable=False, default=1)
     per_level = db.Column(db.Integer, nullable=False, default=1)
-    
-    proficiency_id = db.Column(db.Integer, db.ForeignKey('proficiencies.id'), nullable=False)
-    actions_id = db.Column(db.Integer, db.ForeignKey('actions.id'), nullable=False)
-    item_id = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
+    species = db.Column(db.String(50), nullable=False)
+    background = db.Column(db.String(100), nullable=True)
+    level = db.Column(db.Integer, nullable=False, default=1)
+    strength = db.Column(db.Integer, nullable=False, default=10)
+    dexterity = db.Column(db.Integer, nullable=False, default=10)
+    constitution = db.Column(db.Integer, nullable=False, default=10)
+    intelligence = db.Column(db.Integer, nullable=False, default=10)
+    wisdom = db.Column(db.Integer, nullable=False, default=10)
+    charisma = db.Column(db.Integer, nullable=False, default=10)
+    armor_class = db.Column(db.Integer, nullable=False, default=10)
+    initiative = db.Column(db.Integer, nullable=False, default=0)
+    speed = db.Column(db.Integer, nullable=False, default=30)
+    hit_points = db.Column(db.Integer, nullable=False, default=10)
+    image_url = db.Column(db.String(255), nullable=True)
+    platinum_coins = db.Column(db.Integer, nullable=False, default=0)  # Already existing
+    gold_coins = db.Column(db.Integer, nullable=False, default=0)      # Already existing
+    electrum = db.Column(db.Integer, nullable=False, default=0)  # Add electrum here
+    silver_coins = db.Column(db.Integer, nullable=False, default=0)    # Already existing
+    copper_coins = db.Column(db.Integer, nullable=False, default=0)  
+
+    # Calculated properties for ability score modifiers
+    @property
+    def str_mod(self):
+        return (self.strength - 10) // 2
+
+    @property
+    def dex_mod(self):
+        return (self.dexterity - 10) // 2
+
+    @property
+    def con_mod(self):
+        return (self.constitution - 10) // 2
+
+    @property
+    def int_mod(self):
+        return (self.intelligence - 10) // 2
+
+    @property
+    def wis_mod(self):
+        return (self.wisdom - 10) // 2
+
+    @property
+    def cha_mod(self):
+        return (self.charisma - 10) // 2
+
     def __repr__(self):
         return f'<Character {self.name}>'
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "character_class": self.character_class,
+            "species": self.species,
+            "background": self.background,
+            "level": self.level,
+            "size": self.size,
+            "alignment": self.alignment,
+            "proficiency_bonus": self.proficiency_bonus,
+            "no_hit_dice": self.no_hit_dice,
+            "per_level": self.per_level,
+            "strength": self.strength,
+            "dexterity": self.dexterity,
+            "constitution": self.constitution,
+            "intelligence": self.intelligence,
+            "wisdom": self.wisdom,
+            "charisma": self.charisma,
+            "armor_class": self.armor_class,
+            "initiative": self.initiative,
+            "speed": self.speed,
+            "hit_points": self.hit_points,
+            "platinum_coins": self.platinum_coins,
+            "gold_coins": self.gold_coins,
+            "electrum": self.electrum,
+            "silver_coins": self.silver_coins,
+            "copper_coins": self.copper_coins,
+            "image_url": self.image_url,
+        }
     
     
 class Character_Languages(db.Model):
@@ -330,16 +376,13 @@ class Player(db.Model):
     
 class Campaign(db.Model):
     __tablename__ = 'campaigns'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    
-    dm_id = db.Column(db.Integer, db.ForeignKey('dms.id'), nullable=False)
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
-    
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
+    access_code = db.Column(db.String(8), unique=True, nullable=False)  # Use access_code
+    dm_id = db.Column(db.Integer, nullable=False)
+    player_ids = db.Column(MutableList.as_mutable(ARRAY(db.Integer)), nullable=True, default=[])  # Array of player IDs
+
     def __repr__(self):
         return f'<Campaign {self.name}>'
     
@@ -402,7 +445,6 @@ class Monster(db.Model):
     intelligence = db.Column(db.Integer, nullable=False)
     wisdom = db.Column(db.Integer, nullable=False)
     charisma = db.Column(db.Integer, nullable=False)
-    proficiencies = db.Column(db.JSON, nullable=True)  # JSON to store proficiency details
     damage_vulnerabilities = db.Column(db.String(200), nullable=True)  # Comma-separated values
     damage_resistances = db.Column(db.String(200), nullable=True)  # Comma-separated values
     damage_immunities = db.Column(db.String(200), nullable=True)  # Comma-separated values
@@ -411,7 +453,7 @@ class Monster(db.Model):
     passive_perception = db.Column(db.Integer, nullable=True)
     languages = db.Column(db.String(200), nullable=True)
     challenge_rating = db.Column(db.Float, nullable=False)
-    proficiency_bonus = db.Column(db.Integer, nullable=False)
+    prof_bonus = db.Column(db.Integer, nullable=False)
     xp = db.Column(db.Integer, nullable=False)
     special_abilities = db.Column(db.JSON, nullable=True)  # JSON to store special abilities
     actions = db.Column(db.JSON, nullable=True)  # JSON to store actions
@@ -513,43 +555,70 @@ class Weapons(db.Model):
     
 class Spell(db.Model):
     __tablename__ = 'spells'
-    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    spell_index = db.Column(db.String(100), nullable=False, unique=True)
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    level = db.Column(db.Integer, nullable=False)
-    school = db.Column(db.String(50), nullable=False)
-    casting_time = db.Column(db.String(50), nullable=False)
-    range = db.Column(db.String(50), nullable=False)
-    components = db.Column(db.String(500), nullable=False)  # Increased length
-    duration = db.Column(db.String(50), nullable=False)
-    concentration = db.Column(db.Boolean, nullable=False, default=False)
-    ritual = db.Column(db.Boolean, nullable=False, default=False)
-    description = db.Column(db.Text, nullable=True)  # Changed to Text for long descriptions
-    higher_level = db.Column(db.Text, nullable=True)  # Changed to Text for long descriptions
-    damage = db.Column(db.JSON, nullable=True)
-    materials = db.Column(db.String(500), nullable=True)  # Increased length
-    classes = db.Column(db.JSON, nullable=True)
-    subclasses = db.Column(db.JSON, nullable=True)
-    url = db.Column(db.String(500), nullable=True)  # Increased length
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    description = db.Column(db.String(255), nullable=True)
 
-    def __repr__(self):
-        return f"<Spell {self.name}>"
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "character_id": self.character_id,
+            "name": self.name,
+            "description": self.description,
+        }
 
 class Feature(db.Model):
     __tablename__ = 'features'
-    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "character_id": self.character_id,
+            "name": self.name,
+            "description": self.description,
+        }
+    
+    
+class Proficiency(db.Model):
+    __tablename__ = 'proficiencies'
 
     id = db.Column(db.Integer, primary_key=True)
-    feature_index = db.Column(db.String(100), nullable=False, unique=True)
-    name = db.Column(db.String(200), nullable=False)
-    level = db.Column(db.Integer, nullable=True)
-    class_name = db.Column(db.String(100), nullable=True)
-    subclass_name = db.Column(db.String(100), nullable=True)
-    description = db.Column(db.Text, nullable=True)
-    url = db.Column(db.String(500), nullable=True)
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
 
-    def __repr__(self):
-        return f"<Feature {self.name}>"
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "character_id": self.character_id,
+            "name": self.name,
+            "description": self.description,
+        }
+
+class Other(db.Model):
+    __tablename__ = 'others'
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+class Inventory(db.Model):
+    __tablename__ = 'inventory'
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "character_id": self.character_id,
+            "name": self.name,
+            "description": self.description,
+        }

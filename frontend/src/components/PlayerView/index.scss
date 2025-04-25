@@ -1,5 +1,8 @@
 .playerside {
 
+    position: relative;
+    bottom: 0px;
+
     input {
         outline: none;
     }
@@ -381,13 +384,28 @@
             margin-top: 5.3vh;
         }
 
-        .inspiration-img {
+        .inspiration-container {
             height: 7.5vh;
             width: 7.5vh;
             position: absolute;
             z-index: 2;
             margin-left: 28vw;
             margin-top: 5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inspiration {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .inspiration-img {
+            width: 50px; /* Adjust size as needed */
+            height: 50px;
         }
     
     }
@@ -900,4 +918,10 @@
     }
 
 
+}
+
+
+#item-description {
+    width: 80%;
+    z-index: 9999;
 }

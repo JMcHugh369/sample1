@@ -3,7 +3,7 @@ import Nav from "../Nav";
 import GameView from "../GameView";
 import str from "../asset/charsheet/str.png";
 import dex from "../asset/charsheet/dex.png";
-import con from "../asset/charsheet/con.png";
+import con from "../asset/charsheet/constitution.png";
 import int from "../asset/charsheet/int.png";
 import wis from "../asset/charsheet/wis.png";
 import cha from "../asset/charsheet/cha.png";
@@ -19,10 +19,341 @@ import speed from "../asset/charsheet/speed.png";
 import initiativemod from "../asset/charsheet/initiativemod.png";
 import inspoff from "../asset/charsheet/inspoff.png";
 import inspon from "../asset/charsheet/insp-on-btn.png";
-import bagtop from "../asset/charsheet/bag-top.png";
+// import bagtop from "../asset/charsheet/bag-top.png";
 import profbonus from "../asset/charsheet/profbonus.png";
+import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+
+const calculateModifier = (score) => {
+    return Math.floor((score - 10) / 2);
+};
+
+const skillMapping = {
+    acrobatics: "dexterity",
+    animalHandling: "wisdom",
+    arcana: "intelligence",
+    athletics: "strength",
+    deception: "charisma",
+    history: "intelligence",
+    insight: "wisdom",
+    intimidation: "charisma",
+    investigation: "intelligence",
+    medicine: "wisdom",
+    nature: "intelligence",
+    perception: "wisdom",
+    performance: "charisma",
+    persuasion: "charisma",
+    religion: "intelligence",
+    sleightOfHand: "dexterity",
+    stealth: "dexterity",
+    survival: "wisdom",
+};
 
 const PlayerView = () => {
+    const { campaignId, characterId } = useParams();
+    const [playerIds, setPlayerIds] = useState([]);
+    const navigate = useNavigate();
+
+    const [character, setCharacter] = useState({
+        name: "",
+        level: "",
+        species: "",
+        character_class: "",
+        background: "",
+        platinum_coins: 0,
+        gold_coins: 0,
+        electrum: 0,
+        silver_coins: 0,
+        copper_coins: 0,
+    });
+
+    const [loading, setLoading] = useState(true); // State to manage loading
+    const [error, setError] = useState(null); // State to manage errors
+    const [inspirationActive, setInspirationActive] = useState(false); // State to track inspiration status
+    const [actions, setActions] = useState([]);
+    const [spells, setSpells] = useState([]);
+    const [proficiencies, setProficiencies] = useState([]);
+    const [other, setOther] = useState([]);
+    const [inventory, setInventory] = useState([]);
+    const [campaignIdState, setCampaignId] = useState(campaignId || null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [users, setUsers] = useState([]);
+
+    // Fetch character data
+    useEffect(() => {
+        const fetchCharacter = async () => {
+            try {
+                console.log("Fetching character data...");
+                const response = await fetch(`http://localhost:5002/characters/${characterId}`);
+                console.log("Response status:", response.status);
+                if (!response.ok) {
+                    throw new Error(`Character with ID ${characterId} not found`);
+                }
+                const data = await response.json();
+                console.log("Fetched character data:", data); // Log the response
+                console.log("character keys:", Object.keys(data.character));
+                console.log("character object:", data.character);
+                setCharacter(data.character);
+                console.log("Character data set:", data.character);
+
+                // Set campaignId and currentUser if available
+                if (data.character.campaign_id) setCampaignId(data.character.campaign_id);
+                console.log("user_id:", data.character.user_id, "username:", data.character.username);
+                if (data.character.user_id && data.character.username) {
+                    setCurrentUser({ id: data.character.user_id, username: data.character.username });
+                }
+            } catch (err) {
+                console.error("Error fetching character:", err.message);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (characterId) {
+            fetchCharacter();
+        } else {
+            setLoading(false);
+            setError("No character ID provided");
+        }
+    }, [characterId]);
+
+    useEffect(() => {
+        if (characterId) {
+            fetchInventory();
+        }
+    }, [characterId]);
+
+    useEffect(() => {
+        if (!campaignIdState) return;
+        fetch(`http://localhost:5002/campaigns/${campaignIdState}/users`)
+            .then(res => res.json())
+            .then(data => {
+                setUsers(data.users || []);
+                console.log("Fetched users for campaign:", data.users);
+            })
+            .catch(err => {
+                console.error("Error fetching users:", err);
+            });
+    }, [campaignIdState]);
+
+    useEffect(() => {
+        if (!campaignId) return;
+        fetch(`http://localhost:5002/campaigns/${campaignId}/players`)
+            .then(res => res.json())
+            .then(data => {
+                setPlayerIds(data.player_ids || []);
+                console.log("Player IDs fetched from backend:", data.player_ids);
+            })
+            .catch(err => {
+                console.error("Error fetching player IDs:", err);
+            });
+    }, [campaignId]);
+
+    const fetchTabData = async (tabName) => {
+        try {
+            const response = await fetch(`http://localhost:5001/${tabName}/character/${characterId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${tabName}`);
+            }
+            const data = await response.json();
+            if (tabName === "actions") setActions(data);
+            if (tabName === "spells") setSpells(data);
+            if (tabName === "proficiencies") setProficiencies(data);
+            if (tabName === "other") setOther(data);
+        } catch (err) {
+            console.error(`Error fetching ${tabName}:`, err.message);
+        }
+    };
+
+    const fetchInventory = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/inventory/character/${characterId}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch inventory");
+            }
+            const data = await response.json();
+            setInventory(data);
+        } catch (err) {
+            console.error("Error fetching inventory:", err.message);
+        }
+    };
+
+    const createAction = async (name, description) => {
+        try {
+            const response = await fetch(`http://localhost:5001/actions`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to create action");
+            }
+            const newAction = await response.json();
+            setActions((prevActions) => [...prevActions, newAction]);
+        } catch (err) {
+            console.error("Error creating action:", err.message);
+        }
+    };
+
+    const deleteAction = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/actions/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete action");
+            }
+            setActions((prevActions) => prevActions.filter((action) => action.id !== id));
+        } catch (err) {
+            console.error("Error deleting action:", err.message);
+        }
+    };
+
+    const createSpell = async (name, description) => {
+        try {
+            const response = await fetch(`http://localhost:5001/spells`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to create spell");
+            }
+            const newSpell = await response.json();
+            setSpells((prevSpells) => [...prevSpells, newSpell]);
+        } catch (err) {
+            console.error("Error creating spell:", err.message);
+        }
+    };
+
+    const deleteSpell = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/spells/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete spell");
+            }
+            setSpells((prevSpells) => prevSpells.filter((spell) => spell.id !== id));
+        } catch (err) {
+            console.error("Error deleting spell:", err.message);
+        }
+    };
+
+    const createProficiency = async (name, description) => {
+        try {
+            const response = await fetch(`http://localhost:5001/proficiencies`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to create proficiency");
+            }
+            const newProficiency = await response.json();
+            setProficiencies((prevProficiencies) => [...prevProficiencies, newProficiency]);
+        } catch (err) {
+            console.error("Error creating proficiency:", err.message);
+        }
+    };
+
+    const deleteProficiency = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/proficiencies/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete proficiency");
+            }
+            setProficiencies((prevProficiencies) => prevProficiencies.filter((proficiency) => proficiency.id !== id));
+        } catch (err) {
+            console.error("Error deleting proficiency:", err.message);
+        }
+    };
+
+    const createOther = async (name, description) => {
+        try {
+            const response = await fetch(`http://localhost:5001/others`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to create other");
+            }
+            const newOther = await response.json();
+            setOther((prevOther) => [...prevOther, newOther]);
+        } catch (err) {
+            console.error("Error creating other:", err.message);
+        }
+    };
+
+    const deleteOther = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/others/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete other");
+            }
+            setOther((prevOther) => prevOther.filter((item) => item.id !== id));
+        } catch (err) {
+            console.error("Error deleting other:", err.message);
+        }
+    };
+
+    const createInventoryItem = async (name, description) => {
+        try {
+            const response = await fetch(`http://localhost:5001/inventory`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ character_id: characterId, name, description }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to create inventory item");
+            }
+            const newItem = await response.json();
+            setInventory((prevInventory) => [...prevInventory, newItem]);
+        } catch (err) {
+            console.error("Error creating inventory item:", err.message);
+        }
+    };
+
+    const deleteInventoryItem = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5001/inventory/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete inventory item");
+            }
+            setInventory((prevInventory) => prevInventory.filter((item) => item.id !== id));
+        } catch (err) {
+            console.error("Error deleting inventory item:", err.message);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setCharacter({ ...character, [name]: value });
+    };
+
+    const calculateSkillValue = (skill) => {
+        const ability = skillMapping[skill];
+        const modifier = calculateModifier(character[ability] || 0);
+        const proficiencyBonus = character.proficiencyBonus || 0;
+        const isProficient = character.proficiencies?.includes(skill);
+        return modifier + (isProficient ? proficiencyBonus : 0);
+    };
+
+    if (loading) {
+        return <p>Loading character data...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
 
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
@@ -36,34 +367,63 @@ const PlayerView = () => {
         }
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
+
+        // Fetch data for the selected tab
+        fetchTabData(tabName.toLowerCase());
     }
 
     return (
         <>
-            <Nav />
-            <GameView />
+            {currentUser ? (
+                <GameView
+                    campaignId={campaignIdState}
+                    currentUser={currentUser}
+                    users={users}
+                />
+            ) : (
+                <div>Loading player info...</div>
+            )}
 
             <main>
                 <div class="playerside">
-                    <header class="sheet-header">
-                        <img class="sheet-pc-image" src={adventurer} 
+                    <header className="sheet-header">
+                        <img
+                            className="sheet-pc-image"
+                            src={character.image_url || adventurer} // Use character.image_url if available, fallback to adventurer
+                            alt="Character"
                         />
                         <form>
-                            <input type="text" class="char-name" placeholder="Name..." />
+                            <input
+                                type="text"
+                                className="char-name"
+                                name="name"
+                                placeholder="Name..."
+                                value={character.name}
+                                onChange={handleInputChange}
+                            />
                         </form>
-                        <form>
-                            <input type="text" class="char-lvl" placeholder="Level..." />
-                        </form>
-                        <form>
-                            <input type="text" class="char-species" placeholder="Species..." />
-                        </form>
+                        <p className="char-level">Level: {character.level || "1"}</p> {/* Display the level */}
                     </header>
                     <div class="header2">
                         <form>
-                            <input type="text" class="char-class" placeholder="Class..." />
+                            <input
+                                type="text"
+                                class="char-class"
+                                name="charClass"
+                                placeholder="Class..."
+                                value={character.character_class}
+                                onChange={handleInputChange}
+                            />
                         </form>
                         <form>
-                            <input type="text" class="char-bg" placeholder="Background..." />
+                            <input
+                                type="text"
+                                class="char-bg"
+                                name="background"
+                                placeholder="Background..."
+                                value={character.background}
+                                onChange={handleInputChange}
+                            />
                         </form>
                     </div>
 
@@ -80,102 +440,192 @@ const PlayerView = () => {
                             <img class="percep-img" src={perception} />
                         </div>
 
-                        <form class="form-str">
-
-                            <input type="text" class="str-mod" placeholder="0" />
-                            <input type="text" class="str" placeholder="0" />
+                        <form>
+                            <input
+                                type="text"
+                                className="str-mod"
+                                placeholder="0"
+                                value={character.strength || ""}
+                                onChange={(e) => setCharacter({ ...character, strength: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="str"
+                                placeholder="0"
+                                value={character.strength || ""}
+                                onChange={(e) => setCharacter({ ...character, strength: e.target.value })}
+                            />
                         </form>
 
                         <form>
-
-                            <input type="text" class="dex-mod" placeholder="0" />
-                            <input type="text" class="dex" placeholder="0" />
-                        </form>
-                        <form>
-
-                            <input type="text" class="con-mod" placeholder="0" />
-                            <input type="text" class="con" placeholder="0" />
-                        </form>
-
-                        <form>
-                            <input type="text" class="int-mod" placeholder="0" />
-                            <input type="text" class="int" placeholder="0" />
-                        </form>
-                        <form>
-
-                            <input type="text" class="wis-mod" placeholder="0" />
-                            <input type="text" class="wis" placeholder="0" />
-                        </form>
-                        <form>
-
-                            <input type="text" class="cha-mod" placeholder="0" />
-                            <input type="text" class="cha" placeholder="0" />
+                            <input
+                                type="text"
+                                className="dex-mod"
+                                placeholder="0"
+                                value={character.dexterity || ""}
+                                onChange={(e) => setCharacter({ ...character, dexterity: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="dex"
+                                placeholder="0"
+                                value={character.dexterity || ""}
+                                onChange={(e) => setCharacter({ ...character, dexterity: e.target.value })}
+                            />
                         </form>
 
                         <form>
-                            <input type="text" class="passive-perception" placeholder="0" />
+                            <input
+                                type="text"
+                                className="con-mod"
+                                placeholder="0"
+                                value={character.constitution || ""}
+                                onChange={(e) => setCharacter({ ...character, constitution: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="con"
+                                placeholder="0"
+                                value={character.constitution || ""}
+                                onChange={(e) => setCharacter({ ...character, constitution: e.target.value })}
+                            />
+                        </form>
+
+                        <form>
+                            <input
+                                type="text"
+                                className="int-mod"
+                                placeholder="0"
+                                value={character.intelligence || ""}
+                                onChange={(e) => setCharacter({ ...character, intelligence: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="int"
+                                placeholder="0"
+                                value={character.intelligence || ""}
+                                onChange={(e) => setCharacter({ ...character, intelligence: e.target.value })}
+                            />
+                        </form>
+
+                        <form>
+                            <input
+                                type="text"
+                                className="wis-mod"
+                                placeholder="0"
+                                value={character.wisdom || ""}
+                                onChange={(e) => setCharacter({ ...character, wisdom: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="wis"
+                                placeholder="0"
+                                value={character.wisdom || ""}
+                                onChange={(e) => setCharacter({ ...character, wisdom: e.target.value })}
+                            />
+                        </form>
+
+                        <form>
+                            <input
+                                type="text"
+                                className="cha-mod"
+                                placeholder="0"
+                                value={character.charisma || ""}
+                                onChange={(e) => setCharacter({ ...character, charisma: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="cha"
+                                placeholder="0"
+                                value={character.charisma || ""}
+                                onChange={(e) => setCharacter({ ...character, charisma: e.target.value })}
+                            />
+                        </form>
+
+                        <form>
+                            <input
+                                type="text"
+                                className="passive-perception"
+                                placeholder="0"
+                                value={character.passive_perception || ""}
+                                onChange={(e) => setCharacter({ ...character, passive_perception: e.target.value })}
+                            />
                         </form>
 
                     </sidebar>
 
-                    <div class="top-middle">
-                        <img class="ac-img" src={ac} />
+                    <div className="top-middle">
+                        <img className="ac-img" src={ac} />
                         <form>
-                            <input type="text" class="ac" placeholder="0" />
+                            <input
+                                type="text"
+                                className="ac"
+                                placeholder="0"
+                                value={character.armor_class || ""}
+                                onChange={(e) => setCharacter({ ...character, armor_class: e.target.value })}
+                            />
                         </form>
-                        <img class="init-img" src={initiativemod} />
+                        <img className="init-img" src={initiativemod} />
                         <form>
-                            <input type="text" class="init" placeholder="0" />
+                            <input
+                                type="text"
+                                className="init"
+                                placeholder="0"
+                                value={character.initiative || ""}
+                                onChange={(e) => setCharacter({ ...character, initiative: e.target.value })}
+                            />
                         </form>
-                        <img class="spd-img" src={speed} />
+                        <img className="spd-img" src={speed} />
                         <form>
-                            <input type="text" class="spd" placeholder="0" />
+                            <input
+                                type="text"
+                                className="spd"
+                                placeholder="0"
+                                value={character.speed || ""}
+                                onChange={(e) => setCharacter({ ...character, speed: e.target.value })}
+                            />
                         </form>
-                        <img class="prof-bonus-img" src={profbonus} />
+                        <img className="prof-bonus-img" src={profbonus} />
                         <form>
-                            <input type="text" class="prof-bonus" placeholder="0" />
+                            <input
+                                type="text"
+                                className="prof-bonus"
+                                placeholder="0"
+                                value={character.proficiency_bonus || ""}
+                                onChange={(e) => setCharacter({ ...character, proficiency_bonus: e.target.value })}
+                            />
                         </form>
 
-                        <img className="inspiration-img" src={inspoff} />
-                        <div>
-                            <button className="inspiration" onClick={
-                                () => {
-                                    var x = document.getElementById("insp-off");
-                                    if (x.style.display === "none") {
-                                        x.style.display = "block";
-                                    } else {
-                                        x.style.display = "none";
-                                    }
-                                }
-                            } />
-                        </div>
-                        <div id="insp-off">
-                            <img class="inspiration-on" src={inspon} />
+                        <div className="inspiration-container">
+                            <button
+                                className="inspiration"
+                                onClick={() => setInspirationActive(!inspirationActive)} // Toggle the state
+                            >
+                                <img
+                                    className="inspiration-img"
+                                    src={inspirationActive ? inspon : inspoff} // Dynamically change the image based on state
+                                    alt="Inspiration"
+                                />
+                            </button>
                         </div>
                     </div>
 
-                    <div class="skills">
+                    <div className="skills">
                         <ul>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Acrobatics (Dex)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Animal Handling (Wis)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Arcana (Int)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Athletics (Str)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Deception (Cha)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> History (Int)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Insight (Wis)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Intimidation (Cha)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Investigation (Int)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Medicine (Wis)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Nature (Int)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Perception (Wis)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Performance (Cha)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Persuasion (Cha)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Religion (Int)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Sleight of Hand (Dex)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Stealth (Dex)</li>
-                            <li><input class="skill-num" type="text" placeholder="0" /> Survival (Wis)</li>
+                            {Object.keys(skillMapping).map((skill) => (
+                                <li key={skill}>
+                                    <input
+                                        className="skill-num"
+                                        type="text"
+                                        placeholder="0"
+                                        value={calculateSkillValue(skill)}
+                                        readOnly
+                                    />{" "}
+                                    {skill.charAt(0).toUpperCase() + skill.slice(1).replace(/([A-Z])/g, ' $1')} 
+                                    ({skillMapping[skill].charAt(0).toUpperCase() + skillMapping[skill].slice(1)})
+                                </li>
+                            ))}
                         </ul>
-
                     </div>
 
                     <div class="center-center">
@@ -192,30 +642,30 @@ const PlayerView = () => {
                         </div>
                     </div>
 
-                    <div class="bottom-center">
+                    <div className="bottom-center">
 
-                        <div class="tab">
-                            <button class="tablinks" onClick={
+                        <div className="tab">
+                            <button className="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Actions")
                                 }
                             }
                             >Actions</button>
-                            <button class="tablinks" onClick={
+                            <button className="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Spells")
                                 }
                             }
                             >Spells</button>
-                            <button class="tablinks" onClick={
+                            <button className="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Proficiencies")
                                 }
                             }>Proficiencies</button>
-                            <button class="tablinks" onClick={
+                            <button className="tablinks" onClick={
 
                                 (event) => {
                                     openTab(event, "Other")
@@ -223,301 +673,182 @@ const PlayerView = () => {
                             }>Other</button>
                         </div>
 
-                        <div id="Actions" class="tabcontent">
-                            <h3>Actions <span><button class="add-actions" onClick={
-                                () => {
-                                    var actionName = document.createElement("input");
-                                    var actionDesc = document.createElement("input");
-                                    actionName.setAttribute('type', 'text');
-                                    actionDesc.setAttribute('type', 'text');
-
-                                    var parent = document.getElementById("action-items");
-                                    parent.appendChild(actionName);
-
-                                    actionName.classList.add("action-name");
-                                    actionDesc.classList.add("action-desc");
-
-                                    actionName.placeholder = "Name...";
-                                    actionDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("action-items");
-                                    parent.appendChild(actionDesc);
-  
-                                    var actionBtn = document.createElement("extra-btn");
-
-                                    actionBtn.textContent = "+";
-                                    actionBtn.classList.add("extra-button-class");
-                                    actionBtn.setAttribute('type', 'button');
-
-                                    actionBtn.addEventListener('click', function () {
-
-                                        var actionDesc = document.createElement("input");
-
-                                        actionDesc.setAttribute('type', 'text');
-
-                                        actionDesc.classList.add("action-desc");
-
-                                        actionDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("action-items");
-                                        parent.appendChild(actionDesc);
-
-                                        parent.insertBefore(actionDesc, actionBtn);
-                                    });
-
-                                    var parent = document.getElementById("action-items");
-                                    parent.appendChild(actionBtn);
-                                   
-                                }
-                            }>+</button>
-                            </span></h3>
-                            <div id="action-items">
-
-                            </div>
+                        <div id="Actions" className="tabcontent">
+                            <h3>Actions</h3>
+                            <ul>
+                                {actions.map((action) => (
+                                    <li key={action.id}>
+                                        <strong>{action.name}</strong>: {action.description}
+                                        <button onClick={() => deleteAction(action.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createAction(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
 
-                        <div id="Spells" class="tabcontent">
-                            <h3>Spells <span><button class="add-spells" onClick={
-                                () => {
-                                    var spellName = document.createElement("input");
-                                    var spellDesc = document.createElement("input");
-                                    spellName.setAttribute('type', 'text');
-                                    spellDesc.setAttribute('type', 'text');
-
-                                    var parent = document.getElementById("spell-items");
-                                    parent.appendChild(spellName);
-
-                                    spellName.classList.add("spell-name");
-                                    spellDesc.classList.add("spell-desc");
-
-                                    spellName.placeholder = "Name...";
-                                    spellDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("spell-items");
-                                    parent.appendChild(spellDesc);
-
-                                    var spellBtn = document.createElement("spell-extra-btn");
-
-                                    spellBtn.textContent = "+";
-                                    spellBtn.classList.add("extra-button-class");
-                                    spellBtn.setAttribute('type', 'button');
-
-                                    spellBtn.addEventListener('click', function () {
-
-                                        var spellDesc = document.createElement("input");
-
-                                        spellDesc.setAttribute('type', 'text');
-
-                                        spellDesc.classList.add("spell-desc");
-
-                                        spellDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("spell-items");
-                                        parent.appendChild(spellDesc);
-
-                                        parent.insertBefore(spellDesc, spellBtn);
-                                    });
-
-                                    var parent = document.getElementById("spell-items");
-                                    parent.appendChild(spellBtn);
-                                }
-                            }
-                            >+</button>
-                            </span></h3>
-
-                            <div id="spell-items">
-
-                            </div>
-
+                        <div id="Spells" className="tabcontent">
+                            <h3>Spells</h3>
+                            <ul>
+                                {spells.map((spell) => (
+                                    <li key={spell.id}>
+                                        <strong>{spell.name}</strong>: {spell.description}
+                                        <button onClick={() => deleteSpell(spell.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createSpell(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
 
-                        <div id="Proficiencies" class="tabcontent">
-                            <h3>Proficiencies <span>
-                                <button class="add-f" onClick={
-                                    () => {
-                                        var fName = document.createElement("input");
-                                        var fDesc = document.createElement("input");
-                                        fName.setAttribute('type', 'text');
-                                        fDesc.setAttribute('type', 'text');
-
-                                        var parent = document.getElementById("f-items");
-                                        parent.appendChild(fName);
-
-                                        fName.classList.add("f-name");
-                                        fDesc.classList.add("f-desc");
-
-                                        fName.placeholder = "Name...";
-                                        fDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("f-items");
-                                        parent.appendChild(fDesc);
-
-                                        var fBtn = document.createElement("f-extra-btn");
-
-                                    fBtn.textContent = "+";
-                                    fBtn.classList.add("extra-button-class");
-                                    fBtn.setAttribute('type', 'button');
-
-                                    fBtn.addEventListener('click', function () {
-
-                                        var fDesc = document.createElement("input");
-
-                                        fDesc.setAttribute('type', 'text');
-
-                                        fDesc.classList.add("f-desc");
-
-                                        fDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("f-items");
-                                        parent.appendChild(fDesc);
-
-                                        parent.insertBefore(fDesc, fBtn);
-                                    });
-
-                                    var parent = document.getElementById("f-items");
-                                    parent.appendChild(fBtn);
-                                    }
-                                }>+</button>
-                            </span></h3>
-
-                            <div id="f-items">
-
-                            </div>
-
+                        <div id="Proficiencies" className="tabcontent">
+                            <h3>Proficiencies</h3>
+                            <ul>
+                                {proficiencies.map((proficiency) => (
+                                    <li key={proficiency.id}>
+                                        <strong>{proficiency.name}</strong>: {proficiency.description}
+                                        <button onClick={() => deleteProficiency(proficiency.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createProficiency(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
 
-                        <div id="Other" class="tabcontent">
-                            <h3>Other <span>
-                                <button class="add-traits" onClick={
-                                    () => {
-                                        var tName = document.createElement("input");
-                                        var tDesc = document.createElement("input");
-                                        tName.setAttribute('type', 'text');
-                                        tDesc.setAttribute('type', 'text');
-
-                                        var parent = document.getElementById("t-items");
-                                        parent.appendChild(tName);
-
-                                        tName.classList.add("t-name");
-                                        tDesc.classList.add("t-desc");
-
-                                        tName.placeholder = "Name...";
-                                        tDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("t-items");
-                                        parent.appendChild(tDesc);
-
-                                        var tBtn = document.createElement("t-extra-btn");
-
-                                    tBtn.textContent = "+";
-                                    tBtn.classList.add("extra-button-class");
-                                    tBtn.setAttribute('type', 'button');
-
-                                    tBtn.addEventListener('click', function () {
-
-                                        var tDesc = document.createElement("input");
-
-                                        tDesc.setAttribute('type', 'text');
-
-                                        tDesc.classList.add("t-desc");
-
-                                        tDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("t-items");
-                                        parent.appendChild(tDesc);
-
-                                        parent.insertBefore(tDesc, tBtn);
-                                    });
-
-                                    var parent = document.getElementById("t-items");
-                                    parent.appendChild(tBtn);
-                                    }
-                                }>+</button>
-                            </span></h3>
-
-                            <div id="t-items">
-
-                            </div>
-
+                        <div id="Other" className="tabcontent">
+                            <h3>Other</h3>
+                            <ul>
+                                {other.map((item) => (
+                                    <li key={item.id}>
+                                        <strong>{item.name}</strong>: {item.description}
+                                        <button onClick={() => deleteOther(item.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const name = e.target.elements.name.value;
+                                    const description = e.target.elements.description.value;
+                                    createOther(name, description);
+                                    e.target.reset();
+                                }}
+                            >
+                                <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                                <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                                <button type="submit">Add</button>
+                            </form>
                         </div>
-
 
                     </div>
 
-                    <div class="inventory-container">
-                        <div class="currency-img">
-                            <img class="platinum-img" src={platinum} />
-                            <img class="gold-img" src={gold} />
-                            <img class="electrum-img" src={electrum} />
-                            <img class="silver-img" src={silver} />
-                            <img class="copper-img" src={copper} />
+                    <div className="inventory-container">
+                        <div className="currency-img">
+                            <img className="platinum-img" src={platinum} />
+                            <img className="gold-img" src={gold} />
+                            <img className="electrum-img" src={electrum} />
+                            <img className="silver-img" src={silver} />
+                            <img className="copper-img" src={copper} />
                         </div>
-                        <div class="currency-name">
+                        <div className="currency-name">
                             <p>P</p>
                             <p>G</p>
                             <p>E</p>
                             <p>S</p>
                             <p>C</p>
                         </div>
-                        <div class="currency">
-                            <input type="text" class="platinum" placeholder="0" />
-                            <input type="text" class="gold" placeholder="0" />
-                            <input type="text" class="electrum" placeholder="0" />
-                            <input type="text" class="silver" placeholder="0" />
-                            <input type="text" class="copper" placeholder="0" />
+                        <div className="currency">
+                            <input
+                                type="text"
+                                className="platinum"
+                                placeholder="0"
+                                value={character?.platinum_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, platinum_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="gold"
+                                placeholder="0"
+                                value={character?.gold_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, gold_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="electrum"
+                                placeholder="0"
+                                value={character?.electrum || ""}
+                                onChange={(e) => setCharacter({ ...character, electrum: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="silver"
+                                placeholder="0"
+                                value={character?.silver_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, silver_coins: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                className="copper"
+                                placeholder="0"
+                                value={character?.copper_coins || ""}
+                                onChange={(e) => setCharacter({ ...character, copper_coins: e.target.value })}
+                            />
                         </div>
-                        <p>Inventory<span>
-                            <button class="add-inventory" onClick={
-                                () => {
-                                    var invName = document.createElement("input");
-                                    var invDesc = document.createElement("input");
-                                    invName.setAttribute('type', 'text');
-                                    invDesc.setAttribute('type', 'text');
-
-                                    var parent = document.getElementById("inventory-items");
-                                    parent.appendChild(invName);
-
-                                    invName.classList.add("inv-name");
-                                    invDesc.classList.add("inv-desc");
-
-                                    invName.placeholder = "Name...";
-                                    invDesc.placeholder = "Description..."
-
-                                    var parent = document.getElementById("inventory-items");
-                                    parent.appendChild(invDesc);
-
-                                    var invBtn = document.createElement("inv-extra-btn");
-
-                                    invBtn.textContent = "+";
-                                    invBtn.classList.add("extra-button-class");
-                                    invBtn.setAttribute('type', 'button');
-
-                                    invBtn.addEventListener('click', function () {
-
-                                        var invDesc = document.createElement("input");
-
-                                        invDesc.setAttribute('type', 'text');
-
-                                        invDesc.classList.add("inv-desc");
-
-                                        invDesc.placeholder = "Description..."
-
-                                        var parent = document.getElementById("inventory-items");
-                                        parent.appendChild(invDesc);
-
-                                        parent.insertBefore(invDesc, invBtn);
-                                    });
-
-                                    var parent = document.getElementById("inventory-items");
-                                    parent.appendChild(invBtn);
-                                }
-                            }>+</button>
-                        </span></p>
-                        <div id="inventory-items">
-
-                        </div>
-
-
+                        <p>Inventory</p>
+                        <ul id="inventory-items">
+                            {inventory.map((item) => (
+                                <li key={item.id}>
+                                    <strong>{item.name}</strong>: {item.description}
+                                    <button onClick={() => deleteInventoryItem(item.id)}>Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const name = e.target.elements.name.value;
+                                const description = e.target.elements.description.value;
+                                createInventoryItem(name, description);
+                                e.target.reset();
+                            }}
+                        >
+                            <input id="item-description" type="text" name="name" placeholder="Name..." required />
+                            <input id="item-description" type="text" name="description" placeholder="Description..." required />
+                            <button type="submit">Add</button>
+                        </form>
                     </div>
 
                     <div class="feature-container">

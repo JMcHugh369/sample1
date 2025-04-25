@@ -4,7 +4,7 @@
   "main": "frontend/main.js",
   "private": true,
   "scripts": {
-    "start-react": "set NODE_OPTIONS=--openssl-legacy-provider && npm start --prefix frontend",
+    "start-react": "cross-env NODE_OPTIONS=--openssl-legacy-provider CHOKIDAR_USEPOLLING=true npm start --prefix frontend",
     "start-electron": "wait-on http://localhost:3000 && electron frontend/main.js",
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "dev": "npm run start",
@@ -20,7 +20,7 @@
     "electron-flask": "file:",
     "electron-is-dev": "^3.0.1",
     "pg": "^8.14.1",
-    "react-router-dom": "^7.4.0",
+    "react-router-dom": "^7.5.0",
     "scrypt-js": "^3.0.1",
     "wait-on": "^8.0.2"
   }

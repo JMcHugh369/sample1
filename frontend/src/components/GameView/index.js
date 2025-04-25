@@ -1,8 +1,8 @@
+import React, { useEffect, useState, useRef } from "react";
 import "./index.scss";
-import Nav from "../Nav";
-import { useState, useEffect, useRef } from "react";
-import wizard from "../asset/prof-pics/wizard.png";
+import { io } from "socket.io-client";
 import mapplaceholder from "../asset/mapplaceholder.png";
+import wizard from "../asset/prof-pics/wizard.png";
 import crystalball from "../asset/gameside/crystalball.png";
 import minimap from "../asset/gameside/minimap.png";
 import imgd4 from "../asset/gameside/d4.png";
@@ -13,957 +13,886 @@ import imgd12 from "../asset/gameside/d12.png";
 import imgd20 from "../asset/gameside/d20.png";
 import imgd100 from "../asset/gameside/d100.png";
 
+const socket = io("http://localhost:5002");
+
+const GameView = ({ campaignId, currentUser, users = [] }) => {
+  console.log("Rendering GameView with campaignId:", campaignId, "currentUser:", currentUser);
+  console.log("GameView users:", users); // Should show all users
+  console.log("GameView currentUser:", currentUser); // Should show the logged-in user
+  const [chatMode, setChatMode] = useState("public");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
+  const [dmNotes, setDmNotes] = useState([]);
+  const [privateNotes, setPrivateNotes] = useState([]);
+  const [dmNoteInput, setDmNoteInput] = useState("");
+  const [privateNoteInput, setPrivateNoteInput] = useState("");
+  const [initiativeItems, setInitiativeItems] = useState([]);
+  const [placedTokens, setPlacedTokens] = useState([]);
+  const [showMapButton, setShowMapButton] = useState(false);
+  const [ showExpandedMap, setShowExpandedMap] = useState(false);
+  const [selectedToken, setSelectedToken] = useState(null);
+  const [gridSize, setGridSize] = useState(10);
+  const [showGrid, setShowGrid] = useState(true);
+  const [debugInfo, setDebugInfo] = useState("");
+  const [hoveredToken, setHoveredToken] = useState(null);
+
+  const gridRef = useRef(null);
+  const mapRef = useRef(null);
+  const smallMapRef = useRef(null);
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
 
 
-const GameView = () => {
-    const [showMapButton, setShowMapButton] = useState(false);
-    const [showExpandedMap, setShowExpandedMap] = useState(false);
-    const [selectedToken, setSelectedToken] = useState(null);
-    const [placedTokens, setPlacedTokens] = useState([]);
-    const [gridSize, setGridSize] = useState(10); // Default 10x10 grid
-    const [showGrid, setShowGrid] = useState(true);
-    const [debugInfo, setDebugInfo] = useState("");
-    // Add the missing state variable for token hover
-    const [hoveredToken, setHoveredToken] = useState(null);
 
-    const gridRef = useRef(null);
-    const mapRef = useRef(null);
-    const smallMapRef = useRef(null);
-    const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-    const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
+  // Fetch chat history
+  useEffect(() => {
+    if (chatMode === "public" && campaignId) {
+      console.log("Fetching public chat history for campaign:", campaignId);
+      fetch(`http://localhost:5002/chat/messages/${campaignId}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Fetched public messages:", data.messages);
+          setMessages(data.messages || []);
+        })
+        .catch(err => {
+          console.error("Error fetching public messages:", err);
+        });
+    } else if (chatMode === "private" && currentUser?.id && selectedUser?.id) {
+      console.log(`Fetching private chat history between ${currentUser.id} and ${selectedUser.id}`);
+      fetch(`http://localhost:5002/chat/private/${currentUser.id}/${selectedUser.id}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Fetched private messages:", data.messages);
+          setMessages(data.messages || []);
+        })
+        .catch(err => {
+          console.error("Error fetching private messages:", err);
+        });
+    }
+  }, [chatMode, campaignId, currentUser, selectedUser]);
 
-    // Add useEffect to log token state changes
+  // Join campaign and private rooms
+  useEffect(() => {
+    if (campaignId) {
+      console.log("Joining campaign room:", campaignId);
+      socket.emit("join_campaign", campaignId);
+    }
+    if (currentUser?.id) {
+      console.log("Joining private room for user:", currentUser.id);
+      socket.emit("join_private", currentUser.id);
+    }
+  }, [campaignId, currentUser]);
+
+  // Listen for new messages
+  useEffect(() => {
+    socket.on("public_message", (msg) => {
+      console.log("Received public message:", msg);
+      if (chatMode === "public" && msg.campaign_id === campaignId) {
+        setMessages((prev) => [...prev, msg]);
+      }
+    });
+    socket.on("private_message", (msg) => {
+      console.log("Received private message:", msg);
+      if (
+        chatMode === "private" &&
+        ((msg.sender_id === currentUser.id && msg.receiver_id === selectedUser?.id) ||
+          (msg.sender_id === selectedUser?.id && msg.receiver_id === currentUser.id))
+      ) {
+        setMessages((prev) => [...prev, msg]);
+      }
+    });
+    return () => {
+      socket.off("public_message");
+      socket.off("private_message");
+    };
+  }, [chatMode, campaignId, currentUser, selectedUser]);
+
+  // Scroll to bottom on new message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Send message
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (!input.trim() || !currentUser?.id) return;
+    if (chatMode === "public") {
+      console.log("Sending public message:", input);
+      socket.emit("public_message", {
+        campaign_id: campaignId,
+        sender_id: currentUser.id,
+        sender_username: currentUser.username,
+        content: input,
+      });
+    } else if (chatMode === "private" && selectedUser?.id) {
+      console.log(`Sending private message from ${currentUser.id} to ${selectedUser.id}:`, input);
+      socket.emit("private_message", {
+        sender_id: currentUser.id,
+        receiver_id: selectedUser.id,
+        sender_username: currentUser.username,
+        content: input,
+      });
+    }
+    setInput("");
+  };
+
     useEffect(() => {
         console.log("Token state updated:", placedTokens);
     }, [placedTokens]);
-
+  
     function dice(max) {
         return 1 + Math.floor(Math.random() * max);
     }
 
-    // Add a function to handle adding dice rolls to the game log
-    // This is for gamelog dice tracker
-    const addToGameLog = (diceType, rollResult) => {
-        const logContainer = document.getElementById("gamelog-container");
+  // Fetch DM notes
+  useEffect(() => {
+    fetch(`http://localhost:5002/campaigns/${campaignId}/dm-notes`)
+      .then(res => res.json())
+      .then(data => setDmNotes(data.notes));
+  }, [campaignId]);
 
-        // Create new log entry
-        const logEntry = document.createElement("p");
-        logEntry.innerText = `Player rolled d${diceType}: ${rollResult}`;
+  // Fetch private notes
+  useEffect(() => {
+    if (!currentUser) return;
+    fetch(`http://localhost:5002/campaigns/${campaignId}/private-notes/${currentUser.id}`)
+      .then(res => res.json())
+      .then(data => setPrivateNotes(data.notes));
+  }, [campaignId, currentUser]);
 
-        // Add the new entry to the log (at the bottom)
-        logContainer.appendChild(logEntry);
+  // Add DM note (only DM)
+  const addDmNote = () => {
+    fetch(`http://localhost:5002/campaigns/${campaignId}/dm-notes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: currentUser.id, content: dmNoteInput })
+    })
+      .then(res => res.json())
+      .then(data => setDmNotes([...dmNotes, data.note]));
+    setDmNoteInput("");
+  };
 
-        // Limit to 100 entries
-        while (logContainer.childElementCount > 100) {
-            logContainer.removeChild(logContainer.firstChild);
-        }
+  // Add private note
+  const addPrivateNote = () => {
+    fetch(`http://localhost:5002/campaigns/${campaignId}/private-notes/${currentUser.id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: privateNoteInput })
+    })
+      .then(res => res.json())
+      .then(data => setPrivateNotes([...privateNotes, data.note]));
+    setPrivateNoteInput("");
+  };
 
-        // Auto-scroll to the bottom to show the latest roll
-        logContainer.scrollTop = logContainer.scrollHeight;
+  useEffect(() => {
+    socket.on("dm_note_added", (note) => {
+      // Only add if it's for the current campaign
+      if (note.campaign_id === Number(campaignId)) {
+        setDmNotes((prev) => [...prev, note]);
+      }
+    });
+    return () => {
+      socket.off("dm_note_added");
     };
+  }, [campaignId]);
 
-    // Handle token selection from sidebar
-    const handleTokenSelect = (tokenType) => {
-        // If we already have this token type selected, deselect it
-        if (selectedToken && selectedToken.type === tokenType) {
-            setSelectedToken(null);
-            return;
-        }
+  // Initiative Tracker functions
+  const handleAddInitiativeItem = () => {
+    const newItem = { id: Date.now(), name: "", roll: 0 };
+    setInitiativeItems([...initiativeItems, newItem]);
+  };
 
-        // Otherwise, select this token type
-        setSelectedToken({
-            type: tokenType,
-            image: wizard, // Using wizard image for all tokens for now
-            isNew: true
-        });
-    };
+  const handleUpdateInitiativeItem = (id, field, value) => {
+    const updatedItems = initiativeItems.map(item => {
+      if (item.id === id) {
+        return { ...item, [field]: value };
+      }
+      return item;
+    });
+    setInitiativeItems(updatedItems);
+  };
 
-    // Simplified token click handler
-    const handleTokenClick = (tokenId, event) => {
+  const handleDeleteInitiativeItem = (id) => {
+    const updatedItems = initiativeItems.filter(item => item.id !== id);
+    setInitiativeItems(updatedItems);
+  };
+
+  // Token placement functions
+  const handleTokenDrop = (e) => {
+    const tokenId = e.dataTransfer.getData("tokenId");
+    const token = { id: tokenId, position: { col: 0, row: 0 }, type: "default", image: wizard };
+    setPlacedTokens([...placedTokens, token]);
+  };
+
+  const handleTokenDragStart = (e, tokenId) => {
+    e.dataTransfer.setData("tokenId", tokenId);
+  };
+
+  // Add to game log function
+  const addToGameLog = (sides, result) => {
+    const logEntry = `Rolled a d${sides}: ${result}`;
+    const logContainer = document.getElementById("gamelog-container");
+    logContainer.innerHTML += `<div>${logEntry}</div>`;
+    logContainer.scrollTop = logContainer.scrollHeight;
+  };
+
+      // Simplified token click handler
+  const handleTokenClick = (tokenId, event) => {
         // Always prevent default and stop propagation
-        event.preventDefault();
-        event.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
 
-        console.log(`Token ${tokenId} clicked for movement`);
-        setDebugInfo(`Token ${tokenId} clicked for movement`);
+    console.log(`Token ${tokenId} clicked for movement`);
+    setDebugInfo(`Token ${tokenId} clicked for movement`);
 
         // Get the token
-        const token = placedTokens.find(t => t.id === tokenId);
+    const token = placedTokens.find(t => t.id === tokenId);
 
-        if (token) {
+    if (token) {
             // Create a new selected token from the clicked one
-            const tokenToMove = {
-                id: token.id,
-                type: token.type,
-                image: token.image,
-                isNew: false,
-                originalPosition: token.position
-            };
+        const tokenToMove = {
+            id: token.id,
+            type: token.type,
+            image: token.image,
+            isNew: false,
+            originalPosition: token.position
+        };
 
             // First set selected token so it follows cursor
-            setSelectedToken(tokenToMove);
+        setSelectedToken(tokenToMove);
 
             // Then remove the token from the board
-            setPlacedTokens(placedTokens.filter(t => t.id !== tokenId));
+        setPlacedTokens(placedTokens.filter(t => t.id !== tokenId));
 
-            console.log("Token selected for movement:", tokenId);
-        } else {
-            console.error(`Token ${tokenId} not found`);
+        console.log("Token selected for movement:", tokenId);
+    } else {
+        console.error(`Token ${tokenId} not found`);
+    }
+  };
+
+  const handleCloseMap = () => {
+    console.log("Closing expanded map. Current tokens:", placedTokens);
+    setShowExpandedMap(false);
+  };
+
+      // Handle token selection from sidebar
+  const handleTokenSelect = (tokenType) => {
+          // If we already have this token type selected, deselect it
+      if (selectedToken && selectedToken.type === tokenType) {
+          setSelectedToken(null);
+          return;
+      }
+  
+          // Otherwise, select this token type
+      setSelectedToken({
+          type: tokenType,
+          image: wizard, // Using wizard image for all tokens for now
+          isNew: true
+      });
+  };
+
+  useEffect(() => {
+    const updateMapDimensions = () => {
+        if (mapRef.current) {
+            const rect = mapRef.current.getBoundingClientRect();
+            // Make sure grid is always square (uses the smaller dimension)
+            const size = Math.min(rect.width, rect.height);
+            setMapDimensions({
+                width: size,
+                height: size
+            });
         }
     };
 
-    // Handle closing the expanded map
-    const handleCloseMap = () => {
-        console.log("Closing expanded map. Current tokens:", placedTokens);
-        setShowExpandedMap(false);
-    };
+    // Initial update
+    if (showExpandedMap) {
+        setTimeout(updateMapDimensions, 100); // Small delay to ensure DOM is updated
+    }
 
-    // Update map dimensions when it loads or resizes
-    useEffect(() => {
-        const updateMapDimensions = () => {
-            if (mapRef.current) {
-                const rect = mapRef.current.getBoundingClientRect();
+    // Add resize listener
+    window.addEventListener('resize', updateMapDimensions);
+
+    return () => {
+        window.removeEventListener('resize', updateMapDimensions);
+    };
+  }, [showExpandedMap]);
+
+  useEffect(() => {
+    if (mapRef.current) {
+        const resizeObserver = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                const { width, height } = entry.contentRect;
                 // Make sure grid is always square (uses the smaller dimension)
-                const size = Math.min(rect.width, rect.height);
+                const size = Math.min(width, height);
                 setMapDimensions({
                     width: size,
                     height: size
                 });
             }
-        };
+        });
 
-        // Initial update
-        if (showExpandedMap) {
-            setTimeout(updateMapDimensions, 100); // Small delay to ensure DOM is updated
-        }
-
-        // Add resize listener
-        window.addEventListener('resize', updateMapDimensions);
-
+        resizeObserver.observe(mapRef.current);
         return () => {
-            window.removeEventListener('resize', updateMapDimensions);
+            resizeObserver.disconnect();
         };
-    }, [showExpandedMap]);
+    }
+  }, [mapRef.current]);
 
-    // Create a ResizeObserver to watch for changes to map size
-    useEffect(() => {
-        if (mapRef.current) {
-            const resizeObserver = new ResizeObserver(entries => {
-                for (const entry of entries) {
-                    const { width, height } = entry.contentRect;
-                    // Make sure grid is always square (uses the smaller dimension)
-                    const size = Math.min(width, height);
-                    setMapDimensions({
-                        width: size,
-                        height: size
-                    });
-                }
-            });
+  const handleMouseMove = (e) => {
+    if (selectedToken && gridRef.current) {
+        const rect = gridRef.current.getBoundingClientRect();
+        // Calculate cursor position relative to the grid
+        const x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
+        const y = Math.min(Math.max(0, e.clientY - rect.top), rect.height);
+        setCursorPosition({ x, y });
+    }
+  };
 
-            resizeObserver.observe(mapRef.current);
-            return () => {
-                resizeObserver.disconnect();
-            };
-        }
-    }, [mapRef.current]);
+  const handleGridCellClick = (row, col) => {
+    // Add 1 to row and col for display purposes, this is so it won't be 0x0
+    const displayRow = row + 1;
+    const displayCol = col + 1;
 
-    // Track cursor position when a token is selected
-    const handleMouseMove = (e) => {
-        if (selectedToken && gridRef.current) {
-            const rect = gridRef.current.getBoundingClientRect();
-            // Calculate cursor position relative to the grid
-            const x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
-            const y = Math.min(Math.max(0, e.clientY - rect.top), rect.height);
-            setCursorPosition({ x, y });
-        }
-    };
+    setDebugInfo(`Grid cell ${displayRow}x${displayCol} clicked`);
 
-    // Handle token placement on grid
-    const handleGridCellClick = (row, col) => {
-        // Add 1 to row and col for display purposes, this is so it won't be 0x0
-        const displayRow = row + 1;
-        const displayCol = col + 1;
+    if (selectedToken) {
+        // Check if a token already exists at this position
+        const existingTokenIndex = placedTokens.findIndex(
+            token => token.position.row === row && token.position.col === col
+        );
 
-        setDebugInfo(`Grid cell ${displayRow}x${displayCol} clicked`);
+        if (existingTokenIndex >= 0) {
+            setDebugInfo(`Cell ${displayRow}x${displayCol} already has a token.`);
 
-        if (selectedToken) {
-            // Check if a token already exists at this position
-            const existingTokenIndex = placedTokens.findIndex(
-                token => token.position.row === row && token.position.col === col
-            );
-
-            if (existingTokenIndex >= 0) {
-                setDebugInfo(`Cell ${displayRow}x${displayCol} already has a token.`);
-
-                // If we're moving a token and it's not the original position, ignore the click
-                if (!selectedToken.isNew) {
-                    if (selectedToken.originalPosition &&
-                        selectedToken.originalPosition.row === row &&
-                        selectedToken.originalPosition.col === col) {
-                        // Allow placing back in original position
-                    } else {
-                        // Don't allow placing on another token
-                        return;
-                    }
+            // If we're moving a token and it's not the original position, ignore the click
+            if (!selectedToken.isNew) {
+                if (selectedToken.originalPosition &&
+                    selectedToken.originalPosition.row === row &&
+                    selectedToken.originalPosition.col === col) {
+                    // Allow placing back in original position
                 } else {
-                    // Don't allow placing a new token on an existing one
+                    // Don't allow placing on another token
                     return;
                 }
-            }
-
-            // Place the token
-            setPlacedTokens([
-                ...placedTokens.filter(t => !(selectedToken.id && t.id === selectedToken.id)),
-                {
-                    id: selectedToken.id || Date.now(),
-                    type: selectedToken.type,
-                    image: selectedToken.image,
-                    position: { row, col }
-                }
-            ]);
-
-            setDebugInfo(`Placed ${selectedToken.type} token at ${displayRow}x${displayCol}`);
-
-            // Clear selected token after placement
-            setSelectedToken(null);
-        }
-    };
-    // This is for chat-orb
-    // Creating chat-related state variables
-    const [isChatSlideOut, setChatSlideOut] = useState(false);
-    const [selectedChatPlayer, setSelectedChatPlayer] = useState(null);
-    {/**Later will need to communicate a loop into database to load up players */ }
-    const [playerChatMessages, setPlayerChatMessages] = useState({
-        "DM": [],
-        "Player1": [],
-        "Player2": [],
-        "Player3": []
-    });
-    const [currentChatMessage, setCurrentChatMessage] = useState("");
-
-    // Chat handler functions
-    const handlePlayerSelect = (playerName) => {
-        setSelectedChatPlayer(playerName);
-        setChatSlideOut(true); // Slide out the chat when a player is selected
-    };
-
-    const handleCloseChat = () => {
-        setChatSlideOut(false);
-    };
-
-    const handleChatSubmit = (e) => {
-        e.preventDefault();
-
-        if (currentChatMessage.trim() !== "" && selectedChatPlayer) {
-            // Add message to the selected player's chat
-            setPlayerChatMessages({
-                ...playerChatMessages,
-                [selectedChatPlayer]: [
-                    ...playerChatMessages[selectedChatPlayer],
-                    currentChatMessage.trim()
-                ]
-            });
-
-            // Clear the input
-            setCurrentChatMessage("");
-        }
-    };
-
-    // This is for notes
-    const [publicExpanded, setPublicExpanded] = useState(false);
-    const [privateExpanded, setPrivateExpanded] = useState(false);
-    const [dmExpanded, setDmExpanded] = useState(false);
-    const [publicNotes, setPublicNotes] = useState([]);
-    const [privateNotes, setPrivateNotes] = useState([]);
-    const [dmNotes, setDmNotes] = useState([]);
-    const [currentNote, setCurrentNote] = useState('');
-    // This is to expand notes
-    const [activeSection, setActiveSection] = useState(null);
-
-    // Toggle public notes section
-    // VISION: Anyone can see these notes (globally)
-    const togglePublicNotes = () => {
-        // This part is for the expanding notes
-        if (activeSection === 'public') {
-            // If public is already active, deactivate it
-            setActiveSection(null);
-            setPublicExpanded(false);
-        } else {
-            // Activate public, deactivate others
-            setActiveSection('public');
-            setPublicExpanded(true);
-            setPrivateExpanded(false);
-            setDmExpanded(false);
-        }
-    };
-
-    // Toggle private notes section
-    // VISION: Only the current player can see these notes (with other players? 1 on 1) 
-    const togglePrivateNotes = () => {
-        if (activeSection === 'private') {
-            // If private is already active, deactivate it
-            setActiveSection(null);
-            setPrivateExpanded(false);
-        } else {
-            // Activate private, deactivate others
-            setActiveSection('private');
-            setPrivateExpanded(true);
-            setPublicExpanded(false);
-            setDmExpanded(false);
-        }
-    };
-
-    // Toggle DM notes section
-    // VISION: Only current player and DM can see these notes
-    const toggleDmNotes = () => {
-        if (activeSection === 'dm') {
-            // If dm is already active, deactivate it
-            setActiveSection(null);
-            setDmExpanded(false);
-        } else {
-            // Activate dm, deactivate others
-            setActiveSection('dm');
-            setDmExpanded(true);
-            setPublicExpanded(false);
-            setPrivateExpanded(false);
-        }
-    };
-
-    // Handle note submission - will add to the active section
-    const handleNoteSubmit = (e) => {
-        e.preventDefault();
-        const noteInput = e.target.querySelector('input');
-
-        if (noteInput && noteInput.value.trim() !== '') {
-            const newNote = noteInput.value.trim();
-
-            // Add note to the appropriate section based on activeSection
-            if (activeSection === 'public') {
-                setPublicNotes([...publicNotes, newNote]);
-            } else if (activeSection === 'private') {
-                setPrivateNotes([...privateNotes, newNote]);
-            } else if (activeSection === 'dm') {
-                setDmNotes([...dmNotes, newNote]);
             } else {
-                // If no section is active, do nothing or show a message
-                console.log("No active section to add note to");
+                // Don't allow placing a new token on an existing one
                 return;
             }
-
-            // Clear the input field
-            noteInput.value = '';
         }
-    };
 
-    return (
-        <>
-            <Nav />
+        // Place the token
+        setPlacedTokens([
+            ...placedTokens.filter(t => !(selectedToken.id && t.id === selectedToken.id)),
+            {
+                id: selectedToken.id || Date.now(),
+                type: selectedToken.type,
+                image: selectedToken.image,
+                position: { row, col }
+            }
+        ]);
 
-            <main>
-                <div className="gameside">
-                    <div className="initiative-container">
-                        <div className="initiative-item">
-                            <img className="initiative-block" src="" alt="" />
-                            <img className="initiative-prof-pic" src="" alt="" />
-                            <span>Character 1</span>
-                            <button className="initiative-delete">-</button>
-                        </div>
-                        <div className="initiative-new">
-                            <img className="initiative-block" src="" alt="" />
-                            <button className="initiative-add">+</button>
+        setDebugInfo(`Placed ${selectedToken.type} token at ${displayRow}x${displayCol}`);
+
+        // Clear selected token after placement
+        setSelectedToken(null);
+    }
+  };
+
+  return (
+  <div className="gameview-root">
+    <div className="gameview-main">
+      <div className="initiative-container">
+          {initiativeItems.map(item => (
+              <div key={item.id} className="initiative-item">
+                  <input
+                      type="text"
+                      className="initiative-name monster-spd" // Add "monster-spd" class for styling
+                      placeholder="Enter name"
+                      value={item.name}
+                      onChange={(e) => handleUpdateInitiativeItem(item.id, "name", e.target.value)}
+                  />
+                  
+                  <button
+                      className="initiative-delete"
+                      onClick={() => handleDeleteInitiativeItem(item.id)}
+                  >
+                      -
+                  </button>
+              </div>
+          ))}
+          <div className="initiative-new">
+              <button className="initiative-add" onClick={handleAddInitiativeItem}>+</button>
+          </div>
+      </div>
+
+      <div
+          className="map"
+          onMouseEnter={() => setShowMapButton(true)}
+          onMouseLeave={() => setShowMapButton(false)}
+          ref={smallMapRef}
+      >
+          <img className="map-up" src={mapplaceholder} alt="" />
+
+          {/* Render tokens on the small map */}
+          {placedTokens.length > 0 && (
+              <div className="small-map-tokens">
+                  {placedTokens.map(token => {
+                      // Calculate position as percentage of the map
+                      const posX = (token.position.col / gridSize) * 100;
+                      const posY = (token.position.row / gridSize) * 100;
+
+                      return (
+                          <div
+                              key={token.id}
+                              className="small-map-token"
+                              style={{
+                                  left: `${posX}%`,
+                                  top: `${posY}%`
+                              }}
+                              title={`${token.type}`}
+                          >
+                              <img src={token.image} alt={token.type} />
+                          </div>
+                      );
+                  })}
+              </div>
+          )}
+
+          {showMapButton && (
+            <button
+                className="view-map-button"
+                onClick={() => setShowExpandedMap(true)}
+            >
+                View Map
+            </button>
+        )}
+    </div>
+
+    {showExpandedMap && (
+        <div className="map-expanded-overlay">
+            <div className="map-expanded-container">
+
+                {/* Token Selector (Left) */}
+                <div className="token-selector">
+                    <h3>Map Tokens</h3>
+
+                    {/* Character Section */}
+                    <div className="token-category">
+                        <div className="token-category-header">Character</div>
+
+                        <div className="token-category-content">
+                            {/* Character token options */}
+                            <div className="token-options">
+                                <div
+                                    id="character-token-1"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('Character')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Wizard Character', id: 'character-token-1' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="Character Token 1" />
+                                </div>
+
+                                <div
+                                    id="character-token-2"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('Character')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Knight Character', id: 'character-token-2' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="Character Token 2" />
+                                </div>
+                            </div>
+
+                            {/* Character info display */}
+                            <div className="token-info-panel">
+                                {hoveredToken && hoveredToken.type === 'Character' ? (
+                                    <div className="token-database-info">
+                                        <p>{hoveredToken.name}</p>
+                                    </div>
+                                ) : (
+                                    <div className="token-database-info">
+                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    <div
-                        className="map"
-                        onMouseEnter={() => setShowMapButton(true)}
-                        onMouseLeave={() => setShowMapButton(false)}
-                        ref={smallMapRef}
-                    >
-                        <img className="map-up" src={mapplaceholder} alt="" />
+                    {/* Monster Section */}
+                    <div className="token-category">
+                        <div className="token-category-header">Monster</div>
 
-                        {/* Render tokens on the small map */}
-                        {placedTokens.length > 0 && (
-                            <div className="small-map-tokens">
+                        <div className="token-category-content">
+                            {/* Monster token options */}
+                            <div className="token-options">
+                                <div
+                                    id="monster-token-1"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('Monster')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Dragon Monster', id: 'monster-token-1' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="Monster Token 1" />
+                                </div>
+
+                                <div
+                                    id="monster-token-2"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('Monster')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Goblin Monster', id: 'monster-token-2' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="Monster Token 2" />
+                                </div>
+                            </div>
+
+                            {/* Monster info display */}
+                            <div className="token-info-panel">
+                                {hoveredToken && hoveredToken.type === 'Monster' ? (
+                                    <div className="token-database-info">
+                                        <p>{hoveredToken.name}</p>
+                                    </div>
+                                ) : (
+                                    <div className="token-database-info">
+                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* NPC Section */}
+                    <div className="token-category">
+                        <div className="token-category-header">NPC</div>
+
+                        <div className="token-category-content">
+                            {/* NPC token options */}
+                            <div className="token-options">
+                                <div
+                                    id="npc-token-1"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('NPC')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Merchant NPC', id: 'npc-token-1' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="NPC Token 1" />
+                                </div>
+
+                                <div
+                                    id="npc-token-2"
+                                    className="token-item"
+                                    onClick={() => handleTokenSelect('NPC')}
+                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Villager NPC', id: 'npc-token-2' })}
+                                    onMouseLeave={() => setHoveredToken(null)}
+                                >
+                                    <img src={wizard} alt="NPC Token 2" />
+                                </div>
+                            </div>
+
+                            {/* NPC info display */}
+                            <div className="token-info-panel">
+                                {hoveredToken && hoveredToken.type === 'NPC' ? (
+                                    <div className="token-database-info">
+                                        <p>{hoveredToken.name}</p>
+                                    </div>
+                                ) : (
+                                    <div className="token-database-info">
+                                        <p className="placeholder-text">Hover over a token to see details</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="expanded-map">
+                    <button
+                        className="close-expanded-map"
+                        onClick={handleCloseMap}
+                    >
+                        X
+                    </button>
+                    {debugInfo && (
+                        <div className="debug-info">
+                            {debugInfo}
+                        </div>
+                    )}
+                    <div
+                        className="map-container"
+                        ref={gridRef}
+                        onMouseMove={handleMouseMove}
+                    >
+                        <img
+                            ref={mapRef}
+                            className="map-large"
+                            src={mapplaceholder}
+                            alt="Game Map"
+                            onLoad={() => {
+                                if (mapRef.current) {
+                                    const rect = mapRef.current.getBoundingClientRect();
+                                    const size = Math.min(rect.width, rect.height);
+                                    setMapDimensions({
+                                        width: size,
+                                        height: size
+                                    });
+                                }
+                            }}
+                        />
+
+                        {/* Grid overlay and tokens container */}
+                        <div
+                            className="grid-and-tokens-container"
+                            style={{
+                                width: `${mapDimensions.width}px`,
+                                height: `${mapDimensions.height}px`
+                            }}
+                        >
+                            {/* Grid cells that can be toggled */}
+                            {showGrid && (
+                                <div
+                                    className="grid-overlay"
+                                    style={{
+                                        gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+                                        gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+                                    }}
+                                >
+                                    {/* Generate grid cells */}
+                                    {Array.from({ length: gridSize * gridSize }).map((_, index) => {
+                                        const row = Math.floor(index / gridSize);
+                                        const col = index % gridSize;
+                                        return (
+                                            <div
+                                                key={`cell-${row}-${col}`}
+                                                className="grid-cell"
+                                                onClick={() => handleGridCellClick(row, col)}
+                                                data-row={row}
+                                                data-col={col}
+                                            >
+                                                {gridSize <= 10 && (
+                                                    <span className="grid-coordinate">
+                                                        {row + 1},{col + 1}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Token container - always visible regardless of grid */}
+                            <div className="tokens-container">
+                                {/* Render placed tokens */}
                                 {placedTokens.map(token => {
-                                    // Calculate position as percentage of the map
-                                    const posX = (token.position.col / gridSize) * 100;
-                                    const posY = (token.position.row / gridSize) * 100;
+                                    const cellSize = 100 / gridSize; // Size as percentage
+                                    const style = {
+                                        left: `${token.position.col * cellSize + (cellSize / 2)}%`,
+                                        top: `${token.position.row * cellSize + (cellSize / 2)}%`,
+                                        width: `${cellSize * 0.8}%`,  // Make token slightly smaller than cell
+                                        height: `${cellSize * 0.8}%`,
+                                        zIndex: 150 // Extremely high to ensure clickability
+                                    };
 
                                     return (
                                         <div
                                             key={token.id}
-                                            className="small-map-token"
-                                            style={{
-                                                left: `${posX}%`,
-                                                top: `${posY}%`
+                                            className="placed-token"
+                                            style={style}
+                                            onMouseDown={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                console.log(`Token clicked: ${token.id}`);
+                                                handleTokenClick(token.id, e);
                                             }}
-                                            title={`${token.type}`}
+                                            data-token-id={token.id}
+                                            data-token-type={token.type}
                                         >
-                                            <img src={token.image} alt={token.type} />
+                                            <img
+                                                src={token.image}
+                                                alt={token.type}
+                                                style={{ pointerEvents: 'none' }}
+                                            />
                                         </div>
                                     );
                                 })}
-                            </div>
-                        )}
 
-                        {showMapButton && (
-                            <button
-                                className="view-map-button"
-                                onClick={() => setShowExpandedMap(true)}
-                            >
-                                View Map
-                            </button>
-                        )}
-                    </div>
-
-                    {showExpandedMap && (
-                        <div className="map-expanded-overlay">
-                            <div className="map-expanded-container">
-
-                                {/* Token Selector (Left) */}
-                                <div className="token-selector">
-                                    <h3>Map Tokens</h3>
-
-                                    {/* Character Section */}
-                                    <div className="token-category">
-                                        <div className="token-category-header">Character</div>
-
-                                        <div className="token-category-content">
-                                            {/* Character token options */}
-                                            <div className="token-options">
-                                                <div
-                                                    id="character-token-1"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Character')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Wizard Character', id: 'character-token-1' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Character Token 1" />
-                                                </div>
-
-                                                <div
-                                                    id="character-token-2"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Character')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Character', name: 'Knight Character', id: 'character-token-2' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Character Token 2" />
-                                                </div>
-                                            </div>
-
-                                            {/* Character info display */}
-                                            <div className="token-info-panel">
-                                                {hoveredToken && hoveredToken.type === 'Character' ? (
-                                                    <div className="token-database-info">
-                                                        <p>{hoveredToken.name}</p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="token-database-info">
-                                                        <p className="placeholder-text">Hover over a token to see details</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Monster Section */}
-                                    <div className="token-category">
-                                        <div className="token-category-header">Monster</div>
-
-                                        <div className="token-category-content">
-                                            {/* Monster token options */}
-                                            <div className="token-options">
-                                                <div
-                                                    id="monster-token-1"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Monster')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Dragon Monster', id: 'monster-token-1' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Monster Token 1" />
-                                                </div>
-
-                                                <div
-                                                    id="monster-token-2"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Monster')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Goblin Monster', id: 'monster-token-2' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Monster Token 2" />
-                                                </div>
-                                            </div>
-
-                                            {/* Monster info display */}
-                                            <div className="token-info-panel">
-                                                {hoveredToken && hoveredToken.type === 'Monster' ? (
-                                                    <div className="token-database-info">
-                                                        <p>{hoveredToken.name}</p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="token-database-info">
-                                                        <p className="placeholder-text">Hover over a token to see details</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* NPC Section */}
-                                    <div className="token-category">
-                                        <div className="token-category-header">NPC</div>
-
-                                        <div className="token-category-content">
-                                            {/* NPC token options */}
-                                            <div className="token-options">
-                                                <div
-                                                    id="npc-token-1"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('NPC')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Merchant NPC', id: 'npc-token-1' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="NPC Token 1" />
-                                                </div>
-
-                                                <div
-                                                    id="npc-token-2"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('NPC')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Villager NPC', id: 'npc-token-2' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="NPC Token 2" />
-                                                </div>
-                                            </div>
-
-                                            {/* NPC info display */}
-                                            <div className="token-info-panel">
-                                                {hoveredToken && hoveredToken.type === 'NPC' ? (
-                                                    <div className="token-database-info">
-                                                        <p>{hoveredToken.name}</p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="token-database-info">
-                                                        <p className="placeholder-text">Hover over a token to see details</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="expanded-map">
-                                    <button
-                                        className="close-expanded-map"
-                                        onClick={handleCloseMap}
-                                    >
-                                        X
-                                    </button>
-                                    {debugInfo && (
-                                        <div className="debug-info">
-                                            {debugInfo}
-                                        </div>
-                                    )}
+                                {/* Show selected token with cursor */}
+                                {selectedToken && (
                                     <div
-                                        className="map-container"
-                                        ref={gridRef}
-                                        onMouseMove={handleMouseMove}
+                                        className="token-cursor"
+                                        style={{
+                                            left: `${cursorPosition.x}px`,
+                                            top: `${cursorPosition.y}px`,
+                                            zIndex: 200
+                                        }}
                                     >
-                                        <img
-                                            ref={mapRef}
-                                            className="map-large"
-                                            src={mapplaceholder}
-                                            alt="Game Map"
-                                            onLoad={() => {
-                                                if (mapRef.current) {
-                                                    const rect = mapRef.current.getBoundingClientRect();
-                                                    const size = Math.min(rect.width, rect.height);
-                                                    setMapDimensions({
-                                                        width: size,
-                                                        height: size
-                                                    });
-                                                }
-                                            }}
-                                        />
-
-                                        {/* Grid overlay and tokens container */}
-                                        <div
-                                            className="grid-and-tokens-container"
-                                            style={{
-                                                width: `${mapDimensions.width}px`,
-                                                height: `${mapDimensions.height}px`
-                                            }}
-                                        >
-                                            {/* Grid cells that can be toggled */}
-                                            {showGrid && (
-                                                <div
-                                                    className="grid-overlay"
-                                                    style={{
-                                                        gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-                                                        gridTemplateRows: `repeat(${gridSize}, 1fr)`,
-                                                    }}
-                                                >
-                                                    {/* Generate grid cells */}
-                                                    {Array.from({ length: gridSize * gridSize }).map((_, index) => {
-                                                        const row = Math.floor(index / gridSize);
-                                                        const col = index % gridSize;
-                                                        return (
-                                                            <div
-                                                                key={`cell-${row}-${col}`}
-                                                                className="grid-cell"
-                                                                onClick={() => handleGridCellClick(row, col)}
-                                                                data-row={row}
-                                                                data-col={col}
-                                                            >
-                                                                {gridSize <= 10 && (
-                                                                    <span className="grid-coordinate">
-                                                                        {row + 1},{col + 1}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-
-                                            {/* Token container - always visible regardless of grid */}
-                                            <div className="tokens-container">
-                                                {/* Render placed tokens */}
-                                                {placedTokens.map(token => {
-                                                    const cellSize = 100 / gridSize; // Size as percentage
-                                                    const style = {
-                                                        left: `${token.position.col * cellSize + (cellSize / 2)}%`,
-                                                        top: `${token.position.row * cellSize + (cellSize / 2)}%`,
-                                                        width: `${cellSize * 0.8}%`,  // Make token slightly smaller than cell
-                                                        height: `${cellSize * 0.8}%`,
-                                                        zIndex: 150 // Extremely high to ensure clickability
-                                                    };
-
-                                                    return (
-                                                        <div
-                                                            key={token.id}
-                                                            className="placed-token"
-                                                            style={style}
-                                                            onMouseDown={(e) => {
-                                                                e.stopPropagation();
-                                                                e.preventDefault();
-                                                                console.log(`Token clicked: ${token.id}`);
-                                                                handleTokenClick(token.id, e);
-                                                            }}
-                                                            data-token-id={token.id}
-                                                            data-token-type={token.type}
-                                                        >
-                                                            <img
-                                                                src={token.image}
-                                                                alt={token.type}
-                                                                style={{ pointerEvents: 'none' }}
-                                                            />
-                                                        </div>
-                                                    );
-                                                })}
-
-                                                {/* Show selected token with cursor */}
-                                                {selectedToken && (
-                                                    <div
-                                                        className="token-cursor"
-                                                        style={{
-                                                            left: `${cursorPosition.x}px`,
-                                                            top: `${cursorPosition.y}px`,
-                                                            zIndex: 200
-                                                        }}
-                                                    >
-                                                        <img src={selectedToken.image} alt={selectedToken.type} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="map-settings">
-                                    <h3>Map Settings</h3>
-                                    <div className="settings-controls">
-                                        <div className="setting-item">
-                                            <label>Grid:</label>
-                                            <select
-                                                value={showGrid ? "Show" : "Hide"}
-                                                onChange={(e) => setShowGrid(e.target.value === "Show")}
-                                            >
-                                                <option>Show</option>
-                                                <option>Hide</option>
-                                            </select>
-                                        </div>
-                                        <div className="setting-item">
-                                            <label>Lighting:</label>
-                                            <select>
-                                                <option>Day</option>
-                                                <option>Night</option>
-                                                <option>Fog</option>
-                                            </select>
-                                        </div>
-                                        <div className="setting-item">
-                                            <label>Grid Size (Rows/Columns):</label>
-                                            <select
-                                                value={gridSize}
-                                                onChange={(e) => setGridSize(Number(e.target.value))}
-                                            >
-                                                <option value="10">10 x 10</option>
-                                                <option value="20">20 x 20</option>
-                                                <option value="30">30 x 30</option>
-                                            </select>
-                                        </div>
-                                        <div className="setting-item">
-                                            <button
-                                                className="clear-tokens-btn"
-                                                onClick={() => setPlacedTokens([])}
-                                            >
-                                                Clear All Tokens
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="gamelog">
-                        <div id="gamelog-container">
-                            {/* Dice log entries will appear here */}
-                        </div>
-                    </div>
-
-                    <div className="bottom">
-                        <div className="chat-container">
-                            {/* Chat-up first in DOM order since it's behind */}
-                            <div className={`chat-up ${isChatSlideOut ? 'slide-out' : ''}`}>
-                                <div className="slide-out-chat-top-context">
-                                    <button className="chat-minimize" onClick={handleCloseChat}>-</button>
-
-                                    {/* Add player name header */}
-                                    <div className="chat-header">
-                                        {selectedChatPlayer && (
-                                            <h4>{selectedChatPlayer}</h4>
-                                        )}
-                                    </div>
-
-                                    {/* Message display area - simple list of messages */}
-                                    <div className="chat-messages">
-                                        {selectedChatPlayer && playerChatMessages[selectedChatPlayer]?.length > 0 ? (
-                                            <ul>
-                                                {playerChatMessages[selectedChatPlayer].map((message, index) => (
-                                                    <li key={index}>{message}</li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p className="empty-chat">No messages yet</p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="slide-out-chat-bottom-context">
-                                    <form className="form-chat" onSubmit={(e) => {
-                                        e.preventDefault();
-                                        const inputField = e.target.querySelector('.input-chat');
-                                        if (inputField && inputField.value.trim() !== '' && selectedChatPlayer) {
-                                            // Add message to the selected player's chat
-                                            setPlayerChatMessages({
-                                                ...playerChatMessages,
-                                                [selectedChatPlayer]: [
-                                                    ...playerChatMessages[selectedChatPlayer],
-                                                    inputField.value.trim()
-                                                ]
-                                            });
-                                            // Clear the input field
-                                            inputField.value = '';
-                                        }
-                                    }}>
-                                        <input
-                                            type="text"
-                                            className="input-chat"
-                                            placeholder="Message Player..."
-                                            disabled={!selectedChatPlayer}
-                                        />
-                                        <button type="submit" className="submit-chat" disabled={!selectedChatPlayer}>&#8594;</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <div className="chat">
-                                {/* Crystal ball image stays as background element */}
-                                <img className="orb-chat" src={crystalball} alt="Crystal Ball" />
-
-                                {/* Player list that appears on hover */}
-                                {/* When the room is initialized, the program should grab 
-                                    from "party list" or whatever is holding the group of people 
-                                    and print it so orb can display it*/}
-                                <div className="orb-chat-player-list">
-                                    {Object.keys(playerChatMessages).map(playerName => (
-                                        <div
-                                            key={playerName}
-                                            className={`player-item ${selectedChatPlayer === playerName ? 'selected' : ''}`}
-                                            onClick={() => handlePlayerSelect(playerName)}
-                                        >
-                                            {playerName}
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Keep these as they were */}
-                                <img className="group-chat" src="" alt="" />
-                                <img className="dm-chat" src="" alt="" />
-                                <img className="player2-chat" src="" alt="" />
-                            </div>
-                        </div>
-                        {/* Notes section with multiple note types */}
-                        <div className="notes">
-                            <div className={`public-notes ${activeSection === 'public' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
-                                <button onClick={togglePublicNotes}>
-                                    Public
-                                </button>
-                                {publicExpanded && (
-                                    <div className="written-public-notes">
-                                        {publicNotes.length > 0 ? (
-                                            <ul>
-                                                {publicNotes.map((note, index) => (
-                                                    <li key={index}>{note}</li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p>No public notes yet</p>
-                                        )}
+                                        <img src={selectedToken.image} alt={selectedToken.type} />
                                     </div>
                                 )}
                             </div>
-                            <div className={`private-notes ${activeSection === 'private' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
-                                <button onClick={togglePrivateNotes}>
-                                    Private
-                                </button>
-                                {privateExpanded && (
-                                    <div className="written-notes">
-                                        {privateNotes.length > 0 ? (
-                                            <ul>
-                                                {privateNotes.map((note, index) => (
-                                                    <li key={index}>{note}</li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p>No private notes yet</p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                            <div className={`dm-notes ${activeSection === 'dm' ? 'expanded' : activeSection ? 'minimized' : ''}`}>
-                                <button onClick={toggleDmNotes}>
-                                    DM
-                                </button>
-                                {dmExpanded && (
-                                    <div className="written-notes">
-                                        {dmNotes.length > 0 ? (
-                                            <ul>
-                                                {dmNotes.map((note, index) => (
-                                                    <li key={index}>{note}</li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p>No DM notes yet</p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="input-notes">
-                                <form className="input-notes-form" onSubmit={handleNoteSubmit}>
-                                    <input
-                                        type="text"
-                                        placeholder={activeSection ? `Write a ${activeSection} note...` : "Select a section first..."}
-                                        disabled={!activeSection}
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!activeSection}
-                                    >{">"}</button>
-                                </form>
-                            </div>
                         </div>
-                    </div>
-
-                    {/* Updated dice buttons to use addToGameLog function */}
-                    <div className="dice">
-                        <button className="d4"
-                            onClick={() => {
-                                const rollD4 = dice(4);
-                                console.log(rollD4);
-                                addToGameLog(4, rollD4);
-                            }}
-                        >
-                            <img className="d4-img" src={imgd4} alt="" />d4
-                        </button>
-
-                        <button className="d6"
-                            onClick={() => {
-                                const rollD6 = dice(6);
-                                console.log(rollD6);
-                                addToGameLog(6, rollD6);
-                            }}
-                        >
-                            <img className="d6-img" src={imgd6} alt="" />d6
-                        </button>
-
-                        <button className="d8"
-                            onClick={() => {
-                                const rollD8 = dice(8);
-                                console.log(rollD8);
-                                addToGameLog(8, rollD8);
-                            }}
-                        >
-                            <img className="d8-img" src={imgd8} alt="" />d8
-                        </button>
-
-                        <button className="d10"
-                            onClick={() => {
-                                const rollD10 = dice(10);
-                                console.log(rollD10);
-                                addToGameLog(10, rollD10);
-                            }}
-                        >
-                            <img className="d10-img" src={imgd10} alt="" />d10
-                        </button>
-
-                        <button className="d12"
-                            onClick={() => {
-                                const rollD12 = dice(12);
-                                console.log(rollD12);
-                                addToGameLog(12, rollD12);
-                            }}
-                        >
-                            <img className="d12-img" src={imgd12} alt="" />d12
-                        </button>
-
-                        <button className="d20"
-                            onClick={() => {
-                                const rollD20 = dice(20);
-                                console.log(rollD20);
-                                addToGameLog(20, rollD20);
-                            }}
-                        >
-                            <img className="d20-img" src={imgd20} alt="" />d20
-                        </button>
-                        <button className="d100"
-                            onClick={() => {
-                                const rollD100 = dice(100);
-                                console.log(rollD100);
-                                addToGameLog(100, rollD100);
-                            }}
-                        >
-                            <img className="d100-img" src={imgd100} alt="" />d100
-                        </button>
                     </div>
                 </div>
-            </main>
-        </>
-    )
+
+                <div className="map-settings">
+                    <h3>Map Settings</h3>
+                    <div className="settings-controls">
+                        <div className="setting-item">
+                            <label>Grid:</label>
+                            <select
+                                value={showGrid ? "Show" : "Hide"}
+                                onChange={(e) => setShowGrid(e.target.value === "Show")}
+                            >
+                                <option>Show</option>
+                                <option>Hide</option>
+                            </select>
+                        </div>
+                        <div className="setting-item">
+                            <label>Lighting:</label>
+                            <select>
+                                <option>Day</option>
+                                <option>Night</option>
+                                <option>Fog</option>
+                            </select>
+                        </div>
+                        <div className="setting-item">
+                            <label>Grid Size (Rows/Columns):</label>
+                            <select
+                                value={gridSize}
+                                onChange={(e) => setGridSize(Number(e.target.value))}
+                            >
+                                <option value="10">10 x 10</option>
+                                <option value="20">20 x 20</option>
+                                <option value="30">30 x 30</option>
+                            </select>
+                        </div>
+                        <div className="setting-item">
+                            <button
+                                className="clear-tokens-btn"
+                                onClick={() => setPlacedTokens([])}
+                            >
+                                Clear All Tokens
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )}
+      </div>
+
+      <div className="gamelog">
+        <div id="gamelog-container"></div>
+      </div>
+
+  {/* --- Your existing chat/notes container --- */}
+      <div className="chat-right">
+        <div className="chat-header">
+          <div className="chat-tabs">
+            <button className={chatMode === "private" ? "active" : ""} onClick={() => setChatMode("private")}>Private Chat</button>
+            <button className={chatMode === "dmnotes" ? "active" : ""} onClick={() => setChatMode("dmnotes")}>DM Notes</button>          
+            <button className={chatMode === "public" ? "active" : ""} onClick={() => setChatMode("public")}>Public Notes</button>
+            <button className={chatMode === "privatenotes" ? "active" : ""} onClick={() => setChatMode("privatenotes")}>Private Notes</button>
+          </div>
+        </div>
+
+        <div className="chat-window">
+          {chatMode === "public" && (
+            <>
+              {messages.map((msg, idx) => (
+                <div key={idx} className="chat-message">
+                  {msg.sender_username && (
+                    <span className="chat-username">{msg.sender_username}:</span>
+                  )}
+                  <span className="chat-text">{msg.content}</span>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </>
+          )}
+          {chatMode === "private" && (
+            <>
+              {currentUser && (
+                <select
+                  value={selectedUser?.id || ""}
+                  onChange={e => {
+                    const user = users.find(u => u.id === Number(e.target.value));
+                    setSelectedUser(user);
+                  }}
+                >
+                  <option value="">Select user</option>
+                  {users
+                    .filter(u => Number(u.id) !== Number(currentUser.id))
+                    .map(u => (
+                      <option key={u.id} value={u.id}>{u.username}</option>
+                    ))}
+                </select>
+              )}
+              {messages.map((msg, idx) => (
+                <div key={idx} className="chat-message">
+                  {msg.sender_username && (
+                    <span className="chat-username">{msg.sender_username}:</span>
+                  )}
+                  <span className="chat-text">{msg.content}</span>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </>
+          )}
+          {chatMode === "dmnotes" && (
+            <div id="dm-note-window" className="notes-section">
+              <ul>
+                {dmNotes.map(note => <li key={note.id}>{note.content}</li>)}
+              </ul>
+              {currentUser?.isDM && (
+                <form onSubmit={e => { e.preventDefault(); addDmNote(); }}>
+                  <input
+                    id="dm-note"
+                    value={dmNoteInput}
+                    onChange={e => setDmNoteInput(e.target.value)}
+                    placeholder="Add a DM note..."
+                  />
+                  <button id="dm-submit" type="submit" disabled={!dmNoteInput.trim()}>Add DM Note</button>
+                </form>
+              )}
+            </div>
+          )}
+          {chatMode === "privatenotes" && (
+            <div id="private-notes" className="notes-section">
+              <h3>Private Notes</h3>
+              <ul>
+                {privateNotes.map(note => <li key={note.id}>{note.content}</li>)}
+              </ul>
+              <form onSubmit={e => { e.preventDefault(); addPrivateNote(); }}>
+                <input
+                  value={privateNoteInput}
+                  onChange={e => setPrivateNoteInput(e.target.value)}
+                  placeholder="Add a private note..."
+                />
+                <button id="dm-submit" type="submit" disabled={!privateNoteInput.trim()}>Add Private Note</button>
+              </form>
+            </div>
+          )}
+        </div>
+
+        {/* These should NOT be inside any tab panel */}
+        {(chatMode === "public" || chatMode === "private") && (
+          <form className="chat-input-area" onSubmit={sendMessage}>
+            <input
+              id="chat-message"
+              style={{ position: 'absolute', top: '360px', right: '250px' }}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Type a message..."
+              disabled={chatMode === "private" && !selectedUser}
+            />
+            <button className="submit" id="submit" type="submit" disabled={!input || (chatMode === "private" && !selectedUser)}>Send</button>
+          </form>
+        )}
+      </div>
+    </div>
+);
 }
 
 export default GameView;

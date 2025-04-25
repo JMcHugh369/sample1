@@ -1,8 +1,4 @@
-// The key changes are in the viewMonsterDetails function and the input fields
-// for AC, HP, and Speed to make them editable and update the state correctly
-
 import "./index.scss";
-import Nav from "../Nav";
 import GameView from "../GameView";
 import { useState, useEffect, useRef } from "react";
 import wizard from "../asset/prof-pics/wizard.png";
@@ -10,8 +6,48 @@ import map from "../asset/gameside/minimap.png";
 import adventurer from "../asset/dmside/adventurer.png";
 import addmonster from "../asset/dmside/add-monster.png";
 import addnpc from "../asset/dmside/add-npc.png";
+import { useParams } from "react-router-dom";
 
 const DMView = () => {
+    // Get campaignId from URL or state
+    const { campaignId } = useParams();
+    const [resolvedCampaignId, setResolvedCampaignId] = useState(campaignId || null);
+
+    // State for DM user info and campaign
+    const [currentUser, setCurrentUser] = useState(null);
+
+    // Example: Fetch DM info and campaign if needed
+    useEffect(() => {
+        if (!resolvedCampaignId) return; // Don't fetch if campaignId is null
+        const campaignIdInt = parseInt(resolvedCampaignId, 10);
+        if (isNaN(campaignIdInt)) return; // Extra guard
+
+        async function fetchDMInfo() {
+            const res = await fetch(`http://localhost:5002/dm/me?campaignId=${campaignIdInt}`);
+            if (res.ok) {
+                const data = await res.json();
+                setCurrentUser({ id: data.id, username: data.username, isDM: true });
+                if (!resolvedCampaignId && data.campaign_id) {
+                    setResolvedCampaignId(data.campaign_id);
+                }
+            }
+        }
+        if (!currentUser) fetchDMInfo();
+    }, [currentUser, resolvedCampaignId]);
+
+    useEffect(() => {
+        if (!resolvedCampaignId) return;
+        fetch(`http://localhost:5002/campaigns/${resolvedCampaignId}/users`)
+            .then(res => res.json())
+            .then(data => {
+                setUsers(data.users || []);
+                console.log("DMView fetched users:", data.users);
+            })
+            .catch(err => {
+                console.error("DMView error fetching users:", err);
+            });
+    }, [resolvedCampaignId]);
+
     // State management
     const [monsters, setMonsters] = useState([]);
     const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
@@ -24,6 +60,7 @@ const DMView = () => {
     const [maps, setMaps] = useState([]); // To store map images
     const [mapInfoVisible, setMapInfoVisible] = useState(false);
     const [selectedMap, setSelectedMap] = useState(null);
+    const [users, setUsers] = useState([]);
 
     // Refs
     const searchRef = useRef(null);
@@ -341,8 +378,7 @@ const DMView = () => {
 
     return (
         <>
-            <Nav />
-            <GameView />
+            <GameView campaignId={resolvedCampaignId} currentUser={currentUser} users={users} />
 
             <div className="dm-side">
                 <div className="monsters">
