@@ -13,9 +13,10 @@ import imgd12 from "../asset/gameside/d12.png";
 import imgd20 from "../asset/gameside/d20.png";
 import imgd100 from "../asset/gameside/d100.png";
 
+// passing monsters as props to GameView component
+const GameView = ({ monsters, npcs, maps = [], selectedMap, setSelectedMap }) => {
+    console.log("Monsters prop in GameView:", monsters);
 
-
-const GameView = () => {
     const [showMapButton, setShowMapButton] = useState(false);
     const [showExpandedMap, setShowExpandedMap] = useState(false);
     const [selectedToken, setSelectedToken] = useState(null);
@@ -31,6 +32,17 @@ const GameView = () => {
     const smallMapRef = useRef(null);
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
     const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
+    // Add prop for map selected
+    const [mapSrc, setMapSrc] = useState(selectedMap?.src || "");
+    useEffect(() => {
+        // Update the displayed map when the selectedMap prop changes
+        setMapSrc(selectedMap?.src || "");
+    }, [selectedMap]);
+
+    // Debugging: Log the selected map when it changes
+    useEffect(() => {
+        console.log("Maps in GameView:", maps);
+    }, [maps]);
 
     // Add state to manage initiative items
     const [initiativeItems, setInitiativeItems] = useState([]);
@@ -61,6 +73,10 @@ const GameView = () => {
     useEffect(() => {
         console.log("Token state updated:", placedTokens);
     }, [placedTokens]);
+
+    useEffect(() => {
+        console.log("NPCs in GameView:", npcs);
+    }, [npcs]);
 
     function dice(max) {
         return 1 + Math.floor(Math.random() * max);
@@ -391,12 +407,12 @@ const GameView = () => {
                             <div key={item.id} className="initiative-item">
                                 <input
                                     type="text"
-                                    className="initiative-name monster-spd" // Add "monster-spd" class for styling
+                                    className="initiative-name monster-spd"
                                     placeholder="Enter name"
                                     value={item.name}
                                     onChange={(e) => handleUpdateInitiativeItem(item.id, "name", e.target.value)}
                                 />
-                                
+
                                 <button
                                     className="initiative-delete"
                                     onClick={() => handleDeleteInitiativeItem(item.id)}
@@ -410,13 +426,9 @@ const GameView = () => {
                         </div>
                     </div>
 
-                    <div
-                        className="map"
-                        onMouseEnter={() => setShowMapButton(true)}
-                        onMouseLeave={() => setShowMapButton(false)}
-                        ref={smallMapRef}
-                    >
-                        <img className="map-up" src={mapplaceholder} alt="" />
+                    <div className="map">
+                        {/* Display the selected map or the default map */}
+                        <img className="map-up" src={selectedMap?.src || mapplaceholder} alt="Game Map" />
 
                         {/* Render tokens on the small map */}
                         {placedTokens.length > 0 && (
@@ -443,14 +455,13 @@ const GameView = () => {
                             </div>
                         )}
 
-                        {showMapButton && (
-                            <button
-                                className="view-map-button"
-                                onClick={() => setShowExpandedMap(true)}
-                            >
-                                View Map
-                            </button>
-                        )}
+                        {/* Always show the "View Map" button */}
+                        <button
+                            className="view-map-button"
+                            onClick={() => setShowExpandedMap(true)}
+                        >
+                            View Map
+                        </button>
                     </div>
 
                     {showExpandedMap && (
@@ -511,25 +522,29 @@ const GameView = () => {
                                         <div className="token-category-content">
                                             {/* Monster token options */}
                                             <div className="token-options">
-                                                <div
-                                                    id="monster-token-1"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Monster')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Dragon Monster', id: 'monster-token-1' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Monster Token 1" />
-                                                </div>
-
-                                                <div
-                                                    id="monster-token-2"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('Monster')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'Monster', name: 'Goblin Monster', id: 'monster-token-2' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="Monster Token 2" />
-                                                </div>
+                                                {monsters && monsters.length > 0 ? (
+                                                    monsters.map((monster) => (
+                                                        <div
+                                                            key={monster.id}
+                                                            className="token-item"
+                                                            onMouseEnter={() => setHoveredToken({ type: 'Monster', name: monster.name })}
+                                                            onMouseLeave={() => setHoveredToken(null)}
+                                                            onClick={() => {
+                                                                setSelectedToken({
+                                                                    id: monster.id,
+                                                                    type: 'Monster',
+                                                                    image: monster.imageUrl,
+                                                                    isNew: true
+                                                                });
+                                                                console.log(`Selected token: ${monster.name}`);
+                                                            }}
+                                                        >
+                                                            <img src={monster.imageUrl} alt={monster.name} />
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p>No monsters available</p>
+                                                )}
                                             </div>
 
                                             {/* Monster info display */}
@@ -552,30 +567,33 @@ const GameView = () => {
                                         <div className="token-category-header">NPC</div>
 
                                         <div className="token-category-content">
-                                            {/* NPC token options */}
                                             <div className="token-options">
-                                                <div
-                                                    id="npc-token-1"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('NPC')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Merchant NPC', id: 'npc-token-1' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="NPC Token 1" />
-                                                </div>
-
-                                                <div
-                                                    id="npc-token-2"
-                                                    className="token-item"
-                                                    onClick={() => handleTokenSelect('NPC')}
-                                                    onMouseEnter={() => setHoveredToken({ type: 'NPC', name: 'Villager NPC', id: 'npc-token-2' })}
-                                                    onMouseLeave={() => setHoveredToken(null)}
-                                                >
-                                                    <img src={wizard} alt="NPC Token 2" />
-                                                </div>
+                                                {npcs && npcs.length > 0 ? (
+                                                    npcs.map((npc) => (
+                                                        <div
+                                                            key={npc.id}
+                                                            className="token-item"
+                                                            onMouseEnter={() => setHoveredToken({ type: 'NPC', name: npc.name })}
+                                                            onMouseLeave={() => setHoveredToken(null)}
+                                                            onClick={() => {
+                                                                setSelectedToken({
+                                                                    id: npc.id,
+                                                                    type: 'NPC',
+                                                                    image: npc.imageUrl,
+                                                                    isNew: true
+                                                                });
+                                                                console.log(`Selected token: ${npc.name}`);
+                                                            }}
+                                                        >
+                                                            <img src={npc.imageUrl} alt={npc.name} />
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p>No NPCs available</p>
+                                                )}
                                             </div>
 
-                                            {/* NPC info display */}
+                                            {/* NPC Info Display */}
                                             <div className="token-info-panel">
                                                 {hoveredToken && hoveredToken.type === 'NPC' ? (
                                                     <div className="token-database-info">
@@ -611,7 +629,7 @@ const GameView = () => {
                                         <img
                                             ref={mapRef}
                                             className="map-large"
-                                            src={mapplaceholder}
+                                            src={selectedMap?.src || mapplaceholder}
                                             alt="Game Map"
                                             onLoad={() => {
                                                 if (mapRef.current) {
@@ -722,6 +740,29 @@ const GameView = () => {
                                 <div className="map-settings">
                                     <h3>Map Settings</h3>
                                     <div className="settings-controls">
+                                        {/* could not get it to work">}
+                                        {/* <div className="setting-item">
+    <label>Map:</label>
+    <select
+        value={selectedMap?.id || ""}
+        onChange={(e) => {
+            const selected = maps.find(map => map.id === e.target.value);
+            if (selected) {
+                setSelectedMap(selected);
+            }
+        }}
+    >
+        {Array.isArray(maps) && maps.length > 0 ? (
+            maps.map(map => (
+                <option key={map.id} value={map.id}>
+                    {map.name || "Unnamed Map"}
+                </option>
+            ))
+        ) : (
+            <option disabled>No maps available</option>
+        )}
+    </select>
+</div> */}
                                         <div className="setting-item">
                                             <label>Grid:</label>
                                             <select
@@ -732,14 +773,14 @@ const GameView = () => {
                                                 <option>Hide</option>
                                             </select>
                                         </div>
-                                        <div className="setting-item">
-                                            <label>Lighting:</label>
-                                            <select>
-                                                <option>Day</option>
-                                                <option>Night</option>
-                                                <option>Fog</option>
-                                            </select>
-                                        </div>
+                                        {/* <div className="setting-item">
+    <label>Lighting:</label>
+    <select>
+        <option>Day</option>
+        <option>Night</option>
+        <option>Fog</option>
+    </select>
+</div> */}
                                         <div className="setting-item">
                                             <label>Grid Size (Rows/Columns):</label>
                                             <select
