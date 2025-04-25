@@ -1,5 +1,3 @@
-// The key changes are in the viewMonsterDetails function and the input fields
-// for AC, HP, and Speed to make them editable and update the state correctly
 import "./index.scss";
 import Nav from "../Nav";
 import GameView from "../GameView";
@@ -10,22 +8,25 @@ import adventurer from "../asset/dmside/adventurer.png";
 import addmonster from "../asset/dmside/add-monster.png";
 import addnpc from "../asset/dmside/add-npc.png";
 
-const DMView = () => {
+// Accept both monsters/setMonsters and npcs/setNpcs props
+const DMView = ({ monsters, setMonsters, npcs, setNpcs, maps = [], setMaps }) => {
     // State management
-    const [monsters, setMonsters] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedMonster, setSelectedMonster] = useState(null);
-    const [maps, setMaps] = useState([]); // To store map images
     const [mapInfoVisible, setMapInfoVisible] = useState(false);
     const [selectedMap, setSelectedMap] = useState(null);
-    const [npcs, setNpcs] = useState([]); // To store NPC tokens
     const [selectedNpc, setSelectedNpc] = useState(null); // To store the currently selected NPC
 
     // Refs
     const fileInputRef = useRef(null);
     const monsterImageRef = useRef(null);
     const npcImageRef = useRef(null);
+
+    // Log for debugging
+    useEffect(() => {
+        console.log("NPCs in DMView:", npcs);
+    }, [npcs]);
 
     function minMonster() {
         const viewMon = document.getElementById('view-monster');
@@ -67,12 +68,12 @@ const DMView = () => {
 
             reader.onload = (e) => {
                 const newMap = {
-                    id: Date.now(), // Unique ID for the map
+                    id: Date.now().toString(), // Unique ID for the map
                     src: e.target.result, // Base64 data URL of the image
                     name: file.name
                 };
-
-                setMaps([...maps, newMap]);
+                console.log("Adding new map:", newMap);
+                setMaps([...maps, newMap]); // Update the maps state in App.js
             };
 
             reader.readAsDataURL(file);
@@ -175,63 +176,62 @@ const DMView = () => {
         setMaps((prevMaps) => prevMaps.filter((map) => map.id !== id));
     }
 
-    function addNPC() {
-        // Your existing function
-    }
-
     // Add a new custom monster
     function addMonster() {
-        // Create a new blank monster with default placeholder values
-        const monster = {
+        const newMonster = {
+            id: Date.now().toString(),
             name: "New Monster",
-            size: "Medium",
-            alignment: "Neutral",
-            armor_class: [{ value: "10" }],
-            hit_points: "10",
-            speed: "walk: 30 ft",
-            strength: "10",
-            dexterity: "10",
-            constitution: "10",
-            intelligence: "10",
-            wisdom: "10",
-            charisma: "10",
+            size: "(Size)",
+            alignment: "(Alignment)",
+            ac: "10",
+            hp: "10",
+            spd: "30 ft",
+            str: "10",
+            dex: "10",
+            con: "10",
+            int: "10",
+            wis: "10",
+            cha: "10",
             abilities: "",
             actions: "",
             legendary_actions: "",
             reactions: "",
-            imageUrl: addmonster // Default to the add monster image
+            imageUrl: addmonster
         };
 
-        // Add to monsters state
-        const newMonster = {
-            id: Date.now().toString(), // Generate a unique ID
-            name: monster.name,
-            size: monster.size,
-            alignment: monster.alignment,
-            ac: monster.armor_class[0].value,
-            hp: monster.hit_points,
-            spd: monster.speed,
-            str: monster.strength,
-            dex: monster.dexterity,
-            con: monster.constitution,
-            int: monster.intelligence,
-            wis: monster.wisdom,
-            cha: monster.charisma,
-            abilities: monster.abilities,
-            actions: monster.actions,
-            legendary_actions: monster.legendary_actions,
-            reactions: monster.reactions,
-            imageUrl: monster.imageUrl
-        };
+        console.log("Adding new monster:", newMonster);
+
+        setMonsters((prevMonsters) => {
+            const updatedMonsters = [...prevMonsters, newMonster];
+            console.log("Updated monsters in DMView:", updatedMonsters);
+            return updatedMonsters;
+        });
         
-        setMonsters(prevMonsters => [...prevMonsters, newMonster]);
-
         // Show the monster view panel with the monster data
-        setSelectedMonster({...monster, originalId: newMonster.id});
+        setSelectedMonster({
+            name: newMonster.name,
+            size: newMonster.size,
+            alignment: newMonster.alignment,
+            armor_class: [{ value: newMonster.ac }],
+            hit_points: newMonster.hp,
+            speed: newMonster.spd,
+            strength: newMonster.str,
+            dexterity: newMonster.dex,
+            constitution: newMonster.con,
+            intelligence: newMonster.int,
+            wisdom: newMonster.wis,
+            charisma: newMonster.cha,
+            abilities: newMonster.abilities,
+            actions: newMonster.actions,
+            legendary_actions: newMonster.legendary_actions,
+            reactions: newMonster.reactions,
+            imageUrl: newMonster.imageUrl,
+            originalId: newMonster.id
+        });
         upMonster();
     }
 
-    // Add a new custom NPC
+    // Add a new custom NPC (using the old implementation)
     function addNpc() {
         // Create a new blank NPC with default placeholder values
         const npc = {
@@ -288,7 +288,7 @@ const DMView = () => {
         upMonster();
     }
 
-    // View a specific NPC's details
+    // View a specific NPC's details (using the old implementation)
     function viewNpcDetails(npc) {
         // Create an NPC object with editable properties
         const npcDetails = {
@@ -307,7 +307,7 @@ const DMView = () => {
 
     // Update monster stats
     function updateMonsterStat(statName, value) {
-        console.log(`Updating ${statName} to ${value}`);
+        console.log(`Updating monster ${statName} to ${value}`);
         
         // Update the selected monster
         setSelectedMonster(prevMonster => {
@@ -400,7 +400,7 @@ const DMView = () => {
         });
     }
 
-    // Update NPC stats
+    // Update NPC stats (using the old implementation)
     function updateNpcStat(statName, value) {
         console.log(`Updating ${statName} to ${value}`);
 
@@ -414,24 +414,6 @@ const DMView = () => {
                 updatedNpc.role = value;
             } else if (statName === 'alignment') {
                 updatedNpc.alignment = value;
-            } else if (statName === 'armor_class') {
-                updatedNpc.armor_class = value;
-            } else if (statName === 'hit_points') {
-                updatedNpc.hit_points = value;
-            } else if (statName === 'speed') {
-                updatedNpc.speed = value;
-            } else if (statName === 'strength') {
-                updatedNpc.strength = value;
-            } else if (statName === 'dexterity') {
-                updatedNpc.dexterity = value;
-            } else if (statName === 'constitution') {
-                updatedNpc.constitution = value;
-            } else if (statName === 'intelligence') {
-                updatedNpc.intelligence = value;
-            } else if (statName === 'wisdom') {
-                updatedNpc.wisdom = value;
-            } else if (statName === 'charisma') {
-                updatedNpc.charisma = value;
             } else if (statName === 'description') {
                 updatedNpc.description = value;
             }
@@ -465,7 +447,7 @@ const DMView = () => {
     return (
         <>
             <Nav />
-            <GameView />
+            <GameView monsters={monsters} setMonsters={setMonsters} npcs={npcs} setNpcs={setNpcs} />
 
             <div className="dm-side">
                 <div className="monsters">
@@ -535,43 +517,40 @@ const DMView = () => {
                     
                 </div>
                 <div className="maps">
-                    <div className="maps-content">
-                        <div className="maps-title-content">
-                            <p>Maps</p>
-                        </div>
-                        <div className="maps-token-content">
-                            {/* Display uploaded maps */}
-                            {maps.map(mapItem => (
-                                <div key={mapItem.id} className="map-item">
-                                    <img
-                                        className="map-thumbnail"
-                                        src={mapItem.src}
-                                        alt={mapItem.name}
-                                        onClick={() => viewMapInfo(mapItem)}
-                                    />
-                                    <div className="map-name">{mapItem.name}</div>
-                                </div>
-                            ))}
-
-                            {/* Hidden file input */}
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden-file-input"
-                                accept="image/png"
-                                onChange={handleFileSelect}
-                            />
-
-                            {/* When the button gets clicked, it allows the user to select a png they have from their device to be uploaded 
-                                and stored (database). Then the user can expand and see this map
-                                LATER IMPLEMENTATIONS: DMVIEW needs to communicate with GAMEVIEW to show the map selection it can do
-                                 */}
-                            <button className="dm-add-map" onClick={addMap}>
-                                <img className="add-map-img" src={map} alt="" />
-                            </button>
-                        </div>
-                    </div>
+            <div className="maps-content">
+                <div className="maps-title-content">
+                    <p>Maps</p>
                 </div>
+                <div className="maps-token-content">
+                    {/* Display uploaded maps */}
+                    {maps.map(mapItem => (
+                        <div key={mapItem.id} className="map-item">
+                            <img
+                                className="map-thumbnail"
+                                src={mapItem.src}
+                                alt={mapItem.name}
+                                onClick={() => viewMapInfo(mapItem)} // Set the selected map
+                            />
+                            <div className="map-name">{mapItem.name}</div>
+                        </div>
+                    ))}
+
+                    {/* Hidden file input */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden-file-input"
+                        accept="image/png"
+                        onChange={handleFileSelect}
+                    />
+
+                    {/* Add Map Button */}
+                    <button className="dm-add-map" onClick={addMap}>
+                        <img className="add-map-img" src={map} alt="Add Map" />
+                    </button>
+                </div>
+            </div>
+        </div>
 
                 {/* Monster Details View */}
                 <div className={selectedMonster ? "visible" : "invisible"} id="view-monster">
@@ -626,6 +605,7 @@ const DMView = () => {
 
                                         <div className="size-align">
                                             <input
+                                                placeholder="Write Size..."
                                                 type="text"
                                                 name="monster-size"
                                                 value={selectedMonster.size}
@@ -634,6 +614,7 @@ const DMView = () => {
                                                 }}
                                             />
                                             <input
+                                                placeholder="Write Alignment..."
                                                 type="text"
                                                 name="monster-alignment"
                                                 value={selectedMonster.alignment}
@@ -883,12 +864,12 @@ const DMView = () => {
                     </div>
                 </div>
 
-                {/* NPC Details View */}
+                {/* NPC Details View - Using the old implementation */}
                 <div className={selectedNpc ? "visible" : "invisible"} id="view-npc">
                     <div className="view-npc-top">
                         <input
                             type="text"
-                            className="npc-name-input"
+                            className="view-npc-title"
                             name="npc-name"
                             value={selectedNpc?.name || ''}
                             onChange={(e) => {
@@ -929,152 +910,37 @@ const DMView = () => {
                                             <input
                                                 type="text"
                                                 name="npc-role"
-                                                value={selectedNpc.role}
+                                                value={selectedNpc.role || ''}
                                                 onChange={(e) => {
                                                     updateNpcStat('role', e.target.value);
                                                 }}
+                                                placeholder="Write Role..."
                                             />
                                             <input
                                                 type="text"
                                                 name="npc-alignment"
-                                                value={selectedNpc.alignment}
+                                                value={selectedNpc.alignment || ''}
                                                 onChange={(e) => {
                                                     updateNpcStat('alignment', e.target.value);
                                                 }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="npc-basics-bottom">
-                                        <div className="stat-group">
-                                            <label htmlFor="npc-ac">Armor Class:</label>
-                                            <input
-                                                type="text"
-                                                id="npc-ac"
-                                                name="npc-ac"
-                                                value={selectedNpc.armor_class || ''}
-                                                onChange={(e) => {
-                                                    updateNpcStat('armor_class', e.target.value);
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="stat-group">
-                                            <label htmlFor="npc-hp">Hit Points:</label>
-                                            <input
-                                                type="text"
-                                                id="npc-hp"
-                                                name="npc-hp"
-                                                value={selectedNpc.hit_points || ''}
-                                                onChange={(e) => {
-                                                    updateNpcStat('hit_points', e.target.value);
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="stat-group">
-                                            <label htmlFor="npc-spd">Speed:</label>
-                                            <input
-                                                type="text"
-                                                id="npc-spd"
-                                                name="npc-spd"
-                                                value={selectedNpc.speed || ''}
-                                                onChange={(e) => {
-                                                    updateNpcStat('speed', e.target.value);
-                                                }}
+                                                placeholder="Write Alignment..."
                                             />
                                         </div>
                                     </div>
                                 </form>
 
                                 <form className="npc-stats">
-                                    <div>
-                                        <div>STR</div>
-                                        <input
-                                            type="text"
-                                            name="npc-str"
-                                            value={selectedNpc.strength || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('strength', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div>DEX</div>
-                                        <input
-                                            type="text"
-                                            name="npc-dex"
-                                            value={selectedNpc.dexterity || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('dexterity', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div>CON</div>
-                                        <input
-                                            type="text"
-                                            name="npc-con"
-                                            value={selectedNpc.constitution || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('constitution', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div>INT</div>
-                                        <input
-                                            type="text"
-                                            name="npc-int"
-                                            value={selectedNpc.intelligence || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('intelligence', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div>WIS</div>
-                                        <input
-                                            type="text"
-                                            name="npc-wis"
-                                            value={selectedNpc.wisdom || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('wisdom', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div>CHA</div>
-                                        <input
-                                            type="text"
-                                            name="npc-cha"
-                                            value={selectedNpc.charisma || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('charisma', e.target.value);
-                                            }}
-                                        />
-                                    </div>
+                                    <h3>Description</h3>
+                                    <textarea
+                                        name="npc-description"
+                                        className="npc-textarea"
+                                        placeholder="Add NPC description here..."
+                                        value={selectedNpc.description || ''}
+                                        onChange={(e) => {
+                                            updateNpcStat('description', e.target.value);
+                                        }}
+                                    />
                                 </form>
-
-                                <div className="npc-details">
-                                    <div>
-                                        Description
-                                        <textarea
-                                            name="npc-description"
-                                            className="npc-textarea"
-                                            placeholder="Add NPC description here..."
-                                            value={selectedNpc.description || ''}
-                                            onChange={(e) => {
-                                                updateNpcStat('description', e.target.value);
-                                            }}
-                                        />
-                                    </div>
-                                </div>
 
                                 {/* Delete Button for NPC */}
                                 <button
