@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./createCharacter.scss"; // Import the CSS file for styling
 
 const CreateCharacter = () => {
     const navigate = useNavigate(); // Hook to navigate between routes
@@ -58,7 +59,7 @@ const CreateCharacter = () => {
     return (
         <div className="create-character-container">
             <h1>Create a New Character</h1>
-            <form onSubmit={handleCreateCharacter}>
+            <form className="create-character-form" onSubmit={handleCreateCharacter}>
                 <label>
                     Name:
                     <input type="text" name="name" value={characterData.name} onChange={handleInputChange} required />
@@ -71,30 +72,64 @@ const CreateCharacter = () => {
                     Species:
                     <input type="text" name="species" value={characterData.species} onChange={handleInputChange} required />
                 </label>
-                <label>
-                    Strength:
-                    <input type="number" name="strength" value={characterData.strength} onChange={handleInputChange} required />
-                </label>
-                <label>
-                    Dexterity:
-                    <input type="number" name="dexterity" value={characterData.dexterity} onChange={handleInputChange} required />
-                </label>
-                <label>
-                    Constitution:
-                    <input type="number" name="constitution" value={characterData.constitution} onChange={handleInputChange} required />
-                </label>
-                <label>
-                    Intelligence:
-                    <input type="number" name="intelligence" value={characterData.intelligence} onChange={handleInputChange} required />
-                </label>
-                <label>
-                    Wisdom:
-                    <input type="number" name="wisdom" value={characterData.wisdom} onChange={handleInputChange} required />
-                </label>
-                <label>
-                    Charisma:
-                    <input type="number" name="charisma" value={characterData.charisma} onChange={handleInputChange} required />
-                </label>
+
+                <div id="ability-scores">
+    <input
+        type="number"
+        id="score-box"
+        name="strength"
+        value={characterData.strength}
+        onChange={handleInputChange}
+        required
+        placeholder="Strength"
+    />
+    <input
+        type="number"
+        id="score-box"
+        name="dexterity"
+        value={characterData.dexterity}
+        onChange={handleInputChange}
+        required
+        placeholder="Dexterity"
+    />
+    <input
+        type="number"
+        id="score-box"
+        name="constitution"
+        value={characterData.constitution}
+        onChange={handleInputChange}
+        required
+        placeholder="Constitution"
+    />
+    <input
+        type="number"
+        id="score-box"
+        name="intelligence"
+        value={characterData.intelligence}
+        onChange={handleInputChange}
+        required
+        placeholder="Intelligence"
+    />
+    <input
+        type="number"
+        id="score-box"
+        name="wisdom"
+        value={characterData.wisdom}
+        onChange={handleInputChange}
+        required
+        placeholder="Wisdom"
+    />
+    <input
+        type="number"
+        id="score-box"
+        name="charisma"
+        value={characterData.charisma}
+        onChange={handleInputChange}
+        required
+        placeholder="Charisma"
+    />
+</div>
+
                 <label>
                     Armor Class:
                     <input type="number" name="armor_class" value={characterData.armor_class} onChange={handleInputChange} required />
@@ -111,9 +146,10 @@ const CreateCharacter = () => {
                     Hit Points:
                     <input type="number" name="hit_points" value={characterData.hit_points} onChange={handleInputChange} required />
                 </label>
+
                 <button type="submit">Create Character</button>
             </form>
-            <button onClick={() => navigate("/home")}>Back</button> {/* Navigate to the home page */}
+            <button className="back-button" onClick={() => navigate("/home")}>Back</button>
         </div>
     );
 };

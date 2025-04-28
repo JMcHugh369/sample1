@@ -429,7 +429,6 @@ const PlayerView = () => {
             if (!response.ok) {
                 throw new Error("Failed to save character");
             }
-            alert("Character saved!");
         } catch (err) {
             alert("Error saving character: " + err.message);
         }
@@ -788,7 +787,7 @@ const PlayerView = () => {
                                 {actions.map((action) => (
                                     <li key={action.id}>
                                         <strong>{action.name}</strong>: {action.description}
-                                        <button onClick={() => deleteAction(action.id)}>Delete</button>
+                                        <button onClick={() => deleteAction(action.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -803,7 +802,7 @@ const PlayerView = () => {
                             >
                                 <input id="item-description" type="text" name="name" placeholder="Name..." required />
                                 <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                                <button type="submit">Add</button>
+                                <button type="submit">+</button>
                             </form>
                         </div>
 
@@ -813,7 +812,7 @@ const PlayerView = () => {
                                 {spells.map((spell) => (
                                     <li key={spell.id}>
                                         <strong>{spell.name}</strong>: {spell.description}
-                                        <button onClick={() => deleteSpell(spell.id)}>Delete</button>
+                                        <button onClick={() => deleteSpell(spell.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -828,7 +827,7 @@ const PlayerView = () => {
                             >
                                 <input id="item-description" type="text" name="name" placeholder="Name..." required />
                                 <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                                <button type="submit">Add</button>
+                                <button type="submit">+</button>
                             </form>
                         </div>
 
@@ -838,7 +837,7 @@ const PlayerView = () => {
                                 {proficiencies.map((proficiency) => (
                                     <li key={proficiency.id}>
                                         <strong>{proficiency.name}</strong>: {proficiency.description}
-                                        <button onClick={() => deleteProficiency(proficiency.id)}>Delete</button>
+                                        <button onClick={() => deleteProficiency(proficiency.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -853,7 +852,7 @@ const PlayerView = () => {
                             >
                                 <input id="item-description" type="text" name="name" placeholder="Name..." required />
                                 <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                                <button type="submit">Add</button>
+                                <button type="submit">+</button>
                             </form>
                         </div>
 
@@ -863,7 +862,7 @@ const PlayerView = () => {
                                 {other.map((item) => (
                                     <li key={item.id}>
                                         <strong>{item.name}</strong>: {item.description}
-                                        <button onClick={() => deleteOther(item.id)}>Delete</button>
+                                        <button onClick={() => deleteOther(item.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -878,7 +877,7 @@ const PlayerView = () => {
                             >
                                 <input id="item-description" type="text" name="name" placeholder="Name..." required />
                                 <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                                <button type="submit">Add</button>
+                                <button type="submit">+</button>
                             </form>
                         </div>
 
@@ -941,7 +940,7 @@ const PlayerView = () => {
                             {inventory.map((item) => (
                                 <li key={item.id}>
                                     <strong>{item.name}</strong>: {item.description}
-                                    <button onClick={() => deleteInventoryItem(item.id)}>Delete</button>
+                                    <button onClick={() => deleteInventoryItem(item.id)}>-</button>
                                 </li>
                             ))}
                         </ul>
@@ -956,7 +955,7 @@ const PlayerView = () => {
                         >
                             <input id="item-description" type="text" name="name" placeholder="Name..." required />
                             <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                            <button type="submit">Add</button>
+                            <button type="submit">+</button>
                         </form>
                     </div>
 
@@ -966,7 +965,7 @@ const PlayerView = () => {
                             {features.map(f => (
                                 <li key={f.id}>
                                     <strong>{f.name}</strong>: {f.description}
-                                    <button onClick={() => deleteFeature(f.id)}>Delete</button>
+                                    <button onClick={() => deleteFeature(f.id)}>-</button>
                                 </li>
                             ))}
                         </ul>
@@ -977,7 +976,7 @@ const PlayerView = () => {
                         }}>
                             <input type="text" name="name" placeholder="Name..." required />
                             <input type="text" name="description" placeholder="Description..." required />
-                            <button type="submit">Add</button>
+                            <button type="submit">+</button>
                         </form>
                     </div>
 
@@ -1018,7 +1017,7 @@ const PlayerView = () => {
                                 {actions.map((action) => (
                                     <li key={action.id}>
                                         <strong>{action.name}</strong>: {action.description}
-                                        <button onClick={() => deleteAction(action.id)}>Delete</button>
+                                        <button onClick={() => deleteAction(action.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -1043,7 +1042,7 @@ const PlayerView = () => {
                                 {spells.map((spell) => (
                                     <li key={spell.id}>
                                         <strong>{spell.name}</strong>: {spell.description}
-                                        <button onClick={() => deleteSpell(spell.id)}>Delete</button>
+                                        <button onClick={() => deleteSpell(spell.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -1068,7 +1067,7 @@ const PlayerView = () => {
                                 {proficiencies.map((proficiency) => (
                                     <li key={proficiency.id}>
                                         <strong>{proficiency.name}</strong>: {proficiency.description}
-                                        <button onClick={() => deleteProficiency(proficiency.id)}>Delete</button>
+                                        <button onClick={() => deleteProficiency(proficiency.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -1093,7 +1092,7 @@ const PlayerView = () => {
                                 {other.map((item) => (
                                     <li key={item.id}>
                                         <strong>{item.name}</strong>: {item.description}
-                                        <button onClick={() => deleteOther(item.id)}>Delete</button>
+                                        <button onClick={() => deleteOther(item.id)}>-</button>
                                     </li>
                                 ))}
                             </ul>
@@ -1171,7 +1170,7 @@ const PlayerView = () => {
                             {inventory.map((item) => (
                                 <li key={item.id}>
                                     <strong>{item.name}</strong>: {item.description}
-                                    <button onClick={() => deleteInventoryItem(item.id)}>Delete</button>
+                                    <button onClick={() => deleteInventoryItem(item.id)}>-</button>
                                 </li>
                             ))}
                         </ul>
@@ -1186,7 +1185,7 @@ const PlayerView = () => {
                         >
                             <input id="item-description" type="text" name="name" placeholder="Name..." required />
                             <input id="item-description" type="text" name="description" placeholder="Description..." required />
-                            <button type="submit">Add</button>
+                            <button type="submit">+</button>
                         </form>
                     </div>
 

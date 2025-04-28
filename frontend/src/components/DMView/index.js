@@ -7,6 +7,8 @@ import adventurer from "../asset/dmside/adventurer.png";
 import addmonster from "../asset/dmside/add-monster.png";
 import addnpc from "../asset/dmside/add-npc.png";
 import { useParams } from "react-router-dom";
+import { io } from "socket.io-client";
+const socket = io("http://localhost:5002"); // Use your server URL
 
 const DMView = () => {
     // Get campaignId from URL or state
@@ -177,24 +179,40 @@ const DMView = () => {
     // Function to handle file selection for maps
     function handleFileSelect(event) {
         const file = event.target.files[0];
-        if (file && file.type === 'image/png') {
+        if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-
-            reader.onload = (e) => {
-                const newMap = {
-                    id: Date.now(), // Unique ID for the map
-                    src: e.target.result, // Base64 data URL of the image
+            reader.onload = async (e) => {
+                const mapData = {
+                    src: e.target.result, // base64 image
                     name: file.name
                 };
-
-                setMaps([...maps, newMap]);
+                setMaps([mapData]);
+                // Save to backend
+                await fetch(`http://localhost:5002/campaigns/${resolvedCampaignId}/map`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(mapData)
+                });
+                // Emit to all clients
+                socket.emit("map_update", {
+                    campaignId: resolvedCampaignId,
+                    map: mapData
+                });
             };
-
             reader.readAsDataURL(file);
-        } else {
-            alert('Please select a PNG image file.');
         }
     }
+
+    // Listen for map updates from other clients (including DM)
+    useEffect(() => {
+        function handleMapUpdate({ campaignId: incomingCampaignId, map }) {
+            if (String(incomingCampaignId) === String(resolvedCampaignId)) {
+                setMaps([map]);
+            }
+        }
+        socket.on("map_update", handleMapUpdate);
+        return () => socket.off("map_update", handleMapUpdate);
+    }, [resolvedCampaignId]);
 
     // Function to trigger file input click
     function addMap() {
@@ -449,16 +467,16 @@ const DMView = () => {
                         <div className="maps-token-content">
                             {/* Display uploaded maps */}
                             {maps.map(mapItem => (
-                                <div key={mapItem.id} className="map-item">
-                                    <img
-                                        className="map-thumbnail"
-                                        src={mapItem.src}
-                                        alt={mapItem.name}
-                                        onClick={() => viewMapInfo(mapItem)}
-                                    />
-                                    <div className="map-name">{mapItem.name}</div>
-                                </div>
-                            ))}
+  <div key={mapItem.name} className="map-item">
+    <img
+      className="map-thumbnail"
+      src={mapItem.src}
+      alt={mapItem.name}
+      onClick={() => viewMapInfo(mapItem)}
+    />
+    <div className="map-name">{mapItem.name}</div>
+  </div>
+))}
 
                             {/* Hidden file input */}
                             <input

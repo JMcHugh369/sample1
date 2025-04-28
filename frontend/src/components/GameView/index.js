@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import "./index.scss";
 import { io } from "socket.io-client";
 import mapplaceholder from "../asset/mapplaceholder.png";
 import wizard from "../asset/prof-pics/wizard.png";
@@ -13,7 +12,9 @@ import imgd12 from "../asset/gameside/d12.png";
 import imgd20 from "../asset/gameside/d20.png";
 import imgd100 from "../asset/gameside/d100.png";
 
-const socket = io("http://localhost:5002");
+import "./index.scss";
+
+const socket = io("http://localhost:5002"); // Use your server URL
 
 const GameView = ({ campaignId, currentUser, users = [] }) => {
   console.log("Rendering GameView with campaignId:", campaignId, "currentUser:", currentUser);
@@ -39,6 +40,7 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
   const [hoveredToken, setHoveredToken] = useState(null);
   const [diceLog, setDiceLog] = useState([]);
   const [mapDimensions, setMapDimensions] = useState({ width: 0, height: 0 });
+  const [mapImage, setMapImage] = useState(null);
 
   // Calculate cell width and height based on mapDimensions and gridSize
   const cellWidth = mapDimensions.width / gridSize;
@@ -374,8 +376,6 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
     };
   }, [showExpandedMap]);
 
-  // ...existing code...
-
   useEffect(() => {
     function handleTokensUpdate({ campaignId: incomingCampaignId, tokens }) {
       if (String(incomingCampaignId) === String(campaignId)) {
@@ -385,8 +385,6 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
     socket.on("tokens_update", handleTokensUpdate);
     return () => socket.off("tokens_update", handleTokensUpdate);
   }, [campaignId]);
-
-  // ...existing code...
 
   useEffect(() => {
     if (mapRef.current) {
@@ -438,6 +436,16 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
     }
   };
 
+  useEffect(() => {
+    if (campaignId) {
+      fetch(`http://localhost:5002/campaigns/${campaignId}/map`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.src) setMapImage(data.src);
+        });
+    }
+  }, [campaignId]);
+
   //  useEffect(() => {
   //  if (showExpandedMap) {
   // Emit placedTokens to the server when they change and map is open
@@ -481,7 +489,7 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
           onMouseLeave={() => setShowMapButton(false)}
           ref={smallMapRef}
         >
-          <img className="map-up" src={mapplaceholder} alt="" />
+          <img className="map-up" src={mapImage || mapplaceholder} alt="" />
 
           {showMapButton && (
             <button
@@ -651,7 +659,7 @@ const GameView = ({ campaignId, currentUser, users = [] }) => {
                   <img
                     ref={mapRef}
                     className="map-large"
-                    src={mapplaceholder}
+                    src={mapImage || mapplaceholder}
                     alt="Game Map"
                     onLoad={() => {
                       if (mapRef.current) {

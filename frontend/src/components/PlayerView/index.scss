@@ -1,4 +1,12 @@
 .playerside {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+  }
+  .playerside::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+.playerside {
 
     position: relative;
     bottom: 0px;
@@ -23,6 +31,7 @@
             font-size: 2vh;
             padding-left: .3vw;
             padding-right: .3vw;
+            color: black;
     }
 
     .extra-button-class:active {
@@ -50,6 +59,8 @@
     z-index: 99;
 
     overflow: scroll;
+
+    color: black;
 
     .sheet-header {
         display: flex;
@@ -514,6 +525,7 @@
             box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
                 rgba(0, 0, 0, 0.23) 0px 3px 6px;
             font-size: 1.5vh;
+            color: black;
         }
     
         button:active {
@@ -774,6 +786,7 @@
             font-size: 2vh;
             width: 1.5vw;
             margin-left: .5vw;
+            color: black;
         }
     
         button:active {
@@ -871,6 +884,7 @@
                 rgba(0, 0, 0, 0.23) 0px 3px 6px;
             font-size: 2vh;
             width: 1.5vw;
+            color: black;
         }
 
         .extra-button-class {
@@ -885,6 +899,7 @@
                 rgba(0, 0, 0, 0.23) 0px 3px 6px;
             font-size: 2vh;
             width: 1.5vw;
+            color: black;
         }
     
         button:active {
